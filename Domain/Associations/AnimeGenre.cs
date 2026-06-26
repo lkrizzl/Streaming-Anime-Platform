@@ -15,7 +15,7 @@ public class AnimeGenre : Entity
     public Guid AnimeId { get; private init; }
     public Guid GenreId { get; private init; }
 
-    public DateTime CreatedOnUtc { get; private init; } = DateTime.UtcNow;
+    public DateTime CreatedOnUtc { get; private init; } = UtcNow;
 
     // Навігація
     public Anime Anime { get; private set; } = null!;

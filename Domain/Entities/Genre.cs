@@ -1,4 +1,4 @@
-﻿using Domain.Errors;
+﻿using Domain.Associations;
 using Domain.Exceptions;
 
 namespace Domain.Entities;
@@ -13,7 +13,7 @@ public class Genre : Entity
         Name = name ?? throw new ValidationException("Genre name cannot be empty");
         Description = description;
 
-        CreatedOnUtc = DateTime.UtcNow;
+        CreatedOnUtc = UtcNow;
         IsActive = true;
     }
 
@@ -24,17 +24,20 @@ public class Genre : Entity
     public DateTime? UpdatedOnUtc { get; private set; }
     public bool IsActive { get; private set; } = true;
 
+    // Навігація
+    public ICollection<AnimeGenre> AnimeGenres { get; private set; } = new List<AnimeGenre>();
+
     // ====================== Бізнес методи ======================
 
     public void UpdateName(string newName)
     {
         Name = newName ?? throw new ValidationException("Genre name cannot be empty");
-        UpdatedOnUtc = DateTime.UtcNow;
+        UpdatedOnUtc = UtcNow;
     }
 
     public void UpdateDescription(string? description)
     {
         Description = string.IsNullOrWhiteSpace(description) ? null : description.Trim();
-        UpdatedOnUtc = DateTime.UtcNow;
+        UpdatedOnUtc = UtcNow;
     }
 }

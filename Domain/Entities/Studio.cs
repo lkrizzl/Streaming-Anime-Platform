@@ -1,4 +1,4 @@
-﻿using Domain.Errors;
+﻿using Domain.Associations;
 using Domain.Exceptions;
 
 namespace Domain.Entities;
@@ -10,10 +10,10 @@ public class Studio : Entity
     public Studio(string name, string? description = null)
         : base(Guid.NewGuid())
     {
-        Name = name;
+        Name = name ?? throw new ValidationException("Studio name cannot be empty");
         Description = description;
 
-        CreatedOnUtc = DateTime.UtcNow;
+        CreatedOnUtc = UtcNow;
         IsActive = true;
     }
 
@@ -26,23 +26,26 @@ public class Studio : Entity
     public DateTime? UpdatedOnUtc { get; private set; }
     public bool IsActive { get; private set; } = true;
 
+    // Навігація
+    public ICollection<AnimeStudio> AnimeStudios { get; private set; } = new List<AnimeStudio>();
+
     // ====================== Бізнес методи ======================
 
     public void UpdateName(string newName)
     {
-        Name = newName;
-        UpdatedOnUtc = DateTime.UtcNow;
+        Name = newName ?? throw new ValidationException("Studio name cannot be empty");
+        UpdatedOnUtc = UtcNow;
     }
 
     public void UpdateDescription(string? description)
     {
         Description = string.IsNullOrWhiteSpace(description) ? null : description.Trim();
-        UpdatedOnUtc = DateTime.UtcNow;
+        UpdatedOnUtc = UtcNow;
     }
 
     public void UpdateLogo(string? logoUrl)
     {
         LogoUrl = logoUrl;
-        UpdatedOnUtc = DateTime.UtcNow;
+        UpdatedOnUtc = UtcNow;
     }
 }

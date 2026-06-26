@@ -11,5 +11,5 @@ public record UserResponse(
 
 public interface IUserQueries
 {
-    Task<User?> GetByEmailAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
 }

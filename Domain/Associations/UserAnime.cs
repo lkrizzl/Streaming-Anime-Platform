@@ -1,5 +1,4 @@
-﻿using Domain.Errors;
-using Domain.Exceptions;
+﻿using Domain.Exceptions;
 using Domain.Entities;
 
 namespace Domain.Associations;
@@ -24,8 +23,8 @@ public class UserAnime : Entity
         AnimeId = animeId;
         Status = status;
 
-        CreatedOnUtc = DateTime.UtcNow;
-        LastUpdatedOnUtc = DateTime.UtcNow;
+        CreatedOnUtc = UtcNow;
+        LastUpdatedOnUtc = UtcNow;
     }
 
     public Guid UserId { get; private init; }
@@ -53,7 +52,7 @@ public class UserAnime : Entity
     public void UpdateStatus(WatchStatus newStatus)
     {
         Status = newStatus;
-        LastUpdatedOnUtc = DateTime.UtcNow;
+        LastUpdatedOnUtc = UtcNow;
     }
 
     public void UpdateProgress(int episodeNumber, double progressPercentage)
@@ -63,7 +62,7 @@ public class UserAnime : Entity
 
         LastWatchedEpisodeNumber = episodeNumber;
         ProgressPercentage = Math.Clamp(progressPercentage, 0, 100);
-        LastUpdatedOnUtc = DateTime.UtcNow;
+        LastUpdatedOnUtc = UtcNow;
     }
 
     public void Rate(double rating)
@@ -72,18 +71,18 @@ public class UserAnime : Entity
             throw new ValidationException("Rating must be between 1.0 and 10.0.");
 
         UserRating = rating;
-        LastUpdatedOnUtc = DateTime.UtcNow;
+        LastUpdatedOnUtc = UtcNow;
     }
 
     public void ToggleFavorite()
     {
         IsFavorite = !IsFavorite;
-        LastUpdatedOnUtc = DateTime.UtcNow;
+        LastUpdatedOnUtc = UtcNow;
     }
 
     public void AddNote(string? note)
     {
         Notes = string.IsNullOrWhiteSpace(note) ? null : note.Trim();
-        LastUpdatedOnUtc = DateTime.UtcNow;
+        LastUpdatedOnUtc = UtcNow;
     }
 }

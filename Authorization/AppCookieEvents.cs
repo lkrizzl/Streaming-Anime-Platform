@@ -1,13 +1,12 @@
+using Application.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Persistence;
 using System.Security.Claims;
 
 namespace Authorization;
 
-public sealed class AppCookieEvents(AppDbContext dbContext) : CookieAuthenticationEvents
+public sealed class AppCookieEvents(IUserIdentityService userIdentityService) : CookieAuthenticationEvents
 {
     private static readonly string SecurityStampKey = "sstamp";
     private static readonly string LastValidatedTimeKey = "lvtime";
@@ -69,12 +68,11 @@ public sealed class AppCookieEvents(AppDbContext dbContext) : CookieAuthenticati
             return;
         }
 
-        var current = await dbContext.UserIdentities.AsNoTracking()
-            .Where(u => u.UserId == userId)
-            .Select(u => u.SecurityStamp)
-            .SingleOrDefaultAsync(context.HttpContext.RequestAborted);
+        var identity = await userIdentityService.FindByUserIdAsync(userId, context.HttpContext.RequestAborted);
 
-        if (current is null || !string.Equals(current, stampInCookie, StringComparison.Ordinal))
+        var currentStamp = identity?.SecurityStamp;
+
+        if (currentStamp is null || !string.Equals(currentStamp, stampInCookie, StringComparison.Ordinal))
         {
             await RejectAsync(context);
             return;

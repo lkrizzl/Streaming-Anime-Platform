@@ -1,6 +1,0 @@
-<Solution>
-  <Project Path="Application/Application.csproj" Id="320ff839-5bec-43ca-b266-d25848771db9" />
-  <Project Path="Domain/Domain.csproj" />
-  <Project Path="Infrastructure/Infrastructure.csproj" Id="15a902f6-e4b5-4177-850b-d833b9783b10" />
-  <Project Path="WebApі/WebApі.csproj" />
-</Solution>

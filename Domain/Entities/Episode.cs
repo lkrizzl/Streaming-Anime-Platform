@@ -1,5 +1,4 @@
-﻿using Domain.Errors;
-using Domain.Exceptions;
+﻿using Domain.Exceptions;
 
 namespace Domain.Entities;
 
@@ -19,7 +18,7 @@ public class Episode : Entity
         Title = title ?? throw new ValidationException("Episode title cannot be empty");
         Duration = duration;
 
-        CreatedOnUtc = DateTime.UtcNow;
+        CreatedOnUtc = UtcNow;
         IsActive = true;
         IsPublished = false;
     }
@@ -46,22 +45,34 @@ public class Episode : Entity
 
     // ====================== Бізнес методи ======================
 
+    public void UpdateTitle(string title)
+    {
+        Title = title ?? throw new ValidationException("Episode title cannot be empty");
+        UpdatedOnUtc = UtcNow;
+    }
+
+    public void UpdateDescription(string? description)
+    {
+        Description = string.IsNullOrWhiteSpace(description) ? null : description.Trim();
+        UpdatedOnUtc = UtcNow;
+    }
+
     public void Publish(DateTime? releaseDate = null)
     {
         IsPublished = true;
-        ReleaseDateUtc = releaseDate ?? DateTime.UtcNow;
-        UpdatedOnUtc = DateTime.UtcNow;
+        ReleaseDateUtc = releaseDate ?? UtcNow;
+        UpdatedOnUtc = UtcNow;
     }
 
     public void UpdateVideoUrl(string videoUrl)
     {
         VideoUrl = videoUrl ?? throw new ValidationException("Video URL cannot be empty");
-        UpdatedOnUtc = DateTime.UtcNow;
+        UpdatedOnUtc = UtcNow;
     }
 
     public void UpdateThumbnail(string thumbnailUrl)
     {
         ThumbnailUrl = thumbnailUrl;
-        UpdatedOnUtc = DateTime.UtcNow;
+        UpdatedOnUtc = UtcNow;
     }
 }

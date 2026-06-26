@@ -20,7 +20,7 @@ public class User : Entity
         Username = username;
         Email = email;
 
-        CreatedOnUtc = DateTime.UtcNow;
+        CreatedOnUtc = UtcNow;
         IsActive = true;
     }
 
@@ -52,29 +52,29 @@ public class User : Entity
     public void UpdateUsername(Username newUsername)
     {
         Username = newUsername ?? throw new EntityValidationException(UsernameErrors.UsernameIsEmpty());
-        UpdatedOnUtc = DateTime.UtcNow;
+        UpdatedOnUtc = UtcNow;
     }
 
     public void UpdateEmail(Email newEmail)
     {
         Email = newEmail ?? throw new EntityValidationException(EmailErrors.EmailIsEmpty());
-        UpdatedOnUtc = DateTime.UtcNow;
+        UpdatedOnUtc = UtcNow;
     }
 
     public void UpdateAvatar(string? avatarUrl)
     {
         AvatarUrl = avatarUrl;
-        UpdatedOnUtc = DateTime.UtcNow;
+        UpdatedOnUtc = UtcNow;
     }
 
     public void UpdateBio(string? bio)
     {
         Bio = string.IsNullOrWhiteSpace(bio) ? null : bio.Trim();
-        UpdatedOnUtc = DateTime.UtcNow;
+        UpdatedOnUtc = UtcNow;
     }
 
     public void RecordLogin()
     {
-        LastLoginOnUtc = UpdatedOnUtc = DateTime.UtcNow;
+        LastLoginOnUtc = UpdatedOnUtc = UtcNow;
     }
 }
