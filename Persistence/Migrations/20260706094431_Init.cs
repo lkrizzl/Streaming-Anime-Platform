@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitAnimeEntities : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -50,17 +50,51 @@ namespace Persistence.Migrations
                     Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     CreatedOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    AnimeId = table.Column<Guid>(type: "uuid", nullable: true)
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Genres", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Genres_Anime_AnimeId",
-                        column: x => x.AnimeId,
-                        principalTable: "Anime",
-                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Studios",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
+                    LogoUrl = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    WebsiteUrl = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    CreatedOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Studios", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    IdentityId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AvatarUrl = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    Bio = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
+                    CreatedOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastLoginOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    IsBanned = table.Column<bool>(type: "boolean", nullable: false),
+                    BannedUntilUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Email = table.Column<string>(type: "character varying(254)", maxLength: 254, nullable: false),
+                    Username = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -91,27 +125,55 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Studios",
+                name: "AnimeGenres",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    Description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
-                    LogoUrl = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
-                    WebsiteUrl = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
-                    CreatedOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    AnimeId = table.Column<Guid>(type: "uuid", nullable: true)
+                    AnimeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    GenreId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Studios", x => x.Id);
+                    table.PrimaryKey("PK_AnimeGenres", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Studios_Anime_AnimeId",
+                        name: "FK_AnimeGenres_Anime_AnimeId",
                         column: x => x.AnimeId,
                         principalTable: "Anime",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AnimeGenres_Genres_GenreId",
+                        column: x => x.GenreId,
+                        principalTable: "Genres",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AnimeStudios",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    AnimeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    StudioId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AnimeStudios", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AnimeStudios_Anime_AnimeId",
+                        column: x => x.AnimeId,
+                        principalTable: "Anime",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AnimeStudios_Studios_StudioId",
+                        column: x => x.StudioId,
+                        principalTable: "Studios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -148,27 +210,23 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AnimeGenres",
+                name: "UserIdentities",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    AnimeId = table.Column<Guid>(type: "uuid", nullable: false),
-                    GenreId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PasswordHash = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: false),
+                    SecurityStamp = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "character varying(254)", maxLength: 254, nullable: false),
+                    Username = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AnimeGenres", x => x.Id);
+                    table.PrimaryKey("PK_UserIdentities", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AnimeGenres_Anime_AnimeId",
-                        column: x => x.AnimeId,
-                        principalTable: "Anime",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AnimeGenres_Genres_GenreId",
-                        column: x => x.GenreId,
-                        principalTable: "Genres",
+                        name: "FK_UserIdentities_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -198,32 +256,6 @@ namespace Persistence.Migrations
                         name: "FK_Episodes_Seasons_SeasonId",
                         column: x => x.SeasonId,
                         principalTable: "Seasons",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AnimeStudios",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    AnimeId = table.Column<Guid>(type: "uuid", nullable: false),
-                    StudioId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AnimeStudios", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AnimeStudios_Anime_AnimeId",
-                        column: x => x.AnimeId,
-                        principalTable: "Anime",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AnimeStudios_Studios_StudioId",
-                        column: x => x.StudioId,
-                        principalTable: "Studios",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -261,11 +293,6 @@ namespace Persistence.Migrations
                 column: "SeasonId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Genres_AnimeId",
-                table: "Genres",
-                column: "AnimeId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Genres_Name",
                 table: "Genres",
                 column: "Name",
@@ -274,11 +301,6 @@ namespace Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Seasons_AnimeId",
                 table: "Seasons",
-                column: "AnimeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Studios_AnimeId",
-                table: "Studios",
                 column: "AnimeId");
 
             migrationBuilder.CreateIndex(
@@ -296,6 +318,18 @@ namespace Persistence.Migrations
                 name: "IX_UserAnimes_UserId_AnimeId",
                 table: "UserAnimes",
                 columns: new[] { "UserId", "AnimeId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserIdentities_UserId",
+                table: "UserIdentities",
+                column: "UserId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_IdentityId",
+                table: "Users",
+                column: "IdentityId",
                 unique: true);
         }
 
@@ -315,6 +349,9 @@ namespace Persistence.Migrations
                 name: "UserAnimes");
 
             migrationBuilder.DropTable(
+                name: "UserIdentities");
+
+            migrationBuilder.DropTable(
                 name: "Genres");
 
             migrationBuilder.DropTable(
@@ -322,6 +359,9 @@ namespace Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Seasons");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Anime");

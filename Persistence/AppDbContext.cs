@@ -225,6 +225,9 @@ public class AppDbContext : DbContext
                 .HasForeignKey(ua => ua.AnimeId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            e.Ignore(x => x.Genres);
+            e.Ignore(x => x.Studios);
+
             e.HasIndex(x => x.Title);
         });
     }

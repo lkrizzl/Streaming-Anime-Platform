@@ -1,5 +1,5 @@
 <Solution>
-  <Project Path="../../../../Diploma/BackEnd/Persistence/Persistence.csproj" />
+  <Project Path="Persistence/Persistence.csproj" />
   <Project Path="Application/Application.csproj" Id="320ff839-5bec-43ca-b266-d25848771db9" />
   <Project Path="docker-compose.dcproj">
     <Build />

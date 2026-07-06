@@ -13,8 +13,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260624180120_InitAnimeEntities")]
-    partial class InitAnimeEntities
+    [Migration("20260706094431_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -262,9 +262,6 @@ namespace Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("AnimeId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("CreatedOnUtc")
                         .HasColumnType("timestamp with time zone");
 
@@ -284,8 +281,6 @@ namespace Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AnimeId");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -344,9 +339,6 @@ namespace Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("AnimeId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("CreatedOnUtc")
                         .HasColumnType("timestamp with time zone");
 
@@ -374,8 +366,6 @@ namespace Persistence.Migrations
                         .HasColumnType("character varying(500)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AnimeId");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -504,7 +494,7 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.Genre", "Genre")
-                        .WithMany()
+                        .WithMany("AnimeGenres")
                         .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -523,7 +513,7 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.Studio", "Studio")
-                        .WithMany()
+                        .WithMany("AnimeStudios")
                         .HasForeignKey("StudioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -563,13 +553,6 @@ namespace Persistence.Migrations
                     b.Navigation("Season");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Genre", b =>
-                {
-                    b.HasOne("Domain.Entities.Anime", null)
-                        .WithMany("Genres")
-                        .HasForeignKey("AnimeId");
-                });
-
             modelBuilder.Entity("Domain.Entities.Season", b =>
                 {
                     b.HasOne("Domain.Entities.Anime", "Anime")
@@ -579,13 +562,6 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Anime");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Studio", b =>
-                {
-                    b.HasOne("Domain.Entities.Anime", null)
-                        .WithMany("Studios")
-                        .HasForeignKey("AnimeId");
                 });
 
             modelBuilder.Entity("Domain.Entities.UserIdentity", b =>
@@ -603,18 +579,24 @@ namespace Persistence.Migrations
 
                     b.Navigation("AnimeStudios");
 
-                    b.Navigation("Genres");
-
                     b.Navigation("Seasons");
 
-                    b.Navigation("Studios");
-
                     b.Navigation("UserAnimes");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Genre", b =>
+                {
+                    b.Navigation("AnimeGenres");
                 });
 
             modelBuilder.Entity("Domain.Entities.Season", b =>
                 {
                     b.Navigation("Episodes");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Studio", b =>
+                {
+                    b.Navigation("AnimeStudios");
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
