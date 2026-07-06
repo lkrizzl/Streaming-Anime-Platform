@@ -2,7 +2,9 @@ using Application;
 using Authorization;
 using Infrastructure;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.RateLimiting;
 using Persistence;
+using System.Threading.RateLimiting;
 using WebApi.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +20,19 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddExceptionHandler<ExceptionHandler>();
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("AuthPolicy", opt =>
+    {
+        opt.PermitLimit = 5;
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        opt.QueueLimit = 0;
+    });
+
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
 
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -52,6 +67,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
+app.UseRateLimiter();
 app.UseRouting();
 app.UseCors(frontendOrigin);
 app.UseAuthentication();

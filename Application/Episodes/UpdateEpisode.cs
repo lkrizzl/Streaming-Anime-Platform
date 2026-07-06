@@ -49,6 +49,7 @@ public class UpdateEpisodeHandler(
 
         episode.UpdateTitle(request.Title);
         episode.UpdateDescription(request.Description);
+        episode.UpdateDuration(request.Duration);
 
         if (request.VideoUrl is not null)
             episode.UpdateVideoUrl(request.VideoUrl);

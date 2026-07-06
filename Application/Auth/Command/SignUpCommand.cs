@@ -17,7 +17,8 @@ public record SignUpResponse(
     Guid Id,
     string Email,
     string Username,
-    string SecurityStamp);
+    string SecurityStamp,
+    string Role);
 
 public class SignUp(
     IPasswordHasher passwordHasher,
@@ -51,6 +52,6 @@ public class SignUp(
         await userIdentityService.AddAsync(userIdentity, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new SignUpResponse(user.Id, userIdentity.Email, userIdentity.Username, userIdentity.SecurityStamp);
+        return new SignUpResponse(user.Id, userIdentity.Email, userIdentity.Username, userIdentity.SecurityStamp, user.Role);
     }
 }

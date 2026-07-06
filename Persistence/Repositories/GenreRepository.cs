@@ -14,15 +14,23 @@ public class GenreRepository(AppDbContext dbContext) : IGenreRepository
     public async Task<Genre?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
     {
         return await dbContext.Genres.FirstOrDefaultAsync(
-            g => g.Name == name, cancellationToken);
+            g => EF.Functions.ILike(g.Name, name), cancellationToken);
     }
 
-    public async Task<IReadOnlyList<Genre>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<PaginatedList<Genre>> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken = default)
     {
-        return await dbContext.Genres
+        var query = dbContext.Genres
             .Where(g => g.IsActive)
-            .OrderBy(g => g.Name)
+            .OrderBy(g => g.Name);
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var items = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync(cancellationToken);
+
+        return new PaginatedList<Genre>(items, page, pageSize, totalCount);
     }
 
     public async Task AddAsync(Genre genre, CancellationToken cancellationToken = default)

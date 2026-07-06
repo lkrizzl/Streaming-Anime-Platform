@@ -1,18 +1,33 @@
 using Application.Abstractions;
+using Domain.Entities;
 using MediatR;
 
 namespace Application.Animes;
 
-public record GetAllAnimesQuery : IRequest<IReadOnlyList<AnimeResponse>>;
+public record GetAllAnimesQuery(
+    int Page = 1,
+    int PageSize = 20,
+    string? Search = null,
+    string? Genre = null,
+    AnimeStatus? Status = null,
+    string? SortBy = "created",
+    string? SortOrder = "desc") : IRequest<PaginatedList<AnimeResponse>>;
 
 public class GetAllAnimesHandler(IAnimeRepository animeRepository)
-    : IRequestHandler<GetAllAnimesQuery, IReadOnlyList<AnimeResponse>>
+    : IRequestHandler<GetAllAnimesQuery, PaginatedList<AnimeResponse>>
 {
-    public async Task<IReadOnlyList<AnimeResponse>> Handle(GetAllAnimesQuery request, CancellationToken ct)
+    public async Task<PaginatedList<AnimeResponse>> Handle(GetAllAnimesQuery request, CancellationToken ct)
     {
-        var animes = await animeRepository.GetAllAsync(ct);
+        var filter = new AnimeFilter(
+            request.Search,
+            request.Genre,
+            request.Status,
+            request.SortBy,
+            request.SortOrder);
 
-        return animes
+        var paginated = await animeRepository.GetAllAsync(request.Page, request.PageSize, filter, ct);
+
+        var items = paginated.Items
             .Select(anime => new AnimeResponse(
                 anime.Id,
                 anime.Title,
@@ -35,5 +50,7 @@ public class GetAllAnimesHandler(IAnimeRepository animeRepository)
                 anime.Studios.Select(s => s.Name).ToList()
             ))
             .ToList();
+
+        return new PaginatedList<AnimeResponse>(items, paginated.Page, paginated.PageSize, paginated.TotalCount);
     }
 }

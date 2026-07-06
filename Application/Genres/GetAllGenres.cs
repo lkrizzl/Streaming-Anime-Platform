@@ -5,19 +5,21 @@ namespace Application.Genres;
 
 // ====== Query ======
 
-public record GetAllGenresQuery : IRequest<IReadOnlyList<GenreResponse>>;
+public record GetAllGenresQuery(int Page = 1, int PageSize = 50) : IRequest<PaginatedList<GenreResponse>>;
 
 // ====== Handler ======
 
 public class GetAllGenresHandler(IGenreRepository genreRepository)
-    : IRequestHandler<GetAllGenresQuery, IReadOnlyList<GenreResponse>>
+    : IRequestHandler<GetAllGenresQuery, PaginatedList<GenreResponse>>
 {
-    public async Task<IReadOnlyList<GenreResponse>> Handle(GetAllGenresQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedList<GenreResponse>> Handle(GetAllGenresQuery request, CancellationToken cancellationToken)
     {
-        var genres = await genreRepository.GetAllAsync(cancellationToken);
+        var paginated = await genreRepository.GetAllAsync(request.Page, request.PageSize, cancellationToken);
 
-        return genres
+        var items = paginated.Items
             .Select(g => new GenreResponse(g.Id, g.Name, g.Description))
             .ToList();
+
+        return new PaginatedList<GenreResponse>(items, paginated.Page, paginated.PageSize, paginated.TotalCount);
     }
 }

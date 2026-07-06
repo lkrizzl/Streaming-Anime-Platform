@@ -2,7 +2,7 @@ namespace Domain.Exceptions;
 
 public class EntityValidationException : Exception
 {
-    public static readonly string ValidationErrorMessage = "The validation errors were occured.";
+    public static readonly string ValidationErrorMessage = "Validation errors occurred.";
 
     public EntityValidationException(List<Error> errors) : base(ValidationErrorMessage)
     {

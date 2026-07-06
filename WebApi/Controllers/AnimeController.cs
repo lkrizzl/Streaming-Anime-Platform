@@ -1,5 +1,8 @@
 using Application.Animes;
+using Application.Abstractions;
+using Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
@@ -8,6 +11,7 @@ namespace WebApi.Controllers;
 [Route("api/anime")]
 public class AnimeController(IMediator mediator) : ControllerBase
 {
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<ActionResult<AnimeResponse>> CreateAsync(
         CreateAnimeCommand command,
@@ -27,13 +31,23 @@ public class AnimeController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<AnimeResponse>>> GetAllAsync(
-        CancellationToken cancellationToken)
+    public async Task<ActionResult<PaginatedList<AnimeResponse>>> GetAllAsync(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        [FromQuery] string? search = null,
+        [FromQuery] string? genre = null,
+        [FromQuery] AnimeStatus? status = null,
+        [FromQuery] string? sortBy = "created",
+        [FromQuery] string? sortOrder = "desc",
+        CancellationToken cancellationToken = default)
     {
-        var response = await mediator.Send(new GetAllAnimesQuery(), cancellationToken);
+        var response = await mediator.Send(
+            new GetAllAnimesQuery(page, pageSize, search, genre, status, sortBy, sortOrder),
+            cancellationToken);
         return Ok(response);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateAsync(
         Guid id,
@@ -47,6 +61,21 @@ public class AnimeController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
+    [Authorize]
+    [HttpPut("{animeId:guid}/rate")]
+    public async Task<IActionResult> RateAsync(
+        Guid animeId,
+        RateAnimeCommand command,
+        CancellationToken cancellationToken)
+    {
+        if (animeId != command.AnimeId)
+            return BadRequest("Route AnimeId does not match command AnimeId.");
+
+        await mediator.Send(command, cancellationToken);
+        return NoContent();
+    }
+
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteAsync(
         Guid id,

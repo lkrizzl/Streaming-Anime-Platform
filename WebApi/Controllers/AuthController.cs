@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace WebApi.Controllers;
 
@@ -26,6 +27,17 @@ public class AuthController(
         return Ok(response);
     }
 
+    [Authorize]
+    [HttpPost("change-password")]
+    public async Task<IActionResult> ChangePasswordAsync(
+        ChangePasswordCommand command,
+        CancellationToken cancellationToken = default)
+    {
+        await mediator.Send(command, cancellationToken);
+        return NoContent();
+    }
+
+    [EnableRateLimiting("AuthPolicy")]
     [HttpPost("sign-up")]
     public async Task<IActionResult> SignUpAsync(SignUpRequest request, CancellationToken cancellationToken = default)
     {
@@ -34,7 +46,7 @@ public class AuthController(
             cancellationToken);
 
         var principal = claimsPrincipalProvider.Create(
-            response.Id, response.Username, response.Email, response.SecurityStamp);
+            response.Id, response.Username, response.Email, response.SecurityStamp, response.Role);
 
         await HttpContext.SignInAsync(
             CookieAuthenticationDefaults.AuthenticationScheme,
@@ -51,6 +63,7 @@ public class AuthController(
         return Ok();
     }
 
+    [EnableRateLimiting("AuthPolicy")]
     [HttpPost("sign-in")]
     public async Task<IActionResult> SignInAsync(SignInRequest request, CancellationToken cancellationToken = default)
     {
@@ -59,7 +72,7 @@ public class AuthController(
             cancellationToken);
 
         var principal = claimsPrincipalProvider.Create(
-            response.Id, response.Username, response.Email, response.SecurityStamp);
+            response.Id, response.Username, response.Email, response.SecurityStamp, response.Role);
 
         await HttpContext.SignInAsync(
             CookieAuthenticationDefaults.AuthenticationScheme,

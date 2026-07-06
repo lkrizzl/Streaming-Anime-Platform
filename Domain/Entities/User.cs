@@ -44,6 +44,9 @@ public class User : Entity
     public bool IsBanned { get; private set; } = false;
     public DateTime? BannedUntilUtc { get; private set; }
 
+    // ====================== Ролі ======================
+    public string Role { get; private set; } = UserRoles.User;
+
     // ====================== Відносини ======================
     public ICollection<UserAnime> UserAnimes { get; private set; } = new List<UserAnime>();
 

@@ -1,5 +1,6 @@
 using Application.Episodes;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
@@ -7,6 +8,7 @@ namespace WebApi.Controllers;
 [ApiController]
 public class EpisodeController(IMediator mediator) : ControllerBase
 {
+    [Authorize(Roles = "Admin")]
     [HttpPost("api/seasons/{seasonId:guid}/episodes")]
     public async Task<ActionResult<EpisodeResponse>> CreateAsync(
         Guid seasonId,
@@ -38,6 +40,7 @@ public class EpisodeController(IMediator mediator) : ControllerBase
         return Ok(response);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("api/episodes/{id:guid}")]
     public async Task<IActionResult> UpdateAsync(
         Guid id,
@@ -51,6 +54,7 @@ public class EpisodeController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("api/episodes/{id:guid}/publish")]
     public async Task<IActionResult> PublishAsync(
         Guid id,
@@ -64,6 +68,7 @@ public class EpisodeController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("api/episodes/{id:guid}")]
     public async Task<IActionResult> DeleteAsync(
         Guid id,

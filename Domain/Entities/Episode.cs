@@ -75,4 +75,12 @@ public class Episode : Entity
         ThumbnailUrl = thumbnailUrl;
         UpdatedOnUtc = UtcNow;
     }
+
+    public void UpdateDuration(TimeSpan duration)
+    {
+        if (duration <= TimeSpan.Zero)
+            throw new ValidationException("Duration must be greater than zero.");
+        Duration = duration;
+        UpdatedOnUtc = UtcNow;
+    }
 }

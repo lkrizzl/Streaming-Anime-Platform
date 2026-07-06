@@ -12,7 +12,7 @@ public static class PersistenceServiceExtensions
         this IServiceCollection services,
         string connectionString)
     {
-        services.AddDbContext<AppDbContext>(options =>
+        services.AddDbContextPool<AppDbContext>(options =>
             options.UseNpgsql(connectionString));
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -22,6 +22,7 @@ public static class PersistenceServiceExtensions
         services.AddScoped<IStudioRepository, StudioRepository>();
         services.AddScoped<ISeasonRepository, SeasonRepository>();
         services.AddScoped<IEpisodeRepository, EpisodeRepository>();
+        services.AddScoped<IUserAnimeRepository, UserAnimeRepository>();
         services.AddScoped<IUserIdentityService, Services.UserIdentityService>();
 
         return services;

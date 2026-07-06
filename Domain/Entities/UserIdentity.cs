@@ -15,6 +15,7 @@ public class UserIdentity : Entity
         Email = email;
         PasswordHash = passwordHasher.HashPassword(password.Value);
         SecurityStamp = Guid.NewGuid().ToString();
+        CreatedOnUtc = UtcNow;
     }
 
     public Guid UserId { get; init; }
@@ -26,6 +27,8 @@ public class UserIdentity : Entity
     public string PasswordHash { get; private set; }
 
     public string SecurityStamp { get; private set; }
+
+    public DateTime CreatedOnUtc { get; private init; }
 
     public void UpdatePassword(Password password, IPasswordHasher passwordHasher)
     {

@@ -14,15 +14,23 @@ public class StudioRepository(AppDbContext dbContext) : IStudioRepository
     public async Task<Studio?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
     {
         return await dbContext.Studios.FirstOrDefaultAsync(
-            s => s.Name == name, cancellationToken);
+            s => EF.Functions.ILike(s.Name, name), cancellationToken);
     }
 
-    public async Task<IReadOnlyList<Studio>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<PaginatedList<Studio>> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken = default)
     {
-        return await dbContext.Studios
+        var query = dbContext.Studios
             .Where(s => s.IsActive)
-            .OrderBy(s => s.Name)
+            .OrderBy(s => s.Name);
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var items = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync(cancellationToken);
+
+        return new PaginatedList<Studio>(items, page, pageSize, totalCount);
     }
 
     public async Task AddAsync(Studio studio, CancellationToken cancellationToken = default)

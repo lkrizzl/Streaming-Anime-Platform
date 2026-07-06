@@ -8,8 +8,8 @@ namespace Authorization;
 
 public sealed class AppCookieEvents(IUserIdentityService userIdentityService) : CookieAuthenticationEvents
 {
-    private static readonly string SecurityStampKey = "sstamp";
-    private static readonly string LastValidatedTimeKey = "lvtime";
+    private static readonly string SecurityStampKey = AuthConstants.SecurityStampClaimType;
+    private static readonly string LastValidatedTimeKey = AuthConstants.LastValidatedTimeKey;
     private static readonly TimeSpan ValidationInterval = TimeSpan.FromMinutes(10);
 
     private static async Task RejectAsync(CookieValidatePrincipalContext context)

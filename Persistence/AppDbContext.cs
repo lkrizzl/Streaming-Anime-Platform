@@ -133,6 +133,10 @@ public class AppDbContext : DbContext
             e.Property(x => x.IsBanned)
                 .IsRequired();
 
+            e.Property(x => x.Role)
+                .HasMaxLength(20)
+                .IsRequired();
+
             e.HasMany(u => u.UserAnimes)
                 .WithOne(ua => ua.User)
                 .HasForeignKey(ua => ua.UserId)
@@ -157,18 +161,18 @@ public class AppDbContext : DbContext
                 .ValueGeneratedNever();
 
             e.Property(x => x.Title)
-                .HasMaxLength(300)
+                .HasMaxLength(500)
                 .IsRequired();
 
             e.Property(x => x.OriginalTitle)
-                .HasMaxLength(300)
+                .HasMaxLength(500)
                 .IsRequired();
 
             e.Property(x => x.EnglishTitle)
-                .HasMaxLength(300);
+                .HasMaxLength(500);
 
             e.Property(x => x.Description)
-                .HasMaxLength(4000)
+                .HasMaxLength(5000)
                 .IsRequired();
 
             e.Property(x => x.ReleaseYear)
@@ -180,13 +184,13 @@ public class AppDbContext : DbContext
                 .IsRequired();
 
             e.Property(x => x.CoverImageUrl)
-                .HasMaxLength(500);
+                .HasMaxLength(2048);
 
             e.Property(x => x.BannerImageUrl)
-                .HasMaxLength(500);
+                .HasMaxLength(2048);
 
             e.Property(x => x.TrailerUrl)
-                .HasMaxLength(500);
+                .HasMaxLength(2048);
 
             e.Property(x => x.AverageRating);
 
@@ -197,7 +201,7 @@ public class AppDbContext : DbContext
             e.Property(x => x.CurrentEpisode);
 
             e.Property(x => x.AgeRating)
-                .HasMaxLength(10);
+                .HasMaxLength(20);
 
             e.Property(x => x.IsActive)
                 .IsRequired();

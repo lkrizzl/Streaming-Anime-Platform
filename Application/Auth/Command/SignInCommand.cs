@@ -14,10 +14,12 @@ public record SignInResponse(
     Guid Id,
     string Email,
     string Username,
-    string SecurityStamp);
+    string SecurityStamp,
+    string Role);
 
 public class SignIn(
     IUserIdentityService userIdentityService,
+    IUserRepository userRepository,
     IPasswordHasher passwordHasher) : IRequestHandler<SignInCommand, SignInResponse>
 {
     public async Task<SignInResponse> Handle(SignInCommand request, CancellationToken cancellationToken)
@@ -30,6 +32,9 @@ public class SignIn(
             throw new BadRequestException(UserErrors.InvalidCredentials);
         }
 
-        return new SignInResponse(userIdentity.UserId, userIdentity.Email, userIdentity.Username, userIdentity.SecurityStamp);
+        var user = await userRepository.GetUserByIdAsync(userIdentity.UserId, cancellationToken)
+            ?? throw new BadRequestException(UserErrors.UserNotFound(userIdentity.UserId));
+
+        return new SignInResponse(userIdentity.UserId, userIdentity.Email, userIdentity.Username, userIdentity.SecurityStamp, user.Role);
     }
 }

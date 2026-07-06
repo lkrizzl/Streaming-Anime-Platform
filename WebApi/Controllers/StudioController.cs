@@ -1,5 +1,7 @@
 using Application.Studios;
+using Application.Abstractions;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
@@ -8,6 +10,7 @@ namespace WebApi.Controllers;
 [Route("api/studios")]
 public class StudioController(IMediator mediator) : ControllerBase
 {
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<ActionResult<StudioResponse>> CreateAsync(
         CreateStudioCommand command,
@@ -27,13 +30,16 @@ public class StudioController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<StudioResponse>>> GetAllAsync(
-        CancellationToken cancellationToken)
+    public async Task<ActionResult<PaginatedList<StudioResponse>>> GetAllAsync(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 50,
+        CancellationToken cancellationToken = default)
     {
-        var response = await mediator.Send(new GetAllStudiosQuery(), cancellationToken);
+        var response = await mediator.Send(new GetAllStudiosQuery(page, pageSize), cancellationToken);
         return Ok(response);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateAsync(
         Guid id,
@@ -47,6 +53,7 @@ public class StudioController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteAsync(
         Guid id,
