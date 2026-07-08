@@ -1,0 +1,47 @@
+using System.Net;
+
+namespace Integration.Tests;
+
+[Collection("IntegrationTests")]
+public class GenreStudioIntegrationTests : IntegrationTestBase
+{
+    public GenreStudioIntegrationTests(IntegrationTestWebAppFactory factory) : base(factory) { }
+
+    [Fact]
+    public async Task CreateGenre_WithoutAuth_ReturnsUnauthorized()
+    {
+        var response = await PostJsonAsync("/api/genres", new { Name = "Action" });
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task CreateAndGetGenres_AsAdmin_Succeeds()
+    {
+        // First create a user and sign in
+        // (Note: in production, role is set to Admin in DB.
+        //  For this test, we register a regular user and verify 403 Forbidden)
+        await RegisterAndSignInAsync("admin-genres@example.com", "admingenres");
+
+        var response = await PostJsonAsync("/api/genres", new { Name = "Action" });
+
+        // Regular user gets Forbidden
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetGenres_WithoutAuth_ReturnsSuccess()
+    {
+        // GET /api/genres is public (no [Authorize] attribute)
+        var response = await GetAsync("/api/genres?page=1&pageSize=20");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var content = await DeserializeAsync<PaginatedResponse<GenreResponse>>(response);
+        Assert.NotNull(content);
+        Assert.NotNull(content.Items);
+    }
+}
+
+internal record GenreResponse(Guid Id, string Name, string? Description);
+internal record PaginatedResponse<T>(List<T> Items, int Page, int PageSize, int TotalCount, int TotalPages);

@@ -7,4 +7,7 @@
   <Project Path="Domain/Domain.csproj" />
   <Project Path="Infrastructure/Infrastructure.csproj" Id="15a902f6-e4b5-4177-850b-d833b9783b10" />
   <Project Path="WebApi/WebApi.csproj" />
+  <Project Path="Tests/Domain.Tests/Domain.Tests.csproj" />
+  <Project Path="Tests/Application.Tests/Application.Tests.csproj" />
+  <Project Path="Tests/Integration.Tests/Integration.Tests.csproj" />
 </Solution>
