@@ -1,6 +1,21 @@
 services:
   webapi:
-    image: ${DOCKER_REGISTRY-}webapi
+    image: ${DOCKER_REGISTRY-}sreaming-api
     build:
       context: .
       dockerfile: WebApi/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+
+  streaming.database:
+    image: postgres:latest
+    container_name: streaming.database
+    volumes:
+      - ./.containers/database:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=streaming
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
