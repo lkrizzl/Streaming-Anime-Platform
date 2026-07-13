@@ -1,6 +1,7 @@
 <Solution>
   <Project Path="Persistence/Persistence.csproj" />
   <Project Path="Application/Application.csproj" Id="320ff839-5bec-43ca-b266-d25848771db9" />
+  <Project Path="Authorization/Authorization.csproj" Id="d2f4a1e8-5b7c-4a3d-9e8f-1c2d3e4f5a6b" />
   <Project Path="docker-compose.dcproj">
     <Build />
   </Project>

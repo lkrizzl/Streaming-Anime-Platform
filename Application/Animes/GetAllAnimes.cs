@@ -18,6 +18,7 @@ public class GetAllAnimesHandler(IAnimeRepository animeRepository)
 {
     public async Task<PaginatedList<AnimeResponse>> Handle(GetAllAnimesQuery request, CancellationToken ct)
     {
+        var pageSize = Math.Clamp(request.PageSize, 1, 100);
         var filter = new AnimeFilter(
             request.Search,
             request.Genre,
@@ -25,7 +26,7 @@ public class GetAllAnimesHandler(IAnimeRepository animeRepository)
             request.SortBy,
             request.SortOrder);
 
-        var paginated = await animeRepository.GetAllAsync(request.Page, request.PageSize, filter, ct);
+        var paginated = await animeRepository.GetAllAsync(request.Page, pageSize, filter, ct);
 
         var items = paginated.Items
             .Select(anime => new AnimeResponse(

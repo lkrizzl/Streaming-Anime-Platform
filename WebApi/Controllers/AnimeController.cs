@@ -18,10 +18,10 @@ public class AnimeController(IMediator mediator) : ControllerBase
         CancellationToken cancellationToken)
     {
         var response = await mediator.Send(command, cancellationToken);
-        return Created($"/api/anime/{response.Id}", response);
+        return CreatedAtRoute("GetAnimeById", new { id = response.Id }, response);
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:guid}", Name = "GetAnimeById")]
     public async Task<ActionResult<AnimeResponse>> GetByIdAsync(
         Guid id,
         CancellationToken cancellationToken)

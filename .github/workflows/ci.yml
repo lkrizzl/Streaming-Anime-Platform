@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore Backend/WebApi/WebApi.slnx
+
+      - name: Build
+        run: dotnet build Backend/WebApi/WebApi.slnx --no-restore -c Release
+
+      - name: Test Domain.Tests
+        run: dotnet test Backend/WebApi/Tests/Domain.Tests/Domain.Tests.csproj --no-build -c Release --logger "console;verbosity=normal"
+
+      - name: Test Application.Tests
+        run: dotnet test Backend/WebApi/Tests/Application.Tests/Application.Tests.csproj --no-build -c Release --logger "console;verbosity=normal"
+
+      - name: Test Integration.Tests
+        run: dotnet test Backend/WebApi/Tests/Integration.Tests/Integration.Tests.csproj --no-build -c Release --logger "console;verbosity=normal"

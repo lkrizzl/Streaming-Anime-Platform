@@ -46,7 +46,7 @@ public class RateAnimeHandler(
 
         // Recalculate anime average rating
         var allRatings = await userAnimeRepository.GetByAnimeIdAsync(request.AnimeId, ct);
-        var newCount = allRatings.Count;
+        var newCount = allRatings.Count(r => r.UserRating.HasValue);
         var newAverage = newCount > 0
             ? allRatings.Where(r => r.UserRating.HasValue).Average(r => r.UserRating!.Value)
             : 0.0;

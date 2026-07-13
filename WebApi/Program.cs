@@ -7,6 +7,7 @@ using Persistence;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using WebApi.Middlewares;
+using WebApi.ServiceConfiguration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,16 +24,7 @@ builder.Services.AddControllers()
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
-builder.Services.AddOpenApi();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new()
-    {
-        Title = "Sreaming API",
-        Version = "v1",
-        Description = "API для платформи аніме стрімінгу"
-    });
-});
+builder.Services.AddSwaggerServices();
 builder.Services.AddExceptionHandler<ExceptionHandler>();
 
 builder.Services.AddRateLimiter(options =>
@@ -89,24 +81,6 @@ app.UseAuthorization();
 app.UseExceptionHandler(_ => { });
 app.MapControllers();
 
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Sreaming API v1");
-        options.RoutePrefix = "swagger";
-    });
-}
-
-app.Lifetime.ApplicationStarted.Register(() =>
-{
-    if (app.Environment.IsDevelopment())
-    {
-        var baseUrl = app.Urls.FirstOrDefault() ?? "http://localhost:5000";
-        app.Logger.LogInformation("🌐 Swagger UI: {Url}/swagger", baseUrl);
-    }
-});
+app.UseSwaggerMiddleware();
 
 app.Run();
