@@ -1,6 +1,5 @@
 namespace Domain.Entities;
 
-// ====================== Стан та рейтинг ======================
 public partial class Anime
 {
     public void UpdateRating(double newAverage, int newCount)

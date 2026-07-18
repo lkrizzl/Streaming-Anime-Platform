@@ -60,10 +60,6 @@ public class GetAnimeHandlerTests
         Assert.Contains("Action", result.Genres);
     }
 
-    /// <summary>
-    /// Adds a genre to an anime and sets the navigation property via reflection,
-    /// simulating what EF Core would do when loading from database.
-    /// </summary>
     private static void AddGenreToAnime(Anime anime, Genre genre)
     {
         anime.AddGenre(genre);

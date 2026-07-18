@@ -34,7 +34,6 @@ public class RateAnimeHandler(
         var anime = await animeRepository.GetByIdAsync(request.AnimeId, ct)
             ?? throw new NotFoundException(AnimeErrors.AnimeNotFound(request.AnimeId));
 
-        // Get or create UserAnime for this user+anime
         var userAnime = await userAnimeRepository.GetByUserAndAnimeAsync(userId, request.AnimeId, ct);
         if (userAnime is null)
         {
@@ -44,7 +43,6 @@ public class RateAnimeHandler(
 
         userAnime.Rate(request.Rating);
 
-        // Recalculate anime average rating
         var allRatings = await userAnimeRepository.GetByAnimeIdAsync(request.AnimeId, ct);
         var newCount = allRatings.Count(r => r.UserRating.HasValue);
         var newAverage = newCount > 0

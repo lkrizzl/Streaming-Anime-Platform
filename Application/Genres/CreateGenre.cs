@@ -6,15 +6,9 @@ using MediatR;
 
 namespace Application.Genres;
 
-// ====== Command ======
-
 public record CreateGenreCommand(string Name, string? Description) : IRequest<GenreResponse>;
 
-// ====== Response ======
-
 public record GenreResponse(Guid Id, string Name, string? Description);
-
-// ====== Validator ======
 
 public class CreateGenreCommandValidator : AbstractValidator<CreateGenreCommand>
 {
@@ -43,8 +37,6 @@ public class CreateGenreCommandValidator : AbstractValidator<CreateGenreCommand>
         return existing is null;
     }
 }
-
-// ====== Handler ======
 
 public class CreateGenreHandler(IGenreRepository genreRepository, IUnitOfWork unitOfWork)
     : IRequestHandler<CreateGenreCommand, GenreResponse>

@@ -1,6 +1,5 @@
 namespace Domain.Entities;
 
-// ====================== Медіа ======================
 public partial class Anime
 {
     public void SetCoverImage(string? coverImageUrl)

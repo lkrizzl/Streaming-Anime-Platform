@@ -25,8 +25,6 @@ public class CreateAnimeHandlerTests
         _studioRepository = Substitute.For<IStudioRepository>();
         _unitOfWork = Substitute.For<IUnitOfWork>();
 
-        // EF Core normally populates navigation properties after tracking.
-        // We simulate that by fixing up navigations when AddAsync is called.
         _animeRepository
             .When(r => r.AddAsync(Arg.Any<Anime>(), Arg.Any<CancellationToken>()))
             .Do(callInfo =>

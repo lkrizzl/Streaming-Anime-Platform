@@ -41,7 +41,6 @@ public class AnimeRepository(AppDbContext dbContext) : IAnimeRepository
         var query = BaseQuery()
             .Where(a => a.IsActive);
 
-        // Search by title (case-insensitive via PostgreSQL ILike)
         if (!string.IsNullOrWhiteSpace(filter.Search))
         {
             var search = $"%{filter.Search}%";
@@ -50,20 +49,17 @@ public class AnimeRepository(AppDbContext dbContext) : IAnimeRepository
                                   || (a.EnglishTitle != null && EF.Functions.ILike(a.EnglishTitle, search)));
         }
 
-        // Filter by genre
         if (!string.IsNullOrWhiteSpace(filter.Genre))
         {
             var genre = filter.Genre.ToLower();
             query = query.Where(a => a.AnimeGenres.Any(ag => ag.Genre.Name.ToLower() == genre));
         }
 
-        // Filter by status
         if (filter.Status.HasValue)
         {
             query = query.Where(a => a.Status == filter.Status.Value);
         }
 
-        // Sorting
         var sortBy = (filter.SortBy ?? "created").ToLower();
         var sortOrder = (filter.SortOrder ?? "desc").ToLower();
         var isDescending = sortOrder == "desc";

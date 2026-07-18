@@ -5,7 +5,7 @@ namespace Domain.Entities;
 
 public class Studio : Entity
 {
-    private Studio() : base(Guid.NewGuid()) { } // EF Core
+    private Studio() : base(Guid.NewGuid()) { } 
 
     public Studio(string name, string? description = null)
         : base(Guid.NewGuid())
@@ -17,7 +17,7 @@ public class Studio : Entity
         IsActive = true;
     }
 
-    public string Name { get; private set; }           // "MAPPA", "ufotable", "Kyoto Animation"
+    public string Name { get; private set; }           
     public string? Description { get; private set; }
     public string? LogoUrl { get; private set; }
     public string? WebsiteUrl { get; private set; }
@@ -26,10 +26,7 @@ public class Studio : Entity
     public DateTime? UpdatedOnUtc { get; private set; }
     public bool IsActive { get; private set; } = true;
 
-    // Навігація
     public ICollection<AnimeStudio> AnimeStudios { get; private set; } = new List<AnimeStudio>();
-
-    // ====================== Бізнес методи ======================
 
     public void UpdateName(string newName)
     {

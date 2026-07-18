@@ -1,5 +1,4 @@
-﻿//================== Сутність UserIdentity для зберігання інформації про ідентифікацію користувача ==================
-using Domain.Abstractions;
+﻿using Domain.Abstractions;
 using Domain.ValueObjects;
 
 namespace Domain.Entities;

@@ -5,7 +5,7 @@ namespace Domain.Entities;
 
 public class Genre : Entity
 {
-    private Genre() : base(Guid.NewGuid()) { } // EF Core
+    private Genre() : base(Guid.NewGuid()) { }
 
     public Genre(string name, string? description = null)
         : base(Guid.NewGuid())
@@ -17,17 +17,15 @@ public class Genre : Entity
         IsActive = true;
     }
 
-    public string Name { get; private set; }           // "Екшн", "Романтика", "Фентезі" тощо
+    public string Name { get; private set; }           
     public string? Description { get; private set; }
 
     public DateTime CreatedOnUtc { get; private init; }
     public DateTime? UpdatedOnUtc { get; private set; }
     public bool IsActive { get; private set; } = true;
 
-    // Навігація
+    
     public ICollection<AnimeGenre> AnimeGenres { get; private set; } = new List<AnimeGenre>();
-
-    // ====================== Бізнес методи ======================
 
     public void UpdateName(string newName)
     {

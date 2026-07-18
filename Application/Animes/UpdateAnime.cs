@@ -99,7 +99,6 @@ public class UpdateAnimeHandler(
         anime.SetTrailerUrl(request.TrailerUrl);
         anime.SetAgeRating(request.AgeRating);
 
-        // Sync genres
         var currentGenreIds = anime.AnimeGenres.Select(ag => ag.GenreId).ToHashSet();
 
         var newGenres = new List<Domain.Entities.Genre>();
@@ -112,15 +111,12 @@ public class UpdateAnimeHandler(
 
         var newGenreIds = newGenres.Select(g => g.Id).ToHashSet();
 
-        // Remove genres not in new list
         foreach (var ag in anime.AnimeGenres.Where(ag => !newGenreIds.Contains(ag.GenreId)).ToList())
             anime.RemoveGenre(ag.GenreId);
 
-        // Add genres not in current list
         foreach (var genre in newGenres.Where(g => !currentGenreIds.Contains(g.Id)))
             anime.AddGenre(genre);
 
-        // Sync studios
         var currentStudioIds = anime.AnimeStudios.Select(ast => ast.StudioId).ToHashSet();
 
         var newStudios = new List<Domain.Entities.Studio>();
@@ -133,11 +129,9 @@ public class UpdateAnimeHandler(
 
         var newStudioIds = newStudios.Select(s => s.Id).ToHashSet();
 
-        // Remove studios not in new list
         foreach (var ast in anime.AnimeStudios.Where(ast => !newStudioIds.Contains(ast.StudioId)).ToList())
             anime.RemoveStudio(ast.StudioId);
 
-        // Add studios not in current list
         foreach (var studio in newStudios.Where(s => !currentStudioIds.Contains(s.Id)))
             anime.AddStudio(studio);
 

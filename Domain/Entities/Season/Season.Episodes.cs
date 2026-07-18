@@ -2,7 +2,6 @@ using Domain.Exceptions;
 
 namespace Domain.Entities;
 
-// ====================== Управління епізодами ======================
 public partial class Season
 {
     public Episode AddEpisode(int episodeNumber, string title, TimeSpan duration)

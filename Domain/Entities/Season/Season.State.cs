@@ -2,7 +2,6 @@ using Domain.Exceptions;
 
 namespace Domain.Entities;
 
-// ====================== Стан та дати ======================
 public partial class Season
 {
     public void UpdateDates(DateOnly? startDate, DateOnly? endDate)

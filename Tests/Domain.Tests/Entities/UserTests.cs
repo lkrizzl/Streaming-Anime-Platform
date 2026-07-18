@@ -28,8 +28,6 @@ public class UserTests
     [Fact]
     public void Constructor_WithAdminRole_SetsAdminRole()
     {
-        // Note: User class doesn't have a constructor with role parameter
-        // Role is set to "User" by default, so we test the default
         var user = new User(IdentityId, Username.Create("admin"), Email.Create("admin@example.com"));
 
         Assert.Equal(UserRoles.User, user.Role);

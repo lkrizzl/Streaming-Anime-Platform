@@ -161,10 +161,8 @@ public class AuthIntegrationTests : IntegrationTestBase
         var response = await PostJsonAsync("/auth/sign-out", new { });
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        // Clear cookies to ensure client-side auth cookie is removed
         ClearCookies();
 
-        // After sign-out, /auth/me should return unauthorized
         var meResponse = await GetAsync("/auth/me");
         Assert.Equal(HttpStatusCode.Unauthorized, meResponse.StatusCode);
     }

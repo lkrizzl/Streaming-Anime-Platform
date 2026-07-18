@@ -18,21 +18,16 @@ public class GenreStudioIntegrationTests : IntegrationTestBase
     [Fact]
     public async Task CreateAndGetGenres_AsAdmin_Succeeds()
     {
-        // First create a user and sign in
-        // (Note: in production, role is set to Admin in DB.
-        //  For this test, we register a regular user and verify 403 Forbidden)
         await RegisterAndSignInAsync("admin-genres@example.com", "admingenres");
 
         var response = await PostJsonAsync("/api/genres", new { Name = "Action" });
 
-        // Regular user gets Forbidden
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
     }
 
     [Fact]
     public async Task GetGenres_WithoutAuth_ReturnsSuccess()
     {
-        // GET /api/genres is public (no [Authorize] attribute)
         var response = await GetAsync("/api/genres?page=1&pageSize=20");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);

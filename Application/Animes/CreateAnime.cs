@@ -127,7 +127,6 @@ public class CreateAnimeHandler(
         if (request.AgeRating is not null)
             anime.SetAgeRating(request.AgeRating);
 
-        // Resolve and attach genres
         foreach (var genreName in request.Genres)
         {
             var genre = await genreRepository.GetByNameAsync(genreName, ct)
@@ -136,7 +135,6 @@ public class CreateAnimeHandler(
             anime.AddGenre(genre);
         }
 
-        // Resolve and attach studios
         foreach (var studioName in request.Studios)
         {
             var studio = await studioRepository.GetByNameAsync(studioName, ct)

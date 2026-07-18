@@ -4,7 +4,7 @@ namespace Domain.Entities;
 
 public class Episode : Entity
 {
-    private Episode() : base(Guid.NewGuid()) { } // EF Core
+    private Episode() : base(Guid.NewGuid()) { }
 
     public Episode(
         Guid seasonId,
@@ -30,7 +30,7 @@ public class Episode : Entity
     public string? Description { get; private set; }
 
     public TimeSpan Duration { get; private set; }
-    public string? VideoUrl { get; private set; }          // HLS / MP4 посилання
+    public Uri VideoUrl { get; private set; }
     public string? ThumbnailUrl { get; private set; }
 
     public DateTime? ReleaseDateUtc { get; private set; }
@@ -42,8 +42,6 @@ public class Episode : Entity
 
     // Навігація
     public Season Season { get; private set; } = null!;
-
-    // ====================== Бізнес методи ======================
 
     public void UpdateTitle(string title)
     {
@@ -64,7 +62,7 @@ public class Episode : Entity
         UpdatedOnUtc = UtcNow;
     }
 
-    public void UpdateVideoUrl(string videoUrl)
+    public void UpdateVideoUrl(Uri videoUrl)
     {
         VideoUrl = videoUrl ?? throw new ValidationException("Video URL cannot be empty");
         UpdatedOnUtc = UtcNow;

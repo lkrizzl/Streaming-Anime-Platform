@@ -1,5 +1,4 @@
-﻿//================ Сутність користувача ==================
-using Domain.Associations;
+﻿using Domain.Associations;
 using Domain.Errors;
 using Domain.Exceptions;
 using Domain.ValueObjects;
@@ -8,7 +7,7 @@ namespace Domain.Entities;
 
 public class User : Entity
 {
-    private User() : base(Guid.NewGuid()) { } // Для EF Core
+    private User() : base(Guid.NewGuid()) { } 
 
     public User(
         Guid identityId,
@@ -24,33 +23,20 @@ public class User : Entity
         IsActive = true;
     }
 
-    // ====================== Основні дані ======================
     public Guid IdentityId { get; private init; }
 
     public Username Username { get; private set; }
     public Email Email { get; private set; }
-
-    // ====================== Профіль ======================
     public string? AvatarUrl { get; private set; }
     public string? Bio { get; private set; }
-
-    // ====================== Аудит ======================
     public DateTime CreatedOnUtc { get; private init; }
     public DateTime? UpdatedOnUtc { get; private set; }
     public DateTime? LastLoginOnUtc { get; private set; }
-
-    // ====================== Статус ======================
     public bool IsActive { get; private set; } = true;
     public bool IsBanned { get; private set; } = false;
     public DateTime? BannedUntilUtc { get; private set; }
-
-    // ====================== Ролі ======================
     public string Role { get; private set; } = UserRoles.User;
-
-    // ====================== Відносини ======================
     public ICollection<UserAnime> UserAnimes { get; private set; } = new List<UserAnime>();
-
-    // ====================== Бізнес методи ======================
 
     public void UpdateUsername(Username newUsername)
     {

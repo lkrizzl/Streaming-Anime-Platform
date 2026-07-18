@@ -4,7 +4,6 @@ using System.Linq;
 
 namespace Domain.Entities;
 
-// ====================== Управління студіями ======================
 public partial class Anime
 {
     public void AddStudio(Studio studio)

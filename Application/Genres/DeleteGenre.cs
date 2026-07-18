@@ -6,12 +6,7 @@ using MediatR;
 
 namespace Application.Genres;
 
-// ====== Command ======
-
 public record DeleteGenreCommand(Guid Id) : IRequest;
-
-// ====== Validator ======
-
 public class DeleteGenreCommandValidator : AbstractValidator<DeleteGenreCommand>
 {
     public DeleteGenreCommandValidator()
@@ -21,8 +16,6 @@ public class DeleteGenreCommandValidator : AbstractValidator<DeleteGenreCommand>
                 .WithMessage("Genre ID is required.");
     }
 }
-
-// ====== Handler ======
 
 public class DeleteGenreHandler(IGenreRepository genreRepository, IUnitOfWork unitOfWork)
     : IRequestHandler<DeleteGenreCommand>

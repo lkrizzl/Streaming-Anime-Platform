@@ -4,7 +4,7 @@ namespace Domain.Entities;
 
 public partial class Season : Entity
 {
-    private Season() : base(Guid.NewGuid()) { } // EF Core
+    private Season() : base(Guid.NewGuid()) { }
 
     public Season(
         Guid animeId,
@@ -37,7 +37,6 @@ public partial class Season : Entity
     public DateTime? UpdatedOnUtc { get; private set; }
     public bool IsActive { get; private set; } = true;
 
-    // Навігація
     public Anime Anime { get; private set; } = null!;
     public ICollection<Episode> Episodes { get; private set; } = new List<Episode>();
 }

@@ -3,11 +3,7 @@ using MediatR;
 
 namespace Application.Genres;
 
-// ====== Query ======
-
 public record GetAllGenresQuery(int Page = 1, int PageSize = 50) : IRequest<PaginatedList<GenreResponse>>;
-
-// ====== Handler ======
 
 public class GetAllGenresHandler(IGenreRepository genreRepository)
     : IRequestHandler<GetAllGenresQuery, PaginatedList<GenreResponse>>

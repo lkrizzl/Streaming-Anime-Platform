@@ -11,7 +11,7 @@ public record UpdateEpisodeCommand(
     string Title,
     TimeSpan Duration,
     string? Description,
-    string? VideoUrl,
+    Uri VideoUrl,
     string? ThumbnailUrl) : IRequest;
 
 public class UpdateEpisodeCommandValidator : AbstractValidator<UpdateEpisodeCommand>
@@ -27,10 +27,10 @@ public class UpdateEpisodeCommandValidator : AbstractValidator<UpdateEpisodeComm
         RuleFor(x => x.Duration)
             .GreaterThan(TimeSpan.Zero).WithMessage("Duration must be greater than zero.");
 
-        RuleFor(x => x.VideoUrl)
+       /* RuleFor(x => x.VideoUrl)
             .MaximumLength(2048).WithMessage("Video URL must be at most 2048 characters.")
             .When(x => x.VideoUrl is not null);
-
+       */
         RuleFor(x => x.ThumbnailUrl)
             .MaximumLength(2048).WithMessage("Thumbnail URL must be at most 2048 characters.")
             .When(x => x.ThumbnailUrl is not null);

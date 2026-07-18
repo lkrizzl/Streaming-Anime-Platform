@@ -4,7 +4,6 @@ using System.Linq;
 
 namespace Domain.Entities;
 
-// ====================== Управління жанрами ======================
 public partial class Anime
 {
     public void AddGenre(Genre genre)

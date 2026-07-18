@@ -3,10 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace WebApi.ServiceConfiguration;
-
-/// <summary>
-/// Swagger/OpenAPI configuration — extracted from Program.cs to keep it clean.
-/// </summary>
 public static class SwaggerConfiguration
 {
     public static IServiceCollection AddSwaggerServices(this IServiceCollection services)

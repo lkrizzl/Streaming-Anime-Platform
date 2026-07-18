@@ -19,7 +19,7 @@ public record EpisodeResponse(
     string Title,
     string? Description,
     TimeSpan Duration,
-    string? VideoUrl,
+    Uri VideoUrl,
     string? ThumbnailUrl,
     DateTime? ReleaseDateUtc,
     bool IsPublished);

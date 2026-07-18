@@ -13,11 +13,8 @@ public class AnimeStudio : Entity
     }
 
     public Guid AnimeId { get; private init; }
-    public Guid StudioId { get; private init; }
-
+    public Guid StudioId { get; private init; } 
     public DateTime CreatedOnUtc { get; private init; } = UtcNow;
-
-    // Навігація
     public Anime Anime { get; private set; } = null!;
     public Studio Studio { get; private set; } = null!;
 }

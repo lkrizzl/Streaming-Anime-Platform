@@ -70,12 +70,10 @@ public class AnimeIntegrationTests : IntegrationTestBase
     [Fact]
     public async Task FullAnimeLifecycle_AsAdmin_Succeeds()
     {
-        // Create admin user with genres and studios
         await CreateAdminUserAsync("admin-lifecycle@example.com", "adminlifecycle",
             genres: ["Action", "Comedy"],
             studios: ["MAPPA"]);
 
-        // Create anime
         var createResponse = await PostJsonAsync("/api/anime", new
         {
             Title = "Lifecycle Anime",
@@ -99,7 +97,6 @@ public class AnimeIntegrationTests : IntegrationTestBase
         Assert.NotNull(created);
         Assert.Equal("Lifecycle Anime", created.Title);
 
-        // Get by ID
         var getResponse = await GetAsync($"/api/anime/{created.Id}");
         Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
@@ -107,7 +104,6 @@ public class AnimeIntegrationTests : IntegrationTestBase
         Assert.NotNull(fetched);
         Assert.Equal(created.Id, fetched.Id);
 
-        // Rate the anime (PUT, not POST)
         var rateRequest = new HttpRequestMessage(HttpMethod.Put, $"/api/anime/{created.Id}/rate")
         {
             Content = JsonContent.Create(new { AnimeId = created.Id, Rating = 8.5 }, options: JsonOptions)
@@ -117,17 +113,12 @@ public class AnimeIntegrationTests : IntegrationTestBase
         Assert.Equal(HttpStatusCode.NoContent, rateResponse.StatusCode);
     }
 
-    /// <summary>
-    /// Creates a user with Admin role directly in the database
-    /// and optionally seeds genres and studios.
-    /// </summary>
     private async Task CreateAdminUserAsync(string email, string username,
         string[]? genres = null, string[]? studios = null)
     {
         await RegisterAndSignInAsync(email, username);
         ClearCookies();
 
-        // Seed genres and studios if provided
         await using (var scope = Factory.Services.CreateAsyncScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -150,26 +141,22 @@ public class AnimeIntegrationTests : IntegrationTestBase
                 }
             }
 
-            // Upgrade to Admin role in DB
             var user = context.Users.First(u => u.Email.Value == email);
             typeof(User).GetProperty("Role")!.SetValue(user, UserRoles.Admin);
 
             await context.SaveChangesAsync();
         }
 
-        // Re-sign in to get admin cookie
         await SignInAsync(email);
     }
 
     [Fact]
     public async Task GetAllAnimes_WithPagination_ReturnsCorrectPage()
     {
-        // Create admin and seed data
         await CreateAdminUserAsync("admin-pagination@example.com", "adminpagination",
             genres: ["Action"],
             studios: ["MAPPA"]);
 
-        // Create 3 animes
         for (int i = 1; i <= 3; i++)
         {
             await PostJsonAsync("/api/anime", new
@@ -185,7 +172,6 @@ public class AnimeIntegrationTests : IntegrationTestBase
             });
         }
 
-        // Get page 1 with 2 items
         var response = await GetAsync("/api/anime?page=1&pageSize=2");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 

@@ -4,13 +4,7 @@ using Domain.Exceptions;
 using MediatR;
 
 namespace Application.Genres;
-
-// ====== Query ======
-
 public record GetGenreQuery(Guid Id) : IRequest<GenreResponse>;
-
-// ====== Handler ======
-
 public class GetGenreHandler(IGenreRepository genreRepository)
     : IRequestHandler<GetGenreQuery, GenreResponse>
 {

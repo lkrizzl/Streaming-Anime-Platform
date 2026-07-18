@@ -2,7 +2,6 @@ using Domain.Exceptions;
 
 namespace Domain.Entities;
 
-// ====================== Текстові поля ======================
 public partial class Anime
 {
     public void UpdateTitle(string title)

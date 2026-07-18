@@ -42,12 +42,8 @@ public class UserAnime : Entity
 
     public DateTime CreatedOnUtc { get; private init; }
     public DateTime LastUpdatedOnUtc { get; private set; }
-
-    // Навігація
     public User User { get; private set; } = null!;
     public Anime Anime { get; private set; } = null!;
-
-    // ====================== Бізнес-методи ======================
 
     public void UpdateStatus(WatchStatus newStatus)
     {

@@ -6,13 +6,7 @@ using FluentValidation;
 using MediatR;
 
 namespace Application.Genres;
-
-// ====== Command ======
-
 public record UpdateGenreCommand(Guid Id, string Name, string? Description) : IRequest;
-
-// ====== Validator ======
-
 public class UpdateGenreCommandValidator : AbstractValidator<UpdateGenreCommand>
 {
     private readonly IGenreRepository _genreRepository;
@@ -44,9 +38,6 @@ public class UpdateGenreCommandValidator : AbstractValidator<UpdateGenreCommand>
         return existing is null || existing.Id == command.Id;
     }
 }
-
-// ====== Handler ======
-
 public class UpdateGenreHandler(IGenreRepository genreRepository, IUnitOfWork unitOfWork)
     : IRequestHandler<UpdateGenreCommand>
 {

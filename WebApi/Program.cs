@@ -11,7 +11,6 @@ using WebApi.ServiceConfiguration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Реєстрація шарів
 builder.Services.AddInfrastructure();
 builder.Services.AddPersistence(builder.Configuration.GetConnectionString("DefaultConnection")!);
 builder.Services.AddApplication();

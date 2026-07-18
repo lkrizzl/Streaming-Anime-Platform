@@ -26,11 +26,6 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
     {
         await _dbContainer.DisposeAsync();
     }
-
-    /// <summary>
-    /// Apply pending migrations. Must be called after the container starts
-    /// and before any test that needs the database.
-    /// </summary>
     public async Task ApplyMigrationsAsync()
     {
         using var scope = Services.CreateScope();
@@ -38,16 +33,11 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
         await context.Database.MigrateAsync();
     }
 
-    /// <summary>
-    /// Remove all data from all tables to give each test a clean slate.
-    /// Called after every test via DisposeAsync in IntegrationTestBase.
-    /// </summary>
     public async Task ResetDatabaseAsync()
     {
         using var scope = Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        // Delete in dependency order to avoid FK violations
         context.Set<Domain.Associations.UserAnime>().RemoveRange(context.Set<Domain.Associations.UserAnime>());
         context.Set<Domain.Associations.AnimeGenre>().RemoveRange(context.Set<Domain.Associations.AnimeGenre>());
         context.Set<Domain.Associations.AnimeStudio>().RemoveRange(context.Set<Domain.Associations.AnimeStudio>());
@@ -67,7 +57,6 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
         builder.ConfigureServices(services =>
         {
-            // Remove the original DbContext registration
             var descriptor = services.SingleOrDefault(
                 d => d.ServiceType == typeof(DbContextOptions<AppDbContext>));
 
@@ -76,11 +65,9 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
                 services.Remove(descriptor);
             }
 
-            // Register DbContext with TestContainer connection string
             services.AddDbContextPool<AppDbContext>(options =>
                 options.UseNpgsql(_dbContainer.GetConnectionString()));
 
-            // Configure cookie auth for testing (no HTTPS in tests)
             services.PostConfigure<CookieAuthenticationOptions>(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 options =>

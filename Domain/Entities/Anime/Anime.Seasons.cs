@@ -3,7 +3,6 @@ using System.Linq;
 
 namespace Domain.Entities;
 
-// ====================== Управління сезонами ======================
 public partial class Anime
 {
     public Season AddSeason(int seasonNumber, string title, string description)
