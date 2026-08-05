@@ -1,7 +1,8 @@
 using Application.Abstractions;
-using Domain.Associations;
+using Domain.Entities;
 using Domain.Errors;
 using Domain.Exceptions;
+using Domain.ValueObjects;
 using FluentValidation;
 using MediatR;
 
@@ -66,13 +67,13 @@ public class UpdateWatchlistHandler(
 
         if (request.LastWatchedEpisodeNumber.HasValue || request.ProgressPercentage.HasValue)
         {
-            var ep = request.LastWatchedEpisodeNumber ?? userAnime.LastWatchedEpisodeNumber ?? 1;
-            var prog = request.ProgressPercentage ?? userAnime.ProgressPercentage ?? 0;
-            userAnime.UpdateProgress(ep, prog);
+            var ep = request.LastWatchedEpisodeNumber ?? userAnime.LastWatchedEpisodeNumber?.Value ?? 1;
+            var prog = request.ProgressPercentage ?? userAnime.ProgressPercentage?.Value ?? 0;
+            userAnime.UpdateProgress(EpisodeNumber.Create(ep), ProgressPercent.Create(prog));
         }
 
         if (request.UserRating.HasValue)
-            userAnime.Rate(request.UserRating.Value);
+            userAnime.Rate(Rating.Create(request.UserRating.Value));
 
         if (request.IsFavorite.HasValue && request.IsFavorite != userAnime.IsFavorite)
             userAnime.ToggleFavorite();

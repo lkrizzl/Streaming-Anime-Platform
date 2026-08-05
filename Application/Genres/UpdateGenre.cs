@@ -2,6 +2,7 @@ using Application.Abstractions;
 using Domain.Entities;
 using Domain.Errors;
 using Domain.Exceptions;
+using Domain.ValueObjects;
 using FluentValidation;
 using MediatR;
 
@@ -46,7 +47,7 @@ public class UpdateGenreHandler(IGenreRepository genreRepository, IUnitOfWork un
         var genre = await genreRepository.GetByIdAsync(request.Id, cancellationToken)
             ?? throw new NotFoundException(GenreErrors.GenreNotFound(request.Id));
 
-        genre.UpdateName(request.Name);
+        genre.UpdateName(GenreName.Create(request.Name));
         genre.UpdateDescription(request.Description);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);

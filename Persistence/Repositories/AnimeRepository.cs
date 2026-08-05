@@ -15,8 +15,8 @@ public class AnimeRepository(AppDbContext dbContext) : IAnimeRepository
     public async Task<Anime?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await BaseQuery()
-            .Include(a => a.Seasons.OrderBy(s => s.SeasonNumber))
-                .ThenInclude(s => s.Episodes.OrderBy(e => e.EpisodeNumber))
+            .Include(a => a.Seasons.OrderBy(s => s.SeasonNumber.Value))
+                .ThenInclude(s => s.Episodes.OrderBy(e => e.EpisodeNumber.Value))
             .FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
     }
 
@@ -44,15 +44,15 @@ public class AnimeRepository(AppDbContext dbContext) : IAnimeRepository
         if (!string.IsNullOrWhiteSpace(filter.Search))
         {
             var search = $"%{filter.Search}%";
-            query = query.Where(a => EF.Functions.ILike(a.Title, search)
-                                  || EF.Functions.ILike(a.OriginalTitle, search)
-                                  || (a.EnglishTitle != null && EF.Functions.ILike(a.EnglishTitle, search)));
+            query = query.Where(a => EF.Functions.ILike(a.Title.Value, search)
+                                  || EF.Functions.ILike(a.OriginalTitle.Value, search)
+                                  || (a.EnglishTitle != null && EF.Functions.ILike(a.EnglishTitle.Value, search)));
         }
 
         if (!string.IsNullOrWhiteSpace(filter.Genre))
         {
-            var genre = filter.Genre.ToLower();
-            query = query.Where(a => a.AnimeGenres.Any(ag => ag.Genre.Name.ToLower() == genre));
+            var genre = filter.Genre;
+            query = query.Where(a => a.AnimeGenres.Any(ag => EF.Functions.ILike(ag.Genre.Name.Value, genre)));
         }
 
         if (filter.Status.HasValue)
@@ -60,18 +60,18 @@ public class AnimeRepository(AppDbContext dbContext) : IAnimeRepository
             query = query.Where(a => a.Status == filter.Status.Value);
         }
 
-        var sortBy = (filter.SortBy ?? "created").ToLower();
-        var sortOrder = (filter.SortOrder ?? "desc").ToLower();
+        var sortBy = (filter.SortBy ?? "created").ToLowerInvariant();
+        var sortOrder = (filter.SortOrder ?? "desc").ToLowerInvariant();
         var isDescending = sortOrder == "desc";
 
         query = (sortBy, isDescending) switch
         {
-            ("title", false) => query.OrderBy(a => a.Title),
-            ("title", true) => query.OrderByDescending(a => a.Title),
-            ("rating", false) => query.OrderBy(a => a.AverageRating),
-            ("rating", true) => query.OrderByDescending(a => a.AverageRating),
-            ("year", false) => query.OrderBy(a => a.ReleaseYear),
-            ("year", true) => query.OrderByDescending(a => a.ReleaseYear),
+            ("title", false) => query.OrderBy(a => a.Title.Value),
+            ("title", true) => query.OrderByDescending(a => a.Title.Value),
+            ("rating", false) => query.OrderBy(a => a.AverageRating.Value),
+            ("rating", true) => query.OrderByDescending(a => a.AverageRating.Value),
+            ("year", false) => query.OrderBy(a => a.ReleaseYear.Value),
+            ("year", true) => query.OrderByDescending(a => a.ReleaseYear.Value),
             _ when isDescending => query.OrderByDescending(a => a.CreatedOnUtc),
             _ => query.OrderBy(a => a.CreatedOnUtc),
         };

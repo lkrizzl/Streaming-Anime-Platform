@@ -1,7 +1,7 @@
 ﻿using Domain.Exceptions;
-using Domain.Entities;
+using Domain.ValueObjects;
 
-namespace Domain.Associations;
+namespace Domain.Entities;
 
 public enum WatchStatus
 {
@@ -32,10 +32,10 @@ public class UserAnime : Entity
 
     public WatchStatus Status { get; private set; }
 
-    public int? LastWatchedEpisodeNumber { get; private set; }
-    public double? ProgressPercentage { get; private set; }
+    public EpisodeNumber? LastWatchedEpisodeNumber { get; private set; }
+    public ProgressPercent? ProgressPercentage { get; private set; }
 
-    public double? UserRating { get; private set; }
+    public Rating? UserRating { get; private set; }
     public string? Notes { get; private set; }
 
     public bool IsFavorite { get; private set; } = false;
@@ -51,21 +51,15 @@ public class UserAnime : Entity
         LastUpdatedOnUtc = UtcNow;
     }
 
-    public void UpdateProgress(int episodeNumber, double progressPercentage)
+    public void UpdateProgress(EpisodeNumber? episodeNumber, ProgressPercent? progressPercentage)
     {
-        if (episodeNumber < 1)
-            throw new ValidationException("Episode number must be greater than 0.");
-
         LastWatchedEpisodeNumber = episodeNumber;
-        ProgressPercentage = Math.Clamp(progressPercentage, 0, 100);
+        ProgressPercentage = progressPercentage;
         LastUpdatedOnUtc = UtcNow;
     }
 
-    public void Rate(double rating)
+    public void Rate(Rating? rating)
     {
-        if (rating < 1 || rating > 10)
-            throw new ValidationException("Rating must be between 1.0 and 10.0.");
-
         UserRating = rating;
         LastUpdatedOnUtc = UtcNow;
     }

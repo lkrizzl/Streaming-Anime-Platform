@@ -1,5 +1,5 @@
-﻿using Domain.Associations;
-using Domain.Exceptions;
+﻿using Domain.Exceptions;
+using Domain.ValueObjects;
 
 namespace Domain.Entities;
 
@@ -7,29 +7,29 @@ public class Genre : Entity
 {
     private Genre() : base(Guid.NewGuid()) { }
 
-    public Genre(string name, string? description = null)
+    public Genre(GenreName name, string? description = null)
         : base(Guid.NewGuid())
     {
-        Name = name ?? throw new ValidationException("Genre name cannot be empty");
+        Name = name;
         Description = description;
 
         CreatedOnUtc = UtcNow;
         IsActive = true;
     }
 
-    public string Name { get; private set; }           
+    public GenreName Name { get; private set; }
     public string? Description { get; private set; }
 
     public DateTime CreatedOnUtc { get; private init; }
     public DateTime? UpdatedOnUtc { get; private set; }
     public bool IsActive { get; private set; } = true;
 
-    
+
     public ICollection<AnimeGenre> AnimeGenres { get; private set; } = new List<AnimeGenre>();
 
-    public void UpdateName(string newName)
+    public void UpdateName(GenreName newName)
     {
-        Name = newName ?? throw new ValidationException("Genre name cannot be empty");
+        Name = newName;
         UpdatedOnUtc = UtcNow;
     }
 

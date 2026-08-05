@@ -1,4 +1,3 @@
-using Domain.Associations;
 using Domain.Exceptions;
 using System.Linq;
 
@@ -8,7 +7,7 @@ public partial class Anime
 {
     public void AddStudio(Studio studio)
     {
-        if (studio == null) throw new ValidationException("Studio cannot be null");
+        //if (studio == null) throw new ValidationException("Studio cannot be null");
 
         if (AnimeStudios.Any(ast => ast.StudioId == studio.Id))
             return;

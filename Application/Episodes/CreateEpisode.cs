@@ -1,6 +1,7 @@
 using Application.Abstractions;
 using Domain.Errors;
 using Domain.Exceptions;
+using Domain.ValueObjects;
 using FluentValidation;
 using MediatR;
 
@@ -52,7 +53,10 @@ public class CreateEpisodeHandler(
         var season = await seasonRepository.GetByIdAsync(request.SeasonId, ct)
             ?? throw new NotFoundException(SeasonErrors.SeasonNotFound(request.SeasonId));
 
-        var episode = season.AddEpisode(request.EpisodeNumber, request.Title, request.Duration);
+        var episode = season.AddEpisode(
+            EpisodeNumber.Create(request.EpisodeNumber),
+            Title.Create(request.Title),
+            request.Duration);
 
         await unitOfWork.SaveChangesAsync(ct);
 
@@ -64,7 +68,7 @@ public class CreateEpisodeHandler(
             episode.Description,
             episode.Duration,
             episode.VideoUrl,
-            episode.ThumbnailUrl,
+            episode.ThumbnailUrl?.Value,
             episode.ReleaseDateUtc,
             episode.IsPublished);
     }

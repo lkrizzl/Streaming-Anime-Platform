@@ -1,5 +1,4 @@
-﻿using Domain.Associations;
-using Domain.Errors;
+﻿using Domain.Errors;
 using Domain.Exceptions;
 using Domain.ValueObjects;
 
@@ -27,7 +26,7 @@ public class User : Entity
 
     public Username Username { get; private set; }
     public Email Email { get; private set; }
-    public string? AvatarUrl { get; private set; }
+    public ImageUrl? AvatarUrl { get; private set; }
     public string? Bio { get; private set; }
     public DateTime CreatedOnUtc { get; private init; }
     public DateTime? UpdatedOnUtc { get; private set; }
@@ -40,19 +39,19 @@ public class User : Entity
 
     public void UpdateUsername(Username newUsername)
     {
-        Username = newUsername ?? throw new EntityValidationException(UsernameErrors.UsernameIsEmpty());
+        Username = newUsername /*?? throw new EntityValidationException(UsernameErrors.UsernameIsEmpty())*/;
         UpdatedOnUtc = UtcNow;
     }
 
     public void UpdateEmail(Email newEmail)
     {
-        Email = newEmail ?? throw new EntityValidationException(EmailErrors.EmailIsEmpty());
+        Email = newEmail /*?? throw new EntityValidationException(EmailErrors.EmailIsEmpty())*/;
         UpdatedOnUtc = UtcNow;
     }
 
     public void UpdateAvatar(string? avatarUrl)
     {
-        AvatarUrl = avatarUrl;
+        AvatarUrl = avatarUrl is not null ? ImageUrl.Create(avatarUrl) : null;
         UpdatedOnUtc = UtcNow;
     }
 

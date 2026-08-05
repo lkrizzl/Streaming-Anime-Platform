@@ -13,7 +13,7 @@ public class GetAllStudiosHandler(IStudioRepository studioRepository)
         var paginated = await studioRepository.GetAllAsync(request.Page, request.PageSize, ct);
 
         var items = paginated.Items
-            .Select(s => new StudioResponse(s.Id, s.Name, s.Description))
+            .Select(s => new StudioResponse(s.Id, s.Name.Value, s.Description))
             .ToList();
 
         return new PaginatedList<StudioResponse>(items, paginated.Page, paginated.PageSize, paginated.TotalCount);

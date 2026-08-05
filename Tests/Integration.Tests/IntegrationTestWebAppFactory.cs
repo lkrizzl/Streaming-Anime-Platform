@@ -1,3 +1,4 @@
+using Domain.Entities;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -38,9 +39,9 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
         using var scope = Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        context.Set<Domain.Associations.UserAnime>().RemoveRange(context.Set<Domain.Associations.UserAnime>());
-        context.Set<Domain.Associations.AnimeGenre>().RemoveRange(context.Set<Domain.Associations.AnimeGenre>());
-        context.Set<Domain.Associations.AnimeStudio>().RemoveRange(context.Set<Domain.Associations.AnimeStudio>());
+        context.Set<UserAnime>().RemoveRange(context.Set<UserAnime>());
+        //context.Set<Domain.Entities.Anime.AnimeGenre>().RemoveRange(context.Set<Domain.Entities.Anime.AnimeGenre>());
+        //context.Set<Domain.Entities.Anime.AnimeStudio>().RemoveRange(context.Set<Domain.Entities.Anime.AnimeStudio>());
         context.Set<Domain.Entities.Episode>().RemoveRange(context.Set<Domain.Entities.Episode>());
         context.Set<Domain.Entities.Season>().RemoveRange(context.Set<Domain.Entities.Season>());
         context.Set<Domain.Entities.Anime>().RemoveRange(context.Set<Domain.Entities.Anime>());

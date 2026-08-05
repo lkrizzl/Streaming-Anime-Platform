@@ -1,30 +1,30 @@
-using Domain.Exceptions;
+using Domain.ValueObjects;
 
 namespace Domain.Entities;
 
 public partial class Anime
 {
-    public void UpdateTitle(string title)
+    public void UpdateTitle(Title title)
     {
-        Title = title ?? throw new ValidationException("Title cannot be empty");
+        Title = title;
         UpdatedOnUtc = UtcNow;
     }
 
-    public void UpdateOriginalTitle(string originalTitle)
+    public void UpdateOriginalTitle(Title originalTitle)
     {
-        OriginalTitle = originalTitle ?? throw new ValidationException("Original title cannot be empty");
+        OriginalTitle = originalTitle;
         UpdatedOnUtc = UtcNow;
     }
 
-    public void UpdateEnglishTitle(string? englishTitle)
+    public void UpdateEnglishTitle(Title? englishTitle)
     {
-        EnglishTitle = string.IsNullOrWhiteSpace(englishTitle) ? null : englishTitle.Trim();
+        EnglishTitle = englishTitle;
         UpdatedOnUtc = UtcNow;
     }
 
     public void UpdateDescription(string description)
     {
-        Description = description ?? throw new ValidationException("Description cannot be empty");
+        Description = description;
         UpdatedOnUtc = UtcNow;
     }
 }

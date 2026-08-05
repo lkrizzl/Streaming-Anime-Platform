@@ -28,7 +28,7 @@ public class GetEpisodesBySeasonHandler(
                 e.Description,
                 e.Duration,
                 e.VideoUrl,
-                e.ThumbnailUrl,
+                e.ThumbnailUrl?.Value,
                 e.ReleaseDateUtc,
                 e.IsPublished))
             .ToList();

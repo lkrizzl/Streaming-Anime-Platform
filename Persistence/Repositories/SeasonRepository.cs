@@ -15,7 +15,7 @@ public class SeasonRepository(AppDbContext dbContext) : ISeasonRepository
     {
         return await dbContext.Seasons
             .Where(s => s.AnimeId == animeId && s.IsActive)
-            .OrderBy(s => s.SeasonNumber)
+            .OrderBy(s => s.SeasonNumber.Value)
             .ToListAsync(cancellationToken);
     }
 

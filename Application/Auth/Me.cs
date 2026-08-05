@@ -30,7 +30,7 @@ public class Me(
             user.Id,
             user.Username,
             user.Email,
-            user.AvatarUrl,
+            user.AvatarUrl?.Value,
             user.Bio,
             user.Role);
     }

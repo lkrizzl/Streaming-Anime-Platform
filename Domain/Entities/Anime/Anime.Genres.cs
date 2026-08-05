@@ -1,4 +1,3 @@
-using Domain.Associations;
 using Domain.Exceptions;
 using System.Linq;
 
@@ -8,7 +7,7 @@ public partial class Anime
 {
     public void AddGenre(Genre genre)
     {
-        if (genre == null) throw new ValidationException("Genre cannot be null");
+        //if (genre == null) throw new ValidationException("Genre cannot be null");
 
         if (AnimeGenres.Any(ag => ag.GenreId == genre.Id))
             return;

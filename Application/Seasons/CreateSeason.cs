@@ -1,6 +1,7 @@
 using Application.Abstractions;
 using Domain.Errors;
 using Domain.Exceptions;
+using Domain.ValueObjects;
 using FluentValidation;
 using MediatR;
 
@@ -51,7 +52,10 @@ public class CreateSeasonHandler(
         var anime = await animeRepository.GetByIdAsync(request.AnimeId, ct)
             ?? throw new NotFoundException(AnimeErrors.AnimeNotFound(request.AnimeId));
 
-        var season = anime.AddSeason(request.SeasonNumber, request.Title, request.Description);
+        var season = anime.AddSeason(
+            SeasonNumber.Create(request.SeasonNumber),
+            Title.Create(request.Title),
+            request.Description);
 
         await unitOfWork.SaveChangesAsync(ct);
 

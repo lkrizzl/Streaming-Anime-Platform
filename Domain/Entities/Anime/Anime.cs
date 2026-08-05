@@ -1,6 +1,5 @@
-using Domain.Associations;
 using Domain.Exceptions;
-using System.Linq;
+using Domain.ValueObjects;
 
 namespace Domain.Entities;
 
@@ -18,16 +17,16 @@ public partial class Anime : Entity
     private Anime() : base(Guid.NewGuid()) { }
 
     public Anime(
-        string title,
-        string originalTitle,
+        Title title,
+        Title originalTitle,
         string description,
-        int releaseYear,
+        ReleaseYear releaseYear,
         AnimeStatus status)
         : base(Guid.NewGuid())
     {
-        Title = title ?? throw new ValidationException("Title cannot be empty");
-        OriginalTitle = originalTitle ?? throw new ValidationException("Original title cannot be empty");
-        Description = description ?? throw new ValidationException("Description cannot be empty");
+        Title = title;
+        OriginalTitle = originalTitle;
+        Description = description;
 
         ReleaseYear = releaseYear;
         Status = status;
@@ -36,21 +35,21 @@ public partial class Anime : Entity
         IsActive = true;
     }
 
-    public string Title { get; private set; }
-    public string OriginalTitle { get; private set; }
-    public string? EnglishTitle { get; private set; }
+    public Title Title { get; private set; }
+    public Title OriginalTitle { get; private set; }
+    public Title? EnglishTitle { get; private set; }
 
     public string Description { get; private set; }
 
-    public int ReleaseYear { get; private set; }
+    public ReleaseYear ReleaseYear { get; private set; }
     public DateOnly? StartDate { get; private set; }
     public DateOnly? EndDate { get; private set; }
 
     public AnimeStatus Status { get; private set; }
-    public string? CoverImageUrl { get; private set; }
-    public string? BannerImageUrl { get; private set; }
-    public string? TrailerUrl { get; private set; }
-    public double AverageRating { get; private set; } = 0.0;
+    public ImageUrl? CoverImageUrl { get; private set; }
+    public ImageUrl? BannerImageUrl { get; private set; }
+    public ImageUrl? TrailerUrl { get; private set; }
+    public Rating AverageRating { get; private set; } = Rating.Create(0.0);
     public int RatingCount { get; private set; } = 0;
     public int EpisodesCount { get; private set; }
     public int CurrentEpisode { get; private set; } = 0;

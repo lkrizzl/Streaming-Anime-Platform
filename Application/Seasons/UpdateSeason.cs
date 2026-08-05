@@ -1,6 +1,7 @@
 using Application.Abstractions;
 using Domain.Errors;
 using Domain.Exceptions;
+using Domain.ValueObjects;
 using FluentValidation;
 using MediatR;
 
@@ -39,7 +40,7 @@ public class UpdateSeasonHandler(
         var season = await seasonRepository.GetByIdAsync(request.Id, ct)
             ?? throw new NotFoundException(SeasonErrors.SeasonNotFound(request.Id));
 
-        season.UpdateTitle(request.Title);
+        season.UpdateTitle(Title.Create(request.Title));
         season.UpdateDescription(request.Description);
         season.UpdateDates(request.StartDate, request.EndDate);
 

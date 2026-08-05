@@ -37,9 +37,9 @@ public class GetAllAnimesHandler(IAnimeRepository animeRepository)
                 anime.Description,
                 anime.ReleaseYear,
                 anime.Status,
-                anime.CoverImageUrl,
-                anime.BannerImageUrl,
-                anime.TrailerUrl,
+                anime.CoverImageUrl?.Value,
+                anime.BannerImageUrl?.Value,
+                anime.TrailerUrl?.Value,
                 anime.AgeRating,
                 anime.AverageRating,
                 anime.RatingCount,
@@ -47,8 +47,8 @@ public class GetAllAnimesHandler(IAnimeRepository animeRepository)
                 anime.IsActive,
                 anime.CreatedOnUtc,
                 anime.UpdatedOnUtc,
-                anime.Genres.Select(g => g.Name).ToList(),
-                anime.Studios.Select(s => s.Name).ToList()
+                anime.Genres.Select(g => g.Name.Value).ToList(),
+                anime.Studios.Select(s => s.Name.Value).ToList()
             ))
             .ToList();
 

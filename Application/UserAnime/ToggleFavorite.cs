@@ -1,4 +1,5 @@
 using Application.Abstractions;
+using Domain.Entities;
 using Domain.Exceptions;
 using FluentValidation;
 using MediatR;
@@ -28,10 +29,10 @@ public class ToggleFavoriteHandler(
 
         var userAnime = await userAnimeRepository.GetByUserAndAnimeAsync(userId, request.AnimeId, ct);
 
-        if (userAnime is null)
+        if (userAnime is null) 
         {
-            userAnime = new Domain.Associations.UserAnime(
-                userId, request.AnimeId, Domain.Associations.WatchStatus.Planned);
+            userAnime = new Domain.Entities.UserAnime(
+                userId, request.AnimeId, WatchStatus.Planned);
             await userAnimeRepository.AddAsync(userAnime, ct);
         }
 

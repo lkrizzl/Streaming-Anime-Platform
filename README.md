@@ -30,44 +30,6 @@ WebApi.slnx
     └── Integration.Tests/    # 19 integration tests (API + Testcontainers)
 ```
 
-## Quick Start
-
-### Prerequisites
-
-- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (for PostgreSQL)
-
-### 1. Start PostgreSQL
-
-```bash
-docker run -d --name streaming-db \
-  -e POSTGRES_USER=postgres \
-  -e POSTGRES_PASSWORD=postgres \
-  -e POSTGRES_DB=streaming \
-  -p 5432:5432 \
-  postgres:latest
-```
-
-### 2. Set up connection string
-
-The connection string is stored in **User Secrets** (development only) or **environment variables** (production).
-
-```bash
-cd WebApi
-dotnet user-secrets set "ConnectionStrings:DefaultConnection" \
-  "Host=localhost;Port=5432;Database=streaming;Username=postgres;Password=postgres"
-```
-
-### 3. Apply migrations and run
-
-```bash
-dotnet ef database update --project Persistence --startup-project WebApi
-dotnet run --project WebApi/WebApi.csproj
-```
-
-The API starts at `http://localhost:5256`.  
-Swagger UI: [http://localhost:5256/swagger](http://localhost:5256/swagger)
-
 ### Docker Compose
 
 ```bash

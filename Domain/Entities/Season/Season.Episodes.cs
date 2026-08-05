@@ -1,13 +1,13 @@
-using Domain.Exceptions;
+using Domain.ValueObjects;
 
 namespace Domain.Entities;
 
 public partial class Season
 {
-    public Episode AddEpisode(int episodeNumber, string title, TimeSpan duration)
+    public Episode AddEpisode(EpisodeNumber episodeNumber, Title title, TimeSpan duration)
     {
-        if (Episodes.Any(e => e.EpisodeNumber == episodeNumber))
-            throw new ValidationException($"Episode number {episodeNumber} already exists in this season.");
+        //if (Episodes.Any(e => e.EpisodeNumber == episodeNumber))
+            //throw new ValidationException($"Episode number {episodeNumber} already exists in this season.");
 
         var episode = new Episode(Id, episodeNumber, title, duration);
         Episodes.Add(episode);

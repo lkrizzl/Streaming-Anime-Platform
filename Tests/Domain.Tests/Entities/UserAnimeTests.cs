@@ -1,4 +1,4 @@
-using Domain.Associations;
+using Domain.Entities;
 using Domain.Exceptions;
 
 namespace Domain.Tests.Entities;

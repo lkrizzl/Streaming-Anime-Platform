@@ -2,6 +2,7 @@ using Application.Abstractions;
 using Domain.Entities;
 using Domain.Errors;
 using Domain.Exceptions;
+using Domain.ValueObjects;
 using FluentValidation;
 using MediatR;
 
@@ -106,14 +107,14 @@ public class CreateAnimeHandler(
     public async Task<AnimeResponse> Handle(CreateAnimeCommand request, CancellationToken ct)
     {
         var anime = new Domain.Entities.Anime(
-            request.Title,
-            request.OriginalTitle,
+            Title.Create(request.Title),
+            Title.Create(request.OriginalTitle),
             request.Description,
-            request.ReleaseYear,
+            ReleaseYear.Create(request.ReleaseYear),
             request.Status);
 
         if (request.EnglishTitle is not null)
-            anime.UpdateEnglishTitle(request.EnglishTitle);
+            anime.UpdateEnglishTitle(Title.Create(request.EnglishTitle!));
 
         if (request.CoverImageUrl is not null)
             anime.SetCoverImage(request.CoverImageUrl);
@@ -157,9 +158,9 @@ public class CreateAnimeHandler(
         anime.Description,
         anime.ReleaseYear,
         anime.Status,
-        anime.CoverImageUrl,
-        anime.BannerImageUrl,
-        anime.TrailerUrl,
+        anime.CoverImageUrl?.Value,
+        anime.BannerImageUrl?.Value,
+        anime.TrailerUrl?.Value,
         anime.AgeRating,
         anime.AverageRating,
         anime.RatingCount,
@@ -167,7 +168,7 @@ public class CreateAnimeHandler(
         anime.IsActive,
         anime.CreatedOnUtc,
         anime.UpdatedOnUtc,
-        anime.Genres.Select(g => g.Name).ToList(),
-        anime.Studios.Select(s => s.Name).ToList()
+        anime.Genres.Select(g => g.Name.Value).ToList(),
+        anime.Studios.Select(s => s.Name.Value).ToList()
     );
 }

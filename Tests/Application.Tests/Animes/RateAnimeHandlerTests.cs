@@ -1,7 +1,6 @@
 using Application.Abstractions;
 using Application.Animes;
 using Domain.Abstractions;
-using Domain.Associations;
 using Domain.Entities;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
@@ -40,14 +39,14 @@ public class RateAnimeHandlerTests
         var ratedUserAnime = new Domain.Associations.UserAnime(userId, animeId, WatchStatus.Planned);
         ratedUserAnime.Rate(8.0);
         _userAnimeRepository.GetByAnimeIdAsync(animeId, Arg.Any<CancellationToken>())
-            .Returns(new List<Domain.Associations.UserAnime>
+            .Returns(new List<Domain.Entities.UserAnime>
             {
                 ratedUserAnime
             });
 
         await _handler.Handle(new RateAnimeCommand(animeId, 8.0), CancellationToken.None);
 
-        await _userAnimeRepository.Received(1).AddAsync(Arg.Any<Domain.Associations.UserAnime>(), Arg.Any<CancellationToken>());
+        await _userAnimeRepository.Received(1).AddAsync(Arg.Any<Domain.Entities.UserAnime>(), Arg.Any<CancellationToken>());
         await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
         Assert.Equal(8.0, anime.AverageRating);
         Assert.Equal(1, anime.RatingCount);
@@ -90,7 +89,7 @@ public class RateAnimeHandlerTests
         _userAnimeRepository.GetByUserAndAnimeAsync(userId, animeId, Arg.Any<CancellationToken>())
             .Returns(existingUserAnime);
         _userAnimeRepository.GetByAnimeIdAsync(animeId, Arg.Any<CancellationToken>())
-            .Returns(new List<Domain.Associations.UserAnime>
+            .Returns(new List<Domain.Entities.UserAnime>
             {
                 existingUserAnime
             });
@@ -98,7 +97,7 @@ public class RateAnimeHandlerTests
         await _handler.Handle(new RateAnimeCommand(animeId, 7.5), CancellationToken.None);
 
         Assert.Equal(7.5, existingUserAnime.UserRating);
-        await _userAnimeRepository.DidNotReceive().AddAsync(Arg.Any<Domain.Associations.UserAnime>(), Arg.Any<CancellationToken>());
+        await _userAnimeRepository.DidNotReceive().AddAsync(Arg.Any<Domain.Entities.UserAnime>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -126,7 +125,7 @@ public class RateAnimeHandlerTests
         _userAnimeRepository.GetByUserAndAnimeAsync(userId, animeId, Arg.Any<CancellationToken>())
             .Returns(currentUserAnime);
         _userAnimeRepository.GetByAnimeIdAsync(animeId, Arg.Any<CancellationToken>())
-            .Returns(new List<Domain.Associations.UserAnime>
+            .Returns(new List<Domain.Entities.UserAnime>
             {
                 currentUserAnime,    
                 unratedUserAnime,   

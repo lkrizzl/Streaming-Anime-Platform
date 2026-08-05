@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
 
-namespace Domain.Associations;
+namespace Domain.Entities;
 
 public class AnimeStudio : Entity
 {

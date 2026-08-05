@@ -2,6 +2,7 @@ using Application.Abstractions;
 using Domain.Entities;
 using Domain.Errors;
 using Domain.Exceptions;
+using Domain.ValueObjects;
 using FluentValidation;
 using MediatR;
 
@@ -40,11 +41,11 @@ public class CreateStudioHandler(IStudioRepository studioRepository, IUnitOfWork
 {
     public async Task<StudioResponse> Handle(CreateStudioCommand request, CancellationToken ct)
     {
-        var studio = new Studio(request.Name, request.Description);
+        var studio = new Studio(StudioName.Create(request.Name), request.Description);
 
         await studioRepository.AddAsync(studio, ct);
         await unitOfWork.SaveChangesAsync(ct);
 
-        return new StudioResponse(studio.Id, studio.Name, studio.Description);
+        return new StudioResponse(studio.Id, studio.Name.Value, studio.Description);
     }
 }

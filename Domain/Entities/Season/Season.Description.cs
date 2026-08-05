@@ -1,18 +1,18 @@
-using Domain.Exceptions;
+using Domain.ValueObjects;
 
 namespace Domain.Entities;
 
 public partial class Season
 {
-    public void UpdateTitle(string newTitle)
+    public void UpdateTitle(Title newTitle)
     {
-        Title = newTitle ?? throw new ValidationException("Season title cannot be empty");
+        Title = newTitle;
         UpdatedOnUtc = UtcNow;
     }
 
     public void UpdateDescription(string description)
     {
-        Description = description ?? throw new ValidationException("Season description cannot be empty");
+        Description = description;
         UpdatedOnUtc = UtcNow;
     }
 }

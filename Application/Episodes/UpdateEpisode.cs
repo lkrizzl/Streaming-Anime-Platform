@@ -1,6 +1,7 @@
 using Application.Abstractions;
 using Domain.Errors;
 using Domain.Exceptions;
+using Domain.ValueObjects;
 using FluentValidation;
 using MediatR;
 
@@ -47,7 +48,7 @@ public class UpdateEpisodeHandler(
         var episode = await episodeRepository.GetByIdAsync(request.Id, ct)
             ?? throw new NotFoundException(EpisodeErrors.EpisodeNotFound(request.Id));
 
-        episode.UpdateTitle(request.Title);
+        episode.UpdateTitle(Title.Create(request.Title));
         episode.UpdateDescription(request.Description);
         episode.UpdateDuration(request.Duration);
 

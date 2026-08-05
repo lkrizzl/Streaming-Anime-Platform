@@ -1,6 +1,7 @@
 using Application.Abstractions;
 using Domain.Entities;
 using Domain.Exceptions;
+using Domain.ValueObjects;
 using FluentValidation;
 using MediatR;
 
@@ -43,11 +44,11 @@ public class CreateGenreHandler(IGenreRepository genreRepository, IUnitOfWork un
 {
     public async Task<GenreResponse> Handle(CreateGenreCommand request, CancellationToken cancellationToken)
     {
-        var genre = new Genre(request.Name, request.Description);
+        var genre = new Genre(GenreName.Create(request.Name), request.Description);
 
         await genreRepository.AddAsync(genre, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new GenreResponse(genre.Id, genre.Name, genre.Description);
+        return new GenreResponse(genre.Id, genre.Name.Value, genre.Description);
     }
 }

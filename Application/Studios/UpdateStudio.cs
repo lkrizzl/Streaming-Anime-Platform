@@ -1,6 +1,7 @@
 using Application.Abstractions;
 using Domain.Errors;
 using Domain.Exceptions;
+using Domain.ValueObjects;
 using FluentValidation;
 using MediatR;
 
@@ -42,7 +43,7 @@ public class UpdateStudioHandler(IStudioRepository studioRepository, IUnitOfWork
         var studio = await studioRepository.GetByIdAsync(request.Id, ct)
             ?? throw new NotFoundException(StudioErrors.StudioNotFound(request.Id));
 
-        studio.UpdateName(request.Name);
+        studio.UpdateName(StudioName.Create(request.Name));
         studio.UpdateDescription(request.Description);
 
         await unitOfWork.SaveChangesAsync(ct);

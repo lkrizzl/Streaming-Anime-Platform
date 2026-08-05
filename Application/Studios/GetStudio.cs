@@ -15,6 +15,6 @@ public class GetStudioHandler(IStudioRepository studioRepository)
         var studio = await studioRepository.GetByIdAsync(request.Id, ct)
             ?? throw new NotFoundException(StudioErrors.StudioNotFound(request.Id));
 
-        return new StudioResponse(studio.Id, studio.Name, studio.Description);
+        return new StudioResponse(studio.Id, studio.Name.Value, studio.Description);
     }
 }

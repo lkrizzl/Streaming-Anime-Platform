@@ -15,7 +15,7 @@ public class EpisodeRepository(AppDbContext dbContext) : IEpisodeRepository
     {
         return await dbContext.Episodes
             .Where(e => e.SeasonId == seasonId && e.IsActive)
-            .OrderBy(e => e.EpisodeNumber)
+            .OrderBy(e => e.EpisodeNumber.Value)
             .ToListAsync(cancellationToken);
     }
 

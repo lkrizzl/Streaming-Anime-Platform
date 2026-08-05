@@ -18,6 +18,8 @@ public record Username
 
     public static Username Create(string? username)
     {
+        var exc = new EntityValidationException();
+
         if (string.IsNullOrWhiteSpace(username))
             throw new EntityValidationException(UsernameErrors.UsernameIsEmpty());
 

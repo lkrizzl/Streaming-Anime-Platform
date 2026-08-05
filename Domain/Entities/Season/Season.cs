@@ -1,4 +1,5 @@
 using Domain.Exceptions;
+using Domain.ValueObjects;
 
 namespace Domain.Entities;
 
@@ -8,15 +9,15 @@ public partial class Season : Entity
 
     public Season(
         Guid animeId,
-        int seasonNumber,
-        string title,
+        SeasonNumber seasonNumber,
+        Title title,
         string description)
         : base(Guid.NewGuid())
     {
         AnimeId = animeId;
         SeasonNumber = seasonNumber;
-        Title = title ?? throw new ValidationException("Season title cannot be empty");
-        Description = description ?? throw new ValidationException("Season description cannot be empty");
+        Title = title;
+        Description = description;
 
         CreatedOnUtc = UtcNow;
         IsActive = true;
@@ -24,8 +25,8 @@ public partial class Season : Entity
 
     public Guid AnimeId { get; private init; }
 
-    public int SeasonNumber { get; private set; }
-    public string Title { get; private set; }
+    public SeasonNumber SeasonNumber { get; private set; }
+    public Title Title { get; private set; }
     public string Description { get; private set; }
 
     public DateOnly? StartDate { get; private set; }

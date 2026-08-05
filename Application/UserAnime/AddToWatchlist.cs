@@ -1,5 +1,5 @@
 using Application.Abstractions;
-using Domain.Associations;
+using Domain.Entities;
 using Domain.Errors;
 using Domain.Exceptions;
 using FluentValidation;
@@ -37,7 +37,7 @@ public class AddToWatchlistHandler(
         if (existing is not null)
             throw new BadRequestException("Anime is already in your watchlist.");
 
-        var userAnime = new Domain.Associations.UserAnime(userId, request.AnimeId, request.Status);
+        var userAnime = new Domain.Entities.UserAnime(userId, request.AnimeId, request.Status);
 
         await userAnimeRepository.AddAsync(userAnime, ct);
         await unitOfWork.SaveChangesAsync(ct);

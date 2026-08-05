@@ -1,7 +1,6 @@
 using System.Reflection;
 using Application.Abstractions;
 using Application.Animes;
-using Domain.Associations;
 using Domain.Entities;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;

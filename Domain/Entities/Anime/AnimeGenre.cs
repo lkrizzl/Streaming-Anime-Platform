@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
 
-namespace Domain.Associations;
+namespace Domain.Entities;
 
 public class AnimeGenre : Entity
 {
@@ -17,7 +17,6 @@ public class AnimeGenre : Entity
 
     public DateTime CreatedOnUtc { get; private init; } = UtcNow;
 
-    // Навігація
     public Anime Anime { get; private set; } = null!;
     public Genre Genre { get; private set; } = null!;
 }

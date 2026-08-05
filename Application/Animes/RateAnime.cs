@@ -1,6 +1,8 @@
 using Application.Abstractions;
+using Domain.Entities;
 using Domain.Errors;
 using Domain.Exceptions;
+using Domain.ValueObjects;
 using FluentValidation;
 using MediatR;
 
@@ -37,19 +39,19 @@ public class RateAnimeHandler(
         var userAnime = await userAnimeRepository.GetByUserAndAnimeAsync(userId, request.AnimeId, ct);
         if (userAnime is null)
         {
-            userAnime = new Domain.Associations.UserAnime(userId, request.AnimeId, Domain.Associations.WatchStatus.Planned);
+            userAnime = new Domain.Entities.UserAnime(userId, request.AnimeId, WatchStatus.Planned);
             await userAnimeRepository.AddAsync(userAnime, ct);
         }
 
-        userAnime.Rate(request.Rating);
+        userAnime.Rate(Rating.Create(request.Rating));
 
         var allRatings = await userAnimeRepository.GetByAnimeIdAsync(request.AnimeId, ct);
-        var newCount = allRatings.Count(r => r.UserRating.HasValue);
+        var newCount = allRatings.Count(r => r.UserRating is not null);
         var newAverage = newCount > 0
-            ? allRatings.Where(r => r.UserRating.HasValue).Average(r => r.UserRating!.Value)
+            ? allRatings.Where(r => r.UserRating is not null).Average(r => r.UserRating!.Value)
             : 0.0;
 
-        anime.UpdateRating(newAverage, newCount);
+        anime.UpdateRating(Rating.Create(newAverage), newCount);
 
         await unitOfWork.SaveChangesAsync(ct);
     }

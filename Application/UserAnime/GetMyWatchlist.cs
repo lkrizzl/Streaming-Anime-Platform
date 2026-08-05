@@ -1,5 +1,5 @@
 using Application.Abstractions;
-using Domain.Associations;
+using Domain.Entities;
 using Domain.Exceptions;
 using MediatR;
 
@@ -36,11 +36,11 @@ public class GetMyWatchlistHandler(
             .Select(ua => new WatchlistItemResponse(
                 ua.AnimeId,
                 ua.Anime.Title,
-                ua.Anime.CoverImageUrl,
+                ua.Anime.CoverImageUrl?.Value,
                 ua.Status,
-                ua.LastWatchedEpisodeNumber,
-                ua.ProgressPercentage,
-                ua.UserRating,
+                ua.LastWatchedEpisodeNumber?.Value,
+                ua.ProgressPercentage?.Value,
+                ua.UserRating?.Value,
                 ua.IsFavorite,
                 ua.Notes,
                 ua.CreatedOnUtc,

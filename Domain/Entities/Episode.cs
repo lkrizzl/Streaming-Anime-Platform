@@ -1,4 +1,5 @@
 ﻿using Domain.Exceptions;
+using Domain.ValueObjects;
 
 namespace Domain.Entities;
 
@@ -8,14 +9,14 @@ public class Episode : Entity
 
     public Episode(
         Guid seasonId,
-        int episodeNumber,
-        string title,
+        EpisodeNumber episodeNumber,
+        Title title,
         TimeSpan duration)
         : base(Guid.NewGuid())
     {
         SeasonId = seasonId;
         EpisodeNumber = episodeNumber;
-        Title = title ?? throw new ValidationException("Episode title cannot be empty");
+        Title = title;
         Duration = duration;
 
         CreatedOnUtc = UtcNow;
@@ -25,13 +26,13 @@ public class Episode : Entity
 
     public Guid SeasonId { get; private init; }
 
-    public int EpisodeNumber { get; private set; }
-    public string Title { get; private set; }
+    public EpisodeNumber EpisodeNumber { get; private set; }
+    public Title Title { get; private set; }
     public string? Description { get; private set; }
 
     public TimeSpan Duration { get; private set; }
     public Uri VideoUrl { get; private set; }
-    public string? ThumbnailUrl { get; private set; }
+    public ImageUrl? ThumbnailUrl { get; private set; }
 
     public DateTime? ReleaseDateUtc { get; private set; }
 
@@ -40,12 +41,11 @@ public class Episode : Entity
     public bool IsActive { get; private set; } = true;
     public bool IsPublished { get; private set; } = false;
 
-    // Навігація
     public Season Season { get; private set; } = null!;
 
-    public void UpdateTitle(string title)
+    public void UpdateTitle(Title title)
     {
-        Title = title ?? throw new ValidationException("Episode title cannot be empty");
+        Title = title;
         UpdatedOnUtc = UtcNow;
     }
 
@@ -64,20 +64,20 @@ public class Episode : Entity
 
     public void UpdateVideoUrl(Uri videoUrl)
     {
-        VideoUrl = videoUrl ?? throw new ValidationException("Video URL cannot be empty");
+        VideoUrl = videoUrl;
         UpdatedOnUtc = UtcNow;
     }
 
-    public void UpdateThumbnail(string thumbnailUrl)
+    public void UpdateThumbnail(string? thumbnailUrl)
     {
-        ThumbnailUrl = thumbnailUrl;
+        ThumbnailUrl = thumbnailUrl is not null ? ImageUrl.Create(thumbnailUrl) : null;
         UpdatedOnUtc = UtcNow;
     }
 
     public void UpdateDuration(TimeSpan duration)
     {
         if (duration <= TimeSpan.Zero)
-            throw new ValidationException("Duration must be greater than zero.");
+            //throw new ValidationException("Duration must be greater than zero.");
         Duration = duration;
         UpdatedOnUtc = UtcNow;
     }

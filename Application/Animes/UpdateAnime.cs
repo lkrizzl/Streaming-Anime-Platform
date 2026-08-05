@@ -2,6 +2,7 @@ using Application.Abstractions;
 using Domain.Entities;
 using Domain.Errors;
 using Domain.Exceptions;
+using Domain.ValueObjects;
 using FluentValidation;
 using MediatR;
 
@@ -89,9 +90,9 @@ public class UpdateAnimeHandler(
         var anime = await animeRepository.GetByIdAsync(request.Id, ct)
             ?? throw new NotFoundException(AnimeErrors.AnimeNotFound(request.Id));
 
-        anime.UpdateTitle(request.Title);
-        anime.UpdateOriginalTitle(request.OriginalTitle);
-        anime.UpdateEnglishTitle(request.EnglishTitle);
+        anime.UpdateTitle(Title.Create(request.Title));
+        anime.UpdateOriginalTitle(Title.Create(request.OriginalTitle));
+        anime.UpdateEnglishTitle(request.EnglishTitle is not null ? Title.Create(request.EnglishTitle) : null);
         anime.UpdateDescription(request.Description);
 
         anime.SetCoverImage(request.CoverImageUrl);

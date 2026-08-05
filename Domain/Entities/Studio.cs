@@ -1,26 +1,26 @@
-﻿using Domain.Associations;
-using Domain.Exceptions;
+﻿using Domain.Exceptions;
+using Domain.ValueObjects;
 
 namespace Domain.Entities;
 
 public class Studio : Entity
 {
-    private Studio() : base(Guid.NewGuid()) { } 
+    private Studio() : base(Guid.NewGuid()) { }
 
-    public Studio(string name, string? description = null)
+    public Studio(StudioName name, string? description = null)
         : base(Guid.NewGuid())
     {
-        Name = name ?? throw new ValidationException("Studio name cannot be empty");
+        Name = name;
         Description = description;
 
         CreatedOnUtc = UtcNow;
         IsActive = true;
     }
 
-    public string Name { get; private set; }           
+    public StudioName Name { get; private set; }
     public string? Description { get; private set; }
-    public string? LogoUrl { get; private set; }
-    public string? WebsiteUrl { get; private set; }
+    public ImageUrl? LogoUrl { get; private set; }
+    public Uri? WebsiteUrl { get; private set; }
 
     public DateTime CreatedOnUtc { get; private init; }
     public DateTime? UpdatedOnUtc { get; private set; }
@@ -28,9 +28,9 @@ public class Studio : Entity
 
     public ICollection<AnimeStudio> AnimeStudios { get; private set; } = new List<AnimeStudio>();
 
-    public void UpdateName(string newName)
+    public void UpdateName(StudioName newName)
     {
-        Name = newName ?? throw new ValidationException("Studio name cannot be empty");
+        Name = newName;
         UpdatedOnUtc = UtcNow;
     }
 
@@ -42,7 +42,7 @@ public class Studio : Entity
 
     public void UpdateLogo(string? logoUrl)
     {
-        LogoUrl = logoUrl;
+        LogoUrl = logoUrl is not null ? ImageUrl.Create(logoUrl) : null;
         UpdatedOnUtc = UtcNow;
     }
 }

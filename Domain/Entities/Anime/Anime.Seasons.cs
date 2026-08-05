@@ -1,17 +1,14 @@
-using Domain.Exceptions;
+using Domain.ValueObjects;
 using System.Linq;
 
 namespace Domain.Entities;
 
 public partial class Anime
 {
-    public Season AddSeason(int seasonNumber, string title, string description)
+    public Season AddSeason(SeasonNumber seasonNumber, Title title, string description)
     {
-        if (seasonNumber < 1)
-            throw new ValidationException("Season number must be greater than 0.");
-
-        if (Seasons.Any(s => s.SeasonNumber == seasonNumber))
-            throw new ValidationException($"Season number {seasonNumber} already exists for this anime.");
+        //if (Seasons.Any(s => s.SeasonNumber == seasonNumber))
+            //throw new ValidationException($"Season number {seasonNumber} already exists for this anime.");
 
         var season = new Season(Id, seasonNumber, title, description);
         Seasons.Add(season);

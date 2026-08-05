@@ -1,22 +1,24 @@
+using Domain.ValueObjects;
+
 namespace Domain.Entities;
 
 public partial class Anime
 {
     public void SetCoverImage(string? coverImageUrl)
     {
-        CoverImageUrl = string.IsNullOrWhiteSpace(coverImageUrl) ? null : coverImageUrl.Trim();
+        CoverImageUrl = coverImageUrl is not null ? ImageUrl.Create(coverImageUrl) : null;
         UpdatedOnUtc = UtcNow;
     }
 
     public void SetBannerImage(string? bannerImageUrl)
     {
-        BannerImageUrl = string.IsNullOrWhiteSpace(bannerImageUrl) ? null : bannerImageUrl.Trim();
+        BannerImageUrl = bannerImageUrl is not null ? ImageUrl.Create(bannerImageUrl) : null;
         UpdatedOnUtc = UtcNow;
     }
 
     public void SetTrailerUrl(string? trailerUrl)
     {
-        TrailerUrl = string.IsNullOrWhiteSpace(trailerUrl) ? null : trailerUrl.Trim();
+        TrailerUrl = trailerUrl is not null ? ImageUrl.Create(trailerUrl) : null;
         UpdatedOnUtc = UtcNow;
     }
 

@@ -23,7 +23,7 @@ public class GetEpisodeHandler(IEpisodeRepository episodeRepository)
             episode.Description,
             episode.Duration,
             episode.VideoUrl,
-            episode.ThumbnailUrl,
+            episode.ThumbnailUrl?.Value,
             episode.ReleaseDateUtc,
             episode.IsPublished);
     }
