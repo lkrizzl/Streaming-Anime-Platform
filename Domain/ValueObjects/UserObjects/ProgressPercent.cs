@@ -15,7 +15,7 @@ public record ProgressPercent
     public static ProgressPercent Create(double percent)
     {
         if (percent < MinValue || percent > MaxValue)
-            throw new EntityValidationException(
+            throw new ValidationException(
                 ProgressPercentErrors.ProgressPercentOutOfRange(MinValue, MaxValue));
 
         return new ProgressPercent(Math.Round(percent, 1));

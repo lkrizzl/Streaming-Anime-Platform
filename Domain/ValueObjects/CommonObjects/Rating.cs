@@ -15,7 +15,7 @@ public record Rating
     public static Rating Create(double rating)
     {
         if (rating < MinValue || rating > MaxValue)
-            throw new EntityValidationException(RatingErrors.RatingOutOfRange(MinValue, MaxValue));
+            throw new ValidationException(RatingErrors.RatingOutOfRange(MinValue, MaxValue));
 
         return new Rating(Math.Round(rating, 1));
     }

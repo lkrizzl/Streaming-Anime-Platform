@@ -6,7 +6,7 @@ namespace Domain.ValueObjects;
 
 public record Email
 {
-    public static readonly int MaxLength = 254;
+    public const int MaxLength = 254;
 
     private static readonly Regex EmailRegex =
         new(@"^[^\s@]+@[^\s@]+\.[^\s@]+$", RegexOptions.Compiled);
@@ -18,15 +18,15 @@ public record Email
     public static Email Create(string? email)
     {
         if (string.IsNullOrWhiteSpace(email))
-            throw new EntityValidationException(EmailErrors.EmailIsEmpty());
+            throw new ValidationException(EmailErrors.EmailIsEmpty());
 
         string trimmed = email.Trim().ToLowerInvariant();
 
         if (trimmed.Length > MaxLength)
-            throw new EntityValidationException(EmailErrors.EmailTooLong(MaxLength));
+            throw new ValidationException(EmailErrors.EmailTooLong(MaxLength));
 
         if (!EmailRegex.IsMatch(trimmed))
-            throw new EntityValidationException(EmailErrors.EmailHasInvalidFormat());
+            throw new ValidationException(EmailErrors.EmailHasInvalidFormat());
 
         return new Email(trimmed);
     }

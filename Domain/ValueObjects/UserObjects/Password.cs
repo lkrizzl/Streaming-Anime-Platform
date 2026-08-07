@@ -6,8 +6,8 @@ namespace Domain.ValueObjects;
 
 public record Password
 {
-    public static readonly int MinLength = 8;
-    public static readonly int MaxLength = 64;
+    public const int MinLength = 8;
+    public const int MaxLength = 64;
 
     private static readonly Regex PasswordRegex =
         new(@"^(?=.*[A-Za-z])(?=.*\d).{8,64}$", RegexOptions.Compiled);
@@ -19,16 +19,16 @@ public record Password
     public static Password Create(string? password)
     {
         if (string.IsNullOrWhiteSpace(password))
-            throw new EntityValidationException(PasswordErrors.PasswordIsEmpty());
+            throw new ValidationException(PasswordErrors.PasswordIsEmpty());
 
         if (password.Length < MinLength)
-            throw new EntityValidationException(PasswordErrors.PasswordTooShort(MinLength));
+            throw new ValidationException(PasswordErrors.PasswordTooShort(MinLength));
 
         if (password.Length > MaxLength)
-            throw new EntityValidationException(PasswordErrors.PasswordTooLong(MaxLength));
+            throw new ValidationException(PasswordErrors.PasswordTooLong(MaxLength));
 
         if (!PasswordRegex.IsMatch(password))
-            throw new EntityValidationException(PasswordErrors.PasswordHasInvalidFormat());
+            throw new ValidationException(PasswordErrors.PasswordHasInvalidFormat());
 
         return new Password(password);
     }

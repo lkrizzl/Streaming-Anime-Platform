@@ -39,13 +39,13 @@ public class User : Entity
 
     public void UpdateUsername(Username newUsername)
     {
-        Username = newUsername /*?? throw new EntityValidationException(UsernameErrors.UsernameIsEmpty())*/;
+        Username = newUsername /*?? throw new ValidationException(UsernameErrors.UsernameIsEmpty())*/;
         UpdatedOnUtc = UtcNow;
     }
 
     public void UpdateEmail(Email newEmail)
     {
-        Email = newEmail /*?? throw new EntityValidationException(EmailErrors.EmailIsEmpty())*/;
+        Email = newEmail /*?? throw new ValidationException(EmailErrors.EmailIsEmpty())*/;
         UpdatedOnUtc = UtcNow;
     }
 

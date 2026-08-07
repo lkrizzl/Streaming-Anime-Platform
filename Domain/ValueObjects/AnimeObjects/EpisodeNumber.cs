@@ -12,7 +12,7 @@ public record EpisodeNumber
     public static EpisodeNumber Create(int number)
     {
         if (number < 1)
-            throw new EntityValidationException(EpisodeNumberErrors.EpisodeNumberMustBePositive());
+            throw new ValidationException(EpisodeNumberErrors.EpisodeNumberMustBePositive());
 
         return new EpisodeNumber(number);
     }

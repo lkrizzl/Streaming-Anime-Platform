@@ -5,7 +5,7 @@ namespace Domain.ValueObjects;
 
 public record ReleaseYear
 {
-    public static readonly int MinValue = 1900;
+    public const int MinValue = 1900;
     public static int MaxValue => DateTime.UtcNow.Year + 5;
 
     public int Value { get; init; }
@@ -15,7 +15,7 @@ public record ReleaseYear
     public static ReleaseYear Create(int year)
     {
         if (year < MinValue || year > MaxValue)
-            throw new EntityValidationException(ReleaseYearErrors.ReleaseYearOutOfRange(MinValue, MaxValue));
+            throw new ValidationException(ReleaseYearErrors.ReleaseYearOutOfRange(MinValue, MaxValue));
 
         return new ReleaseYear(year);
     }

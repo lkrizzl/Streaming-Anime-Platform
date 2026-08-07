@@ -12,7 +12,7 @@ public record SeasonNumber
     public static SeasonNumber Create(int number)
     {
         if (number < 1)
-            throw new EntityValidationException(SeasonNumberErrors.SeasonNumberMustBePositive());
+            throw new ValidationException(SeasonNumberErrors.SeasonNumberMustBePositive());
 
         return new SeasonNumber(number);
     }

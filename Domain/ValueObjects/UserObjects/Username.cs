@@ -6,8 +6,8 @@ namespace Domain.ValueObjects;
 
 public record Username
 {
-    public static readonly int MinLength = 3;
-    public static readonly int MaxLength = 30;
+    public const int MinLength = 3;
+    public const int MaxLength = 30;
 
     private static readonly Regex UsernameRegex =
         new(@"^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$", RegexOptions.Compiled);
@@ -18,21 +18,19 @@ public record Username
 
     public static Username Create(string? username)
     {
-        var exc = new EntityValidationException();
-
         if (string.IsNullOrWhiteSpace(username))
-            throw new EntityValidationException(UsernameErrors.UsernameIsEmpty());
+            throw new ValidationException(UsernameErrors.UsernameIsEmpty());
 
         string trimmed = username.Trim();
 
         if (trimmed.Length < MinLength)
-            throw new EntityValidationException(UsernameErrors.UsernameTooShort(MinLength));
+            throw new ValidationException(UsernameErrors.UsernameTooShort(MinLength));
 
         if (trimmed.Length > MaxLength)
-            throw new EntityValidationException(UsernameErrors.UsernameTooLong(MaxLength));
+            throw new ValidationException(UsernameErrors.UsernameTooLong(MaxLength));
 
         if (!UsernameRegex.IsMatch(trimmed))
-            throw new EntityValidationException(UsernameErrors.UsernameHasInvalidFormat());
+            throw new ValidationException(UsernameErrors.UsernameHasInvalidFormat());
 
         return new Username(trimmed);
     }

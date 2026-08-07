@@ -38,10 +38,10 @@ public class ExceptionHandler : IExceptionHandler
                 Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.3",
                 Status = StatusCodes.Status403Forbidden,
             },
-            EntityValidationException validation => new ProblemDetails
+            ValidationException validation => new ProblemDetails
             {
                 Title = "BadRequest",
-                Detail = EntityValidationException.ValidationErrorMessage,
+                Detail = ValidationException.ValidationErrorMessage,
                 Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1",
                 Status = StatusCodes.Status400BadRequest,
                 Extensions = new Dictionary<string, object?>

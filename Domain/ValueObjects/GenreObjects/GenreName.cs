@@ -5,7 +5,7 @@ namespace Domain.ValueObjects;
 
 public record GenreName
 {
-    public static readonly int MaxLength = 100;
+    public const int MaxLength = 100;
 
     public string Value { get; init; }
 
@@ -14,12 +14,12 @@ public record GenreName
     public static GenreName Create(string? name)
     {
         if (string.IsNullOrWhiteSpace(name))
-            throw new EntityValidationException(GenreNameErrors.GenreNameIsEmpty());
+            throw new ValidationException(GenreNameErrors.GenreNameIsEmpty());
 
         string trimmed = name.Trim();
 
         if (trimmed.Length > MaxLength)
-            throw new EntityValidationException(GenreNameErrors.GenreNameTooLong(MaxLength));
+            throw new ValidationException(GenreNameErrors.GenreNameTooLong(MaxLength));
 
         return new GenreName(trimmed);
     }

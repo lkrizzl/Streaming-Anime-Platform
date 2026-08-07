@@ -5,7 +5,7 @@ namespace Domain.ValueObjects;
 
 public record Title
 {
-    public static readonly int MaxLength = 500;
+    public const int MaxLength = 500;
 
     public string Value { get; init; }
 
@@ -14,12 +14,12 @@ public record Title
     public static Title Create(string? title)
     {
         if (string.IsNullOrWhiteSpace(title))
-            throw new EntityValidationException(TitleErrors.TitleIsEmpty());
+            throw new ValidationException(TitleErrors.TitleIsEmpty());
 
         string trimmed = title.Trim();
 
         if (trimmed.Length > MaxLength)
-            throw new EntityValidationException(TitleErrors.TitleTooLong(MaxLength));
+            throw new ValidationException(TitleErrors.TitleTooLong(MaxLength));
 
         return new Title(trimmed);
     }

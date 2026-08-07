@@ -5,7 +5,7 @@ namespace Domain.ValueObjects;
 
 public record StudioName
 {
-    public static readonly int MaxLength = 200;
+    public const int MaxLength = 200;
 
     public string Value { get; init; }
 
@@ -14,12 +14,12 @@ public record StudioName
     public static StudioName Create(string? name)
     {
         if (string.IsNullOrWhiteSpace(name))
-            throw new EntityValidationException(StudioNameErrors.StudioNameIsEmpty());
+            throw new ValidationException(StudioNameErrors.StudioNameIsEmpty());
 
         string trimmed = name.Trim();
 
         if (trimmed.Length > MaxLength)
-            throw new EntityValidationException(StudioNameErrors.StudioNameTooLong(MaxLength));
+            throw new ValidationException(StudioNameErrors.StudioNameTooLong(MaxLength));
 
         return new StudioName(trimmed);
     }

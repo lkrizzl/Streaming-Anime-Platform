@@ -9,6 +9,7 @@ public static class InfrastructureServiceExtensions
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
+        services.AddSingleton<ITimeProvider, SystemTimeProvider>();
 
         return services;
     }

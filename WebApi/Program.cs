@@ -1,5 +1,6 @@
 using Application;
 using Authorization;
+using Domain.Abstractions;
 using Infrastructure;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.RateLimiting;
@@ -66,6 +67,8 @@ builder.Services.AddCors(opt =>
 });
 
 var app = builder.Build();
+
+Domain.Entity.TimeProvider = app.Services.GetRequiredService<ITimeProvider>();
 
 if (!app.Environment.IsDevelopment())
 {
