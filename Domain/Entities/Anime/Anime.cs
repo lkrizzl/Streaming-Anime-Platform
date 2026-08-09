@@ -1,4 +1,3 @@
-using Domain.Exceptions;
 using Domain.ValueObjects;
 
 namespace Domain.Entities;
@@ -17,8 +16,8 @@ public partial class Anime : Entity
     private Anime() : base(Guid.NewGuid()) { }
 
     public Anime(
-        Title title,
-        Title originalTitle,
+        Description title,
+        Description originalTitle,
         string description,
         ReleaseYear releaseYear,
         AnimeStatus status)
@@ -35,9 +34,9 @@ public partial class Anime : Entity
         IsActive = true;
     }
 
-    public Title Title { get; private set; }
-    public Title OriginalTitle { get; private set; }
-    public Title? EnglishTitle { get; private set; }
+    public Description Title { get; private set; }
+    public Description OriginalTitle { get; private set; }
+    public Description? EnglishTitle { get; private set; }
 
     public string Description { get; private set; }
 

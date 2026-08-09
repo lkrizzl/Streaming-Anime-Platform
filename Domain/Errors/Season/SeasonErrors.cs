@@ -11,4 +11,8 @@ public static class SeasonErrors
     public static Error SeasonNotFoundByNumber(int seasonNumber, Guid animeId) => new(
         "SeasonNotFoundByNumber",
         $"Season number {seasonNumber} was not found for anime '{animeId}'.");
+
+    public static Error EndDateBeforeStartDate() => new(
+        "EndDateBeforeStartDate",
+        "End date cannot be before start date.");
 }

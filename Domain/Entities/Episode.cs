@@ -1,5 +1,7 @@
-﻿using Domain.Exceptions;
+﻿using Domain.Errors;
+using Domain.Exceptions;
 using Domain.ValueObjects;
+using Domain.ValueObjects.AnimeObjects;
 
 namespace Domain.Entities;
 
@@ -31,7 +33,7 @@ public class Episode : Entity
     public string? Description { get; private set; }
 
     public TimeSpan Duration { get; private set; }
-    public Uri VideoUrl { get; private set; }
+    public VideoUrl VideoUrl { get; private set; }
     public ImageUrl? ThumbnailUrl { get; private set; }
 
     public DateTime? ReleaseDateUtc { get; private set; }
@@ -77,7 +79,8 @@ public class Episode : Entity
     public void UpdateDuration(TimeSpan duration)
     {
         if (duration <= TimeSpan.Zero)
-            //throw new ValidationException("Duration must be greater than zero.");
+            throw new ValidationException(EpisodeErrors.DurationMustBePositive());
+
         Duration = duration;
         UpdatedOnUtc = UtcNow;
     }
