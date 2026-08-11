@@ -8,7 +8,6 @@ using Persistence;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using WebApi.Middlewares;
-using WebApi.ServiceConfiguration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +23,6 @@ builder.Services.AddControllers()
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
-builder.Services.AddSwaggerServices();
 builder.Services.AddExceptionHandler<ExceptionHandler>();
 
 builder.Services.AddRateLimiter(options =>
@@ -82,7 +80,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseExceptionHandler(_ => { });
 app.MapControllers();
-
-app.UseSwaggerMiddleware();
 
 app.Run();

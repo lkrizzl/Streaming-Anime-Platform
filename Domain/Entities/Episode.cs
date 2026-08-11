@@ -28,8 +28,8 @@ public class Episode : Entity
 
     public Guid SeasonId { get; private init; }
 
-    public EpisodeNumber EpisodeNumber { get; private set; }
-    public Description Title { get; private set; }
+    public EpisodeNumber EpisodeNumber { get; private set; } = null!;
+    public Description Title { get; private set; } = null!;
     public string? Description { get; private set; }
 
     public TimeSpan Duration { get; private set; }

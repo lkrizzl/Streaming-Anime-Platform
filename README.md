@@ -11,7 +11,6 @@ A backend API for an anime streaming service built with **Clean Architecture** i
 | **CQRS** | MediatR |
 | **Validation** | FluentValidation |
 | **Auth** | Cookie authentication (ASP.NET Core Identity) |
-| **API docs** | Swashbuckle (Swagger) |
 | **Testing** | xUnit, NSubstitute, Testcontainers (PostgreSQL), WebApplicationFactory |
 
 ## Project Structure

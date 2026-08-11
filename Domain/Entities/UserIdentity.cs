@@ -19,13 +19,13 @@ public class UserIdentity : Entity
 
     public Guid UserId { get; init; }
 
-    public Username Username { get; init; }
+    public Username Username { get; init; } = null!;
 
-    public Email Email { get; init; }
+    public Email Email { get; init; } = null!;
 
-    public string PasswordHash { get; private set; }
+    public string PasswordHash { get; private set; } = null!;
 
-    public string SecurityStamp { get; private set; }
+    public string SecurityStamp { get; private set; } = null!;
 
     public DateTime CreatedOnUtc { get; private init; }
 

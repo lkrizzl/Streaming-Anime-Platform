@@ -17,7 +17,7 @@ public class Studio : Entity
         IsActive = true;
     }
 
-    public StudioName Name { get; private set; }
+    public StudioName Name { get; private set; } = null!;
     public string? Description { get; private set; }
     public ImageUrl? LogoUrl { get; private set; }
     public Uri? WebsiteUrl { get; private set; }

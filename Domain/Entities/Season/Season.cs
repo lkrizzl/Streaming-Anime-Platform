@@ -25,9 +25,9 @@ public partial class Season : Entity
 
     public Guid AnimeId { get; private init; }
 
-    public SeasonNumber SeasonNumber { get; private set; }
-    public Description Title { get; private set; }
-    public string Description { get; private set; }
+    public SeasonNumber SeasonNumber { get; private set; } = null!;
+    public Description Title { get; private set; } = null!;
+    public string Description { get; private set; } = null!;
 
     public DateOnly? StartDate { get; private set; }
     public DateOnly? EndDate { get; private set; }

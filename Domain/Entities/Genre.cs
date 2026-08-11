@@ -17,7 +17,7 @@ public class Genre : Entity
         IsActive = true;
     }
 
-    public GenreName Name { get; private set; }
+    public GenreName Name { get; private set; } = null!;
     public string? Description { get; private set; }
 
     public DateTime CreatedOnUtc { get; private init; }

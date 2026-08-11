@@ -24,8 +24,8 @@ public class User : Entity
 
     public Guid IdentityId { get; private init; }
 
-    public Username Username { get; private set; }
-    public Email Email { get; private set; }
+    public Username Username { get; private set; } = null!;
+    public Email Email { get; private set; } = null!;
     public ImageUrl? AvatarUrl { get; private set; }
     public string? Bio { get; private set; }
     public DateTime CreatedOnUtc { get; private init; }

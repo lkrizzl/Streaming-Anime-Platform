@@ -34,13 +34,13 @@ public partial class Anime : Entity
         IsActive = true;
     }
 
-    public Description Title { get; private set; }
-    public Description OriginalTitle { get; private set; }
+    public Description Title { get; private set; } = null!;
+    public Description OriginalTitle { get; private set; } = null!;
     public Description? EnglishTitle { get; private set; }
 
-    public string Description { get; private set; }
+    public string Description { get; private set; } = null!;
 
-    public ReleaseYear ReleaseYear { get; private set; }
+    public ReleaseYear ReleaseYear { get; private set; } = null!;
     public DateOnly? StartDate { get; private set; }
     public DateOnly? EndDate { get; private set; }
 
