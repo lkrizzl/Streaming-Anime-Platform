@@ -2,6 +2,7 @@ using Application.Abstractions;
 using Application.Animes;
 using Domain.Abstractions;
 using Domain.Entities;
+using Domain.ValueObjects;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 
@@ -29,15 +30,15 @@ public class RateAnimeHandlerTests
     {
         var userId = Guid.NewGuid();
         var animeId = Guid.NewGuid();
-        var anime = new Anime("Test", "Original", "Description", 2024, AnimeStatus.Airing);
+        var anime = new Anime(Description.Create("Test", 500), Description.Create("Original", 500), "Description", ReleaseYear.Create(2024), AnimeStatus.Airing);
 
         _currentUser.IsAuthenticated.Returns(true);
         _currentUser.UserId.Returns(userId);
         _animeRepository.GetByIdAsync(animeId, Arg.Any<CancellationToken>()).Returns(anime);
         _userAnimeRepository.GetByUserAndAnimeAsync(userId, animeId, Arg.Any<CancellationToken>())
             .ReturnsNull();
-        var ratedUserAnime = new Domain.Associations.UserAnime(userId, animeId, WatchStatus.Planned);
-        ratedUserAnime.Rate(8.0);
+        var ratedUserAnime = new Domain.Entities.UserAnime(userId, animeId, WatchStatus.Planned);
+        ratedUserAnime.Rate(Rating.Create(8.0));
         _userAnimeRepository.GetByAnimeIdAsync(animeId, Arg.Any<CancellationToken>())
             .Returns(new List<Domain.Entities.UserAnime>
             {
@@ -80,8 +81,8 @@ public class RateAnimeHandlerTests
     {
         var userId = Guid.NewGuid();
         var animeId = Guid.NewGuid();
-        var anime = new Anime("Test", "Original", "Description", 2024, AnimeStatus.Airing);
-        var existingUserAnime = new Domain.Associations.UserAnime(userId, animeId, WatchStatus.Watching);
+        var anime = new Anime(Description.Create("Test", 500), Description.Create("Original", 500), "Description", ReleaseYear.Create(2024), AnimeStatus.Airing);
+        var existingUserAnime = new Domain.Entities.UserAnime(userId, animeId, WatchStatus.Watching);
 
         _currentUser.IsAuthenticated.Returns(true);
         _currentUser.UserId.Returns(userId);
@@ -96,7 +97,7 @@ public class RateAnimeHandlerTests
 
         await _handler.Handle(new RateAnimeCommand(animeId, 7.5), CancellationToken.None);
 
-        Assert.Equal(7.5, existingUserAnime.UserRating);
+        Assert.Equal(7.5, existingUserAnime.UserRating?.Value);
         await _userAnimeRepository.DidNotReceive().AddAsync(Arg.Any<Domain.Entities.UserAnime>(), Arg.Any<CancellationToken>());
     }
 
@@ -105,19 +106,19 @@ public class RateAnimeHandlerTests
     {
         var userId = Guid.NewGuid();
         var animeId = Guid.NewGuid();
-        var anime = new Anime("Test", "Original", "Description", 2024, AnimeStatus.Airing);
+        var anime = new Anime(Description.Create("Test", 500), Description.Create("Original", 500), "Description", ReleaseYear.Create(2024), AnimeStatus.Airing);
 
-        var unratedUserAnime = new Domain.Associations.UserAnime(userId, animeId, WatchStatus.Planned);
+        var unratedUserAnime = new Domain.Entities.UserAnime(userId, animeId, WatchStatus.Planned);
 
         var anotherUserId = Guid.NewGuid();
-        var ratedUserAnime = new Domain.Associations.UserAnime(anotherUserId, animeId, WatchStatus.Completed);
-        ratedUserAnime.Rate(7.0);
+        var ratedUserAnime = new Domain.Entities.UserAnime(anotherUserId, animeId, WatchStatus.Completed);
+        ratedUserAnime.Rate(Rating.Create(7.0));
 
         var yetAnotherUserId = Guid.NewGuid();
-        var ratedUserAnime2 = new Domain.Associations.UserAnime(yetAnotherUserId, animeId, WatchStatus.Watching);
-        ratedUserAnime2.Rate(9.0);
+        var ratedUserAnime2 = new Domain.Entities.UserAnime(yetAnotherUserId, animeId, WatchStatus.Watching);
+        ratedUserAnime2.Rate(Rating.Create(9.0));
 
-        var currentUserAnime = new Domain.Associations.UserAnime(userId, animeId, WatchStatus.Planned);
+        var currentUserAnime = new Domain.Entities.UserAnime(userId, animeId, WatchStatus.Planned);
 
         _currentUser.IsAuthenticated.Returns(true);
         _currentUser.UserId.Returns(userId);

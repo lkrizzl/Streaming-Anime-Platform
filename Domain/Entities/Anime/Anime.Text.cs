@@ -4,19 +4,19 @@ namespace Domain.Entities;
 
 public partial class Anime
 {
-    public void UpdateTitle(Title title)
+    public void UpdateTitle(Description title)
     {
         Title = title;
         UpdatedOnUtc = UtcNow;
     }
 
-    public void UpdateOriginalTitle(Title originalTitle)
+    public void UpdateOriginalTitle(Description originalTitle)
     {
         OriginalTitle = originalTitle;
         UpdatedOnUtc = UtcNow;
     }
 
-    public void UpdateEnglishTitle(Title? englishTitle)
+    public void UpdateEnglishTitle(Description? englishTitle)
     {
         EnglishTitle = englishTitle;
         UpdatedOnUtc = UtcNow;

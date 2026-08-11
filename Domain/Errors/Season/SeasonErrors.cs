@@ -15,4 +15,8 @@ public static class SeasonErrors
     public static Error EndDateBeforeStartDate() => new(
         "EndDateBeforeStartDate",
         "End date cannot be before start date.");
+
+    public static Error EpisodeNumberAlreadyExists(int episodeNumber, Guid seasonId) => new(
+        "EpisodeNumberAlreadyExists",
+        $"Episode number {episodeNumber} already exists in season '{seasonId}'.");
 }

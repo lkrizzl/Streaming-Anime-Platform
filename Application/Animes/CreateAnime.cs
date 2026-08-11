@@ -107,14 +107,14 @@ public class CreateAnimeHandler(
     public async Task<AnimeResponse> Handle(CreateAnimeCommand request, CancellationToken ct)
     {
         var anime = new Domain.Entities.Anime(
-            Title.Create(request.Title),
-            Title.Create(request.OriginalTitle),
+            Description.Create(request.Title, 500),
+            Description.Create(request.OriginalTitle, 500),
             request.Description,
             ReleaseYear.Create(request.ReleaseYear),
             request.Status);
 
         if (request.EnglishTitle is not null)
-            anime.UpdateEnglishTitle(Title.Create(request.EnglishTitle!));
+            anime.UpdateEnglishTitle(Description.Create(request.EnglishTitle!, 500));
 
         if (request.CoverImageUrl is not null)
             anime.SetCoverImage(request.CoverImageUrl);
@@ -154,7 +154,7 @@ public class CreateAnimeHandler(
         anime.Id,
         anime.Title,
         anime.OriginalTitle,
-        anime.EnglishTitle,
+        anime.EnglishTitle?.Value,
         anime.Description,
         anime.ReleaseYear,
         anime.Status,

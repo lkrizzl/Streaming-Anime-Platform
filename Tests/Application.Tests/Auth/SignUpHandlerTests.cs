@@ -67,22 +67,22 @@ public class SignUpHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WithInvalidEmail_ThrowsEntityValidationException()
+    public async Task Handle_WithInvalidEmail_ThrowsValidationException()
     {
         var act = async () => await _handler.Handle(
             new SignUpCommand("invalid-email", "testuser", "StrongPass1"),
             CancellationToken.None);
 
-        await Assert.ThrowsAsync<EntityValidationException>(act);
+        await Assert.ThrowsAsync<ValidationException>(act);
     }
 
     [Fact]
-    public async Task Handle_WithShortPassword_ThrowsEntityValidationException()
+    public async Task Handle_WithShortPassword_ThrowsValidationException()
     {
         var act = async () => await _handler.Handle(
             new SignUpCommand("test@example.com", "testuser", "Ab1"),
             CancellationToken.None);
 
-        await Assert.ThrowsAsync<EntityValidationException>(act);
+        await Assert.ThrowsAsync<ValidationException>(act);
     }
 }

@@ -62,7 +62,7 @@ public class UserTests
 
         user.UpdateAvatar("https://example.com/avatar.jpg");
 
-        Assert.Equal("https://example.com/avatar.jpg", user.AvatarUrl);
+        Assert.Equal("https://example.com/avatar.jpg", user.AvatarUrl?.Value);
     }
 
     [Fact]

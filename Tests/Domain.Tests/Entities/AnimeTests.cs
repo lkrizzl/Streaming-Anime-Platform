@@ -1,5 +1,6 @@
 using Domain.Entities;
 using Domain.Exceptions;
+using Domain.ValueObjects;
 
 namespace Domain.Tests.Entities;
 
@@ -8,7 +9,7 @@ public class AnimeTests
     [Fact]
     public void Constructor_WithValidData_SetsProperties()
     {
-        var anime = new Anime("Title", "Original", "Description", 2024, AnimeStatus.Airing);
+        var anime = new Anime(Description.Create("Title", 500), Description.Create("Original", 500), "Description", ReleaseYear.Create(2024), AnimeStatus.Airing);
 
         Assert.NotEqual(Guid.Empty, anime.Id);
         Assert.Equal("Title", anime.Title);
@@ -17,32 +18,8 @@ public class AnimeTests
         Assert.Equal(2024, anime.ReleaseYear);
         Assert.Equal(AnimeStatus.Airing, anime.Status);
         Assert.True(anime.IsActive);
-        Assert.Equal(0, anime.AverageRating);
+        Assert.Equal(0.0, anime.AverageRating);
         Assert.Equal(0, anime.RatingCount);
-    }
-
-    [Fact]
-    public void Constructor_WithNullTitle_ThrowsValidationException()
-    {
-        var act = () => new Anime(null!, "Original", "Description", 2024, AnimeStatus.Announced);
-
-        Assert.Throws<ValidationException>(act);
-    }
-
-    [Fact]
-    public void Constructor_WithNullOriginalTitle_ThrowsValidationException()
-    {
-        var act = () => new Anime("Title", null!, "Description", 2024, AnimeStatus.Announced);
-
-        Assert.Throws<ValidationException>(act);
-    }
-
-    [Fact]
-    public void Constructor_WithNullDescription_ThrowsValidationException()
-    {
-        var act = () => new Anime("Title", "Original", null!, 2024, AnimeStatus.Announced);
-
-        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
@@ -50,19 +27,9 @@ public class AnimeTests
     {
         var anime = CreateDefaultAnime();
 
-        anime.UpdateTitle("New Title");
+        anime.UpdateTitle(Description.Create("New Title", 500));
 
         Assert.Equal("New Title", anime.Title);
-    }
-
-    [Fact]
-    public void UpdateTitle_WithNull_ThrowsValidationException()
-    {
-        var anime = CreateDefaultAnime();
-
-        var act = () => anime.UpdateTitle(null!);
-
-        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
@@ -70,7 +37,7 @@ public class AnimeTests
     {
         var anime = CreateDefaultAnime();
 
-        anime.UpdateOriginalTitle("New Original");
+        anime.UpdateOriginalTitle(Description.Create("New Original", 500));
 
         Assert.Equal("New Original", anime.OriginalTitle);
     }
@@ -86,23 +53,13 @@ public class AnimeTests
     }
 
     [Fact]
-    public void UpdateDescription_WithNull_ThrowsValidationException()
-    {
-        var anime = CreateDefaultAnime();
-
-        var act = () => anime.UpdateDescription(null!);
-
-        Assert.Throws<ValidationException>(act);
-    }
-
-    [Fact]
     public void UpdateEnglishTitle_WithValidValue_SetsProperty()
     {
         var anime = CreateDefaultAnime();
 
-        anime.UpdateEnglishTitle("English Title");
+        anime.UpdateEnglishTitle(Description.Create("English Title", 500));
 
-        Assert.Equal("English Title", anime.EnglishTitle);
+        Assert.Equal("English Title", anime.EnglishTitle?.Value);
     }
 
     [Fact]
@@ -116,13 +73,13 @@ public class AnimeTests
     }
 
     [Fact]
-    public void UpdateEnglishTitle_WithWhitespace_ClearsProperty()
+    public void UpdateEnglishTitle_WithWhitespace_ThrowsValidationException()
     {
         var anime = CreateDefaultAnime();
 
-        anime.UpdateEnglishTitle("   ");
+        var act = () => anime.UpdateEnglishTitle(Description.Create("   ", 500));
 
-        Assert.Null(anime.EnglishTitle);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
@@ -140,7 +97,7 @@ public class AnimeTests
     {
         var anime = CreateDefaultAnime();
 
-        anime.UpdateRating(7.5, 100);
+        anime.UpdateRating(Rating.Create(7.5), 100);
 
         Assert.Equal(7.5, anime.AverageRating);
         Assert.Equal(100, anime.RatingCount);
@@ -153,7 +110,7 @@ public class AnimeTests
 
         anime.SetCoverImage("https://example.com/cover.jpg");
 
-        Assert.Equal("https://example.com/cover.jpg", anime.CoverImageUrl);
+        Assert.Equal("https://example.com/cover.jpg", anime.CoverImageUrl?.Value);
     }
 
     [Fact]
@@ -174,7 +131,7 @@ public class AnimeTests
 
         anime.SetBannerImage("https://example.com/banner.jpg");
 
-        Assert.Equal("https://example.com/banner.jpg", anime.BannerImageUrl);
+        Assert.Equal("https://example.com/banner.jpg", anime.BannerImageUrl?.Value);
     }
 
     [Fact]
@@ -194,9 +151,9 @@ public class AnimeTests
 
         anime.SetTrailerUrl("https://example.com/trailer.mp4");
 
-        Assert.Equal("https://example.com/trailer.mp4", anime.TrailerUrl);
+        Assert.Equal("https://example.com/trailer.mp4", anime.TrailerUrl?.Value);
     }
 
     private static Anime CreateDefaultAnime()
-        => new("Title", "Original", "Description", 2024, AnimeStatus.Announced);
+        => new(Description.Create("Title", 500), Description.Create("Original", 500), "Description", ReleaseYear.Create(2024), AnimeStatus.Announced);
 }

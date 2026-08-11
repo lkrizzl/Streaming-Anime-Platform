@@ -23,54 +23,54 @@ public class EmailTests
     }
 
     [Fact]
-    public void Create_WithNull_ThrowsEntityValidationException()
+    public void Create_WithNull_ThrowsValidationException()
     {
         var act = () => Email.Create(null);
 
-        Assert.Throws<EntityValidationException>(act);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
-    public void Create_WithEmptyString_ThrowsEntityValidationException()
+    public void Create_WithEmptyString_ThrowsValidationException()
     {
         var act = () => Email.Create("");
 
-        Assert.Throws<EntityValidationException>(act);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
-    public void Create_WithWhitespace_ThrowsEntityValidationException()
+    public void Create_WithWhitespace_ThrowsValidationException()
     {
         var act = () => Email.Create("   ");
 
-        Assert.Throws<EntityValidationException>(act);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
-    public void Create_WithTooLongEmail_ThrowsEntityValidationException()
+    public void Create_WithTooLongEmail_ThrowsValidationException()
     {
         var localPart = new string('a', 250);
         var longEmail = $"{localPart}@b.com";
 
         var act = () => Email.Create(longEmail);
 
-        Assert.Throws<EntityValidationException>(act);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
-    public void Create_WithoutAtSymbol_ThrowsEntityValidationException()
+    public void Create_WithoutAtSymbol_ThrowsValidationException()
     {
         var act = () => Email.Create("invalid-email");
 
-        Assert.Throws<EntityValidationException>(act);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
-    public void Create_WithoutDomain_ThrowsEntityValidationException()
+    public void Create_WithoutDomain_ThrowsValidationException()
     {
         var act = () => Email.Create("user@");
 
-        Assert.Throws<EntityValidationException>(act);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]

@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using Domain.Entities;
+using Domain.ValueObjects;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence;
 
@@ -127,8 +128,8 @@ public class AnimeIntegrationTests : IntegrationTestBase
             {
                 foreach (var genreName in genres)
                 {
-                    if (!context.Genres.Any(g => g.Name == genreName))
-                        context.Genres.Add(new Genre(genreName));
+                    if (!context.Genres.Any(g => g.Name.Value == genreName))
+                        context.Genres.Add(new Genre(GenreName.Create(genreName)));
                 }
             }
 
@@ -136,8 +137,8 @@ public class AnimeIntegrationTests : IntegrationTestBase
             {
                 foreach (var studioName in studios)
                 {
-                    if (!context.Studios.Any(s => s.Name == studioName))
-                        context.Studios.Add(new Studio(studioName));
+                    if (!context.Studios.Any(s => s.Name.Value == studioName))
+                        context.Studios.Add(new Studio(StudioName.Create(studioName)));
                 }
             }
 

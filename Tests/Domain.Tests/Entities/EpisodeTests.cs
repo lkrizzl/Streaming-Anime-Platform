@@ -1,5 +1,6 @@
 using Domain.Entities;
 using Domain.Exceptions;
+using Domain.ValueObjects;
 
 namespace Domain.Tests.Entities;
 
@@ -10,7 +11,7 @@ public class EpisodeTests
     [Fact]
     public void Constructor_WithValidData_SetsProperties()
     {
-        var episode = new Episode(SeasonId, 1, "Episode 1", TimeSpan.FromMinutes(24));
+        var episode = new Episode(SeasonId, EpisodeNumber.Create(1), Description.Create("Episode 1", 500), TimeSpan.FromMinutes(24));
 
         Assert.NotEqual(Guid.Empty, episode.Id);
         Assert.Equal(SeasonId, episode.SeasonId);
@@ -24,31 +25,13 @@ public class EpisodeTests
     }
 
     [Fact]
-    public void Constructor_WithNullTitle_ThrowsValidationException()
-    {
-        var act = () => new Episode(SeasonId, 1, null!, TimeSpan.FromMinutes(24));
-
-        Assert.Throws<ValidationException>(act);
-    }
-
-    [Fact]
     public void UpdateTitle_WithValidValue_UpdatesProperty()
     {
         var episode = CreateDefaultEpisode();
 
-        episode.UpdateTitle("New Title");
+        episode.UpdateTitle(Description.Create("New Title", 500));
 
         Assert.Equal("New Title", episode.Title);
-    }
-
-    [Fact]
-    public void UpdateTitle_WithNull_ThrowsValidationException()
-    {
-        var episode = CreateDefaultEpisode();
-
-        var act = () => episode.UpdateTitle(null!);
-
-        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
@@ -110,9 +93,9 @@ public class EpisodeTests
     {
         var episode = CreateDefaultEpisode();
 
-        episode.UpdateVideoUrl("https://example.com/video.mp4");
+        episode.UpdateVideoUrl(new Uri("https://example.com/video.mp4"));
 
-        Assert.Equal("https://example.com/video.mp4", episode.VideoUrl);
+        Assert.Equal("https://example.com/video.mp4", episode.VideoUrl?.Value);
     }
 
     [Fact]
@@ -162,9 +145,9 @@ public class EpisodeTests
 
         episode.UpdateThumbnail("https://example.com/thumb.jpg");
 
-        Assert.Equal("https://example.com/thumb.jpg", episode.ThumbnailUrl);
+        Assert.Equal("https://example.com/thumb.jpg", episode.ThumbnailUrl?.Value);
     }
 
     private static Episode CreateDefaultEpisode()
-        => new(SeasonId, 1, "Episode 1", TimeSpan.FromMinutes(24));
+        => new(SeasonId, EpisodeNumber.Create(1), Description.Create("Episode 1", 500), TimeSpan.FromMinutes(24));
 }

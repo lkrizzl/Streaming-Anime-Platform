@@ -19,7 +19,7 @@ public class GetAnimeHandler(IAnimeRepository animeRepository)
             anime.Id,
             anime.Title,
             anime.OriginalTitle,
-            anime.EnglishTitle,
+            anime.EnglishTitle?.Value,
             anime.Description,
             anime.ReleaseYear,
             anime.Status,

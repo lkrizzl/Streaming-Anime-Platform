@@ -8,5 +8,5 @@ public static class DescriptionErrors
         new Error("Description", "Description cannot be empty.");
 
     public static Error DescriptionTooLong(int maxLength) =>
-        new Error("Description", maxLength.ToString());
+        new Error("Description", $"Description cannot exceed {maxLength} characters.");
 }

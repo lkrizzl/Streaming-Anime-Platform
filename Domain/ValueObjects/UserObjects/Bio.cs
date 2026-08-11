@@ -1,7 +1,7 @@
 ﻿using Domain.Errors;
 using Domain.Exceptions;
 
-namespace Domain.ValueObjects.UserObjectsp;
+namespace Domain.ValueObjects.UserObjects;
 
 public record Bio
 {

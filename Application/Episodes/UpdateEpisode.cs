@@ -48,7 +48,7 @@ public class UpdateEpisodeHandler(
         var episode = await episodeRepository.GetByIdAsync(request.Id, ct)
             ?? throw new NotFoundException(EpisodeErrors.EpisodeNotFound(request.Id));
 
-        episode.UpdateTitle(Title.Create(request.Title));
+        episode.UpdateTitle(Description.Create(request.Title, 500));
         episode.UpdateDescription(request.Description);
         episode.UpdateDuration(request.Duration);
 

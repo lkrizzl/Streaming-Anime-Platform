@@ -1,5 +1,6 @@
 using Domain.Entities;
 using Domain.Exceptions;
+using Domain.ValueObjects;
 
 namespace Domain.Tests.Entities;
 
@@ -38,10 +39,10 @@ public class UserAnimeTests
     {
         var userAnime = CreateDefault();
 
-        userAnime.UpdateProgress(5, 50.0);
+        userAnime.UpdateProgress(EpisodeNumber.Create(5), ProgressPercent.Create(50.0));
 
-        Assert.Equal(5, userAnime.LastWatchedEpisodeNumber);
-        Assert.Equal(50.0, userAnime.ProgressPercentage);
+        Assert.Equal(5, userAnime.LastWatchedEpisodeNumber?.Value);
+        Assert.Equal(50.0, userAnime.ProgressPercentage?.Value);
     }
 
     [Fact]
@@ -49,29 +50,29 @@ public class UserAnimeTests
     {
         var userAnime = CreateDefault();
 
-        var act = () => userAnime.UpdateProgress(0, 50.0);
+        var act = () => userAnime.UpdateProgress(EpisodeNumber.Create(0), ProgressPercent.Create(50.0));
 
         Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
-    public void UpdateProgress_ClampsPercentageTo100()
+    public void UpdateProgress_WithAboveMaxPercentage_ThrowsValidationException()
     {
         var userAnime = CreateDefault();
 
-        userAnime.UpdateProgress(10, 150.0);
+        var act = () => userAnime.UpdateProgress(EpisodeNumber.Create(10), ProgressPercent.Create(150.0));
 
-        Assert.Equal(100.0, userAnime.ProgressPercentage);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
-    public void UpdateProgress_ClampsPercentageTo0()
+    public void UpdateProgress_WithBelowMinPercentage_ThrowsValidationException()
     {
         var userAnime = CreateDefault();
 
-        userAnime.UpdateProgress(1, -10.0);
+        var act = () => userAnime.UpdateProgress(EpisodeNumber.Create(1), ProgressPercent.Create(-10.0));
 
-        Assert.Equal(0, userAnime.ProgressPercentage);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
@@ -79,9 +80,9 @@ public class UserAnimeTests
     {
         var userAnime = CreateDefault();
 
-        userAnime.Rate(8.5);
+        userAnime.Rate(Rating.Create(8.5));
 
-        Assert.Equal(8.5, userAnime.UserRating);
+        Assert.Equal(8.5, userAnime.UserRating?.Value);
     }
 
     [Fact]
@@ -89,7 +90,7 @@ public class UserAnimeTests
     {
         var userAnime = CreateDefault();
 
-        var act = () => userAnime.Rate(0.5);
+        var act = () => userAnime.Rate(Rating.Create(-0.5));
 
         Assert.Throws<ValidationException>(act);
     }
@@ -99,7 +100,7 @@ public class UserAnimeTests
     {
         var userAnime = CreateDefault();
 
-        var act = () => userAnime.Rate(10.5);
+        var act = () => userAnime.Rate(Rating.Create(10.5));
 
         Assert.Throws<ValidationException>(act);
     }

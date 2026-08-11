@@ -14,14 +14,14 @@ public class StudioRepository(AppDbContext dbContext) : IStudioRepository
     public async Task<Studio?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
     {
         return await dbContext.Studios.FirstOrDefaultAsync(
-            s => EF.Functions.ILike(s.Name, name), cancellationToken);
+            s => EF.Functions.ILike(s.Name.Value, name), cancellationToken);
     }
 
     public async Task<PaginatedList<Studio>> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken = default)
     {
         var query = dbContext.Studios
             .Where(s => s.IsActive)
-            .OrderBy(s => s.Name);
+            .OrderBy(s => s.Name.Value);
 
         var totalCount = await query.CountAsync(cancellationToken);
 

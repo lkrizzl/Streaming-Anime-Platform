@@ -33,67 +33,67 @@ public class PasswordTests
     }
 
     [Fact]
-    public void Create_WithNull_ThrowsEntityValidationException()
+    public void Create_WithNull_ThrowsValidationException()
     {
         var act = () => Password.Create(null);
 
-        Assert.Throws<EntityValidationException>(act);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
-    public void Create_WithEmptyString_ThrowsEntityValidationException()
+    public void Create_WithEmptyString_ThrowsValidationException()
     {
         var act = () => Password.Create("");
 
-        Assert.Throws<EntityValidationException>(act);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
-    public void Create_WithTooShortPassword_ThrowsEntityValidationException()
+    public void Create_WithTooShortPassword_ThrowsValidationException()
     {
         var act = () => Password.Create("Ab1");
 
-        Assert.Throws<EntityValidationException>(act);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
-    public void Create_WithTooLongPassword_ThrowsEntityValidationException()
+    public void Create_WithTooLongPassword_ThrowsValidationException()
     {
         var act = () => Password.Create(new string('a', 65) + "1A");
 
-        Assert.Throws<EntityValidationException>(act);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
-    public void Create_WithoutLetters_ThrowsEntityValidationException()
+    public void Create_WithoutLetters_ThrowsValidationException()
     {
         var act = () => Password.Create("12345678");
 
-        Assert.Throws<EntityValidationException>(act);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
-    public void Create_WithoutDigits_ThrowsEntityValidationException()
+    public void Create_WithoutDigits_ThrowsValidationException()
     {
         var act = () => Password.Create("abcdefgh");
 
-        Assert.Throws<EntityValidationException>(act);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
-    public void Create_WithOnlyLetters_ThrowsEntityValidationException()
+    public void Create_WithOnlyLetters_ThrowsValidationException()
     {
         var act = () => Password.Create("abcdefgh");
 
-        Assert.Throws<EntityValidationException>(act);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
-    public void Create_WithOnlyDigits_ThrowsEntityValidationException()
+    public void Create_WithOnlyDigits_ThrowsValidationException()
     {
         var act = () => Password.Create("12345678");
 
-        Assert.Throws<EntityValidationException>(act);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]

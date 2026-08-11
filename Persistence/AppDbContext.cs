@@ -171,7 +171,7 @@ public class AppDbContext : DbContext
                 {
                     builder.Property(x => x.Value)
                         .HasColumnName("Title")
-                        .HasMaxLength(Domain.ValueObjects.Title.MaxLength)
+                        .HasMaxLength(500)
                         .IsRequired();
                 });
 
@@ -181,7 +181,7 @@ public class AppDbContext : DbContext
                 {
                     builder.Property(x => x.Value)
                         .HasColumnName("OriginalTitle")
-                        .HasMaxLength(Domain.ValueObjects.Title.MaxLength)
+                        .HasMaxLength(500)
                         .IsRequired();
                 });
 
@@ -191,7 +191,7 @@ public class AppDbContext : DbContext
                 {
                     builder.Property(x => x.Value)
                         .HasColumnName("EnglishTitle")
-                        .HasMaxLength(Domain.ValueObjects.Title.MaxLength);
+                        .HasMaxLength(500);
                 });
 
             e.Property(x => x.Description)
@@ -285,8 +285,6 @@ public class AppDbContext : DbContext
 
             e.Ignore(x => x.Genres);
             e.Ignore(x => x.Studios);
-
-            e.HasIndex("Title");
         });
     }
 
@@ -316,7 +314,7 @@ public class AppDbContext : DbContext
                 {
                     builder.Property(x => x.Value)
                         .HasColumnName("Title")
-                        .HasMaxLength(Domain.ValueObjects.Title.MaxLength)
+                        .HasMaxLength(500)
                         .IsRequired();
                 });
 
@@ -365,7 +363,7 @@ public class AppDbContext : DbContext
                 {
                     builder.Property(x => x.Value)
                         .HasColumnName("Title")
-                        .HasMaxLength(Domain.ValueObjects.Title.MaxLength)
+                        .HasMaxLength(500)
                         .IsRequired();
                 });
 
@@ -375,8 +373,14 @@ public class AppDbContext : DbContext
             e.Property(x => x.Duration)
                 .IsRequired();
 
-            e.Property(x => x.VideoUrl)
-                .HasMaxLength(1000);
+            e.ComplexProperty(
+                x => x.VideoUrl,
+                builder =>
+                {
+                    builder.Property(x => x.Value)
+                        .HasColumnName("VideoUrl")
+                        .HasMaxLength(Domain.ValueObjects.AnimeObjects.VideoUrl.MaxLength);
+                });
 
             e.ComplexProperty(
                 x => x.ThumbnailUrl,
@@ -427,9 +431,6 @@ public class AppDbContext : DbContext
 
             e.Property(x => x.CreatedOnUtc)
                 .IsRequired();
-
-            e.HasIndex(x => x.Name)
-                .IsUnique();
         });
     }
 
@@ -474,9 +475,6 @@ public class AppDbContext : DbContext
 
             e.Property(x => x.CreatedOnUtc)
                 .IsRequired();
-
-            e.HasIndex("Name")
-                .IsUnique();
         });
     }
 
@@ -530,6 +528,30 @@ public class AppDbContext : DbContext
 
             e.Property(x => x.Notes)
                 .HasMaxLength(2000);
+
+            e.ComplexProperty(
+                x => x.LastWatchedEpisodeNumber,
+                builder =>
+                {
+                    builder.Property(x => x.Value)
+                        .HasColumnName("LastWatchedEpisodeNumber");
+                });
+
+            e.ComplexProperty(
+                x => x.ProgressPercentage,
+                builder =>
+                {
+                    builder.Property(x => x.Value)
+                        .HasColumnName("ProgressPercentage");
+                });
+
+            e.ComplexProperty(
+                x => x.UserRating,
+                builder =>
+                {
+                    builder.Property(x => x.Value)
+                        .HasColumnName("UserRating");
+                });
 
             e.Property(x => x.IsFavorite)
                 .IsRequired();

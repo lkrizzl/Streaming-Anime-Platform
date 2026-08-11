@@ -3,6 +3,7 @@ using Application.Abstractions;
 using Application.Animes;
 using Domain;
 using Domain.Entities;
+using Domain.ValueObjects;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 
@@ -50,7 +51,7 @@ public class GetAnimeHandlerTests
     {
         var animeId = Guid.NewGuid();
         var anime = CreateAnime(animeId);
-        var genre = new Genre("Action");
+        var genre = new Genre(GenreName.Create("Action"));
         AddGenreToAnime(anime, genre);
         _animeRepository.GetByIdAsync(animeId, Arg.Any<CancellationToken>()).Returns(anime);
 
@@ -69,7 +70,7 @@ public class GetAnimeHandlerTests
 
     private static Anime CreateAnime(Guid? id = null)
     {
-        var anime = new Anime("Test Anime", "Test Original", "Test Description", 2024, AnimeStatus.Airing);
+        var anime = new Anime(Description.Create("Test Anime", 500), Description.Create("Test Original", 500), "Test Description", ReleaseYear.Create(2024), AnimeStatus.Airing);
 
         if (id.HasValue)
         {

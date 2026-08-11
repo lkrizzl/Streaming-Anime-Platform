@@ -5,7 +5,7 @@ namespace Domain.Entities;
 
 public partial class Anime
 {
-    public Season AddSeason(SeasonNumber seasonNumber, Title title, string description)
+    public Season AddSeason(SeasonNumber seasonNumber, Description title, string description)
     {
         //if (Seasons.Any(s => s.SeasonNumber == seasonNumber))
             //throw new ValidationException($"Season number {seasonNumber} already exists for this anime.");

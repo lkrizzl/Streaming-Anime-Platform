@@ -90,9 +90,9 @@ public class UpdateAnimeHandler(
         var anime = await animeRepository.GetByIdAsync(request.Id, ct)
             ?? throw new NotFoundException(AnimeErrors.AnimeNotFound(request.Id));
 
-        anime.UpdateTitle(Title.Create(request.Title));
-        anime.UpdateOriginalTitle(Title.Create(request.OriginalTitle));
-        anime.UpdateEnglishTitle(request.EnglishTitle is not null ? Title.Create(request.EnglishTitle) : null);
+        anime.UpdateTitle(Description.Create(request.Title, 500));
+        anime.UpdateOriginalTitle(Description.Create(request.OriginalTitle, 500));
+        anime.UpdateEnglishTitle(request.EnglishTitle is not null ? Description.Create(request.EnglishTitle, 500) : null);
         anime.UpdateDescription(request.Description);
 
         anime.SetCoverImage(request.CoverImageUrl);

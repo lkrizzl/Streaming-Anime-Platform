@@ -20,7 +20,7 @@ public record EpisodeResponse(
     string Title,
     string? Description,
     TimeSpan Duration,
-    Uri VideoUrl,
+    string? VideoUrl,
     string? ThumbnailUrl,
     DateTime? ReleaseDateUtc,
     bool IsPublished);
@@ -55,7 +55,7 @@ public class CreateEpisodeHandler(
 
         var episode = season.AddEpisode(
             EpisodeNumber.Create(request.EpisodeNumber),
-            Title.Create(request.Title),
+            Description.Create(request.Title, 500),
             request.Duration);
 
         await unitOfWork.SaveChangesAsync(ct);
@@ -67,7 +67,7 @@ public class CreateEpisodeHandler(
             episode.Title,
             episode.Description,
             episode.Duration,
-            episode.VideoUrl,
+            episode.VideoUrl?.Value,
             episode.ThumbnailUrl?.Value,
             episode.ReleaseDateUtc,
             episode.IsPublished);

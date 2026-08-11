@@ -2,6 +2,7 @@ using System.Reflection;
 using Application.Abstractions;
 using Application.Animes;
 using Domain.Entities;
+using Domain.ValueObjects;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 
@@ -59,9 +60,9 @@ public class CreateAnimeHandlerTests
     [Fact]
     public async Task Handle_WithValidData_CreatesAnime()
     {
-        var actionGenre = new Genre("Action");
-        var comedyGenre = new Genre("Comedy");
-        var mappaStudio = new Studio("MAPPA");
+        var actionGenre = new Genre(GenreName.Create("Action"));
+        var comedyGenre = new Genre(GenreName.Create("Comedy"));
+        var mappaStudio = new Studio(StudioName.Create("MAPPA"));
 
         _knownGenres[actionGenre.Id] = actionGenre;
         _knownGenres[comedyGenre.Id] = comedyGenre;
@@ -139,7 +140,7 @@ public class CreateAnimeHandlerTests
     public async Task Handle_WhenStudioNotFound_ThrowsNotFoundException()
     {
         _genreRepository.GetByNameAsync("Action", Arg.Any<CancellationToken>())
-            .Returns(new Genre("Action"));
+            .Returns(new Genre(GenreName.Create("Action")));
         _studioRepository.GetByNameAsync("NonExistent", Arg.Any<CancellationToken>())
             .ReturnsNull();
 

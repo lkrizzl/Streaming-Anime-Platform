@@ -54,7 +54,7 @@ public class CreateSeasonHandler(
 
         var season = anime.AddSeason(
             SeasonNumber.Create(request.SeasonNumber),
-            Title.Create(request.Title),
+            Description.Create(request.Title, 500),
             request.Description);
 
         await unitOfWork.SaveChangesAsync(ct);

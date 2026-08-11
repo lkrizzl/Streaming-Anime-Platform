@@ -4,7 +4,7 @@ namespace Domain.Entities;
 
 public partial class Season
 {
-    public void UpdateTitle(Title newTitle)
+    public void UpdateTitle(Description newTitle)
     {
         Title = newTitle;
         UpdatedOnUtc = UtcNow;

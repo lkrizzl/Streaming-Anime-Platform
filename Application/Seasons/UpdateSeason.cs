@@ -40,7 +40,7 @@ public class UpdateSeasonHandler(
         var season = await seasonRepository.GetByIdAsync(request.Id, ct)
             ?? throw new NotFoundException(SeasonErrors.SeasonNotFound(request.Id));
 
-        season.UpdateTitle(Title.Create(request.Title));
+        season.UpdateTitle(Description.Create(request.Title, 500));
         season.UpdateDescription(request.Description);
         season.UpdateDates(request.StartDate, request.EndDate);
 

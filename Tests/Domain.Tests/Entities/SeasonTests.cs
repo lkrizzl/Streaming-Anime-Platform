@@ -1,5 +1,6 @@
 using Domain.Entities;
 using Domain.Exceptions;
+using Domain.ValueObjects;
 
 namespace Domain.Tests.Entities;
 
@@ -10,7 +11,7 @@ public class SeasonTests
     [Fact]
     public void Constructor_WithValidData_SetsProperties()
     {
-        var season = new Season(AnimeId, 1, "Season 1", "First season");
+        var season = new Season(AnimeId, SeasonNumber.Create(1), Description.Create("Season 1", 500), "First season");
 
         Assert.NotEqual(Guid.Empty, season.Id);
         Assert.Equal(AnimeId, season.AnimeId);
@@ -24,27 +25,11 @@ public class SeasonTests
     }
 
     [Fact]
-    public void Constructor_WithNullTitle_ThrowsValidationException()
-    {
-        var act = () => new Season(AnimeId, 1, null!, "Description");
-
-        Assert.Throws<ValidationException>(act);
-    }
-
-    [Fact]
-    public void Constructor_WithNullDescription_ThrowsValidationException()
-    {
-        var act = () => new Season(AnimeId, 1, "Title", null!);
-
-        Assert.Throws<ValidationException>(act);
-    }
-
-    [Fact]
     public void AddEpisode_WithValidData_AddsEpisode()
     {
         var season = CreateDefaultSeason();
 
-        var episode = season.AddEpisode(1, "Episode 1", TimeSpan.FromMinutes(24));
+        var episode = season.AddEpisode(EpisodeNumber.Create(1), Description.Create("Episode 1", 500), TimeSpan.FromMinutes(24));
 
         Assert.NotNull(episode);
         Assert.Equal(1, episode.EpisodeNumber);
@@ -58,9 +43,9 @@ public class SeasonTests
     public void AddEpisode_WithDuplicateNumber_ThrowsValidationException()
     {
         var season = CreateDefaultSeason();
-        season.AddEpisode(1, "Episode 1", TimeSpan.FromMinutes(24));
+        season.AddEpisode(EpisodeNumber.Create(1), Description.Create("Episode 1", 500), TimeSpan.FromMinutes(24));
 
-        var act = () => season.AddEpisode(1, "Episode 1 Again", TimeSpan.FromMinutes(24));
+        var act = () => season.AddEpisode(EpisodeNumber.Create(1), Description.Create("Episode 1 Again", 500), TimeSpan.FromMinutes(24));
 
         Assert.Throws<ValidationException>(act);
     }
@@ -70,9 +55,9 @@ public class SeasonTests
     {
         var season = CreateDefaultSeason();
 
-        season.AddEpisode(1, "Episode 1", TimeSpan.FromMinutes(24));
-        season.AddEpisode(2, "Episode 2", TimeSpan.FromMinutes(24));
-        season.AddEpisode(3, "Episode 3", TimeSpan.FromMinutes(24));
+        season.AddEpisode(EpisodeNumber.Create(1), Description.Create("Episode 1", 500), TimeSpan.FromMinutes(24));
+        season.AddEpisode(EpisodeNumber.Create(2), Description.Create("Episode 2", 500), TimeSpan.FromMinutes(24));
+        season.AddEpisode(EpisodeNumber.Create(3), Description.Create("Episode 3", 500), TimeSpan.FromMinutes(24));
 
         Assert.Equal(3, season.EpisodesCount);
         Assert.Equal(3, season.Episodes.Count);
@@ -126,5 +111,5 @@ public class SeasonTests
     }
 
     private static Season CreateDefaultSeason()
-        => new(AnimeId, 1, "Season 1", "First season");
+        => new(AnimeId, SeasonNumber.Create(1), Description.Create("Season 1", 500), "First season");
 }

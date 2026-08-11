@@ -12,7 +12,7 @@ public class Episode : Entity
     public Episode(
         Guid seasonId,
         EpisodeNumber episodeNumber,
-        Title title,
+        Description title,
         TimeSpan duration)
         : base(Guid.NewGuid())
     {
@@ -29,11 +29,11 @@ public class Episode : Entity
     public Guid SeasonId { get; private init; }
 
     public EpisodeNumber EpisodeNumber { get; private set; }
-    public Title Title { get; private set; }
+    public Description Title { get; private set; }
     public string? Description { get; private set; }
 
     public TimeSpan Duration { get; private set; }
-    public VideoUrl VideoUrl { get; private set; }
+    public VideoUrl? VideoUrl { get; private set; }
     public ImageUrl? ThumbnailUrl { get; private set; }
 
     public DateTime? ReleaseDateUtc { get; private set; }
@@ -45,7 +45,7 @@ public class Episode : Entity
 
     public Season Season { get; private set; } = null!;
 
-    public void UpdateTitle(Title title)
+    public void UpdateTitle(Description title)
     {
         Title = title;
         UpdatedOnUtc = UtcNow;
@@ -64,9 +64,9 @@ public class Episode : Entity
         UpdatedOnUtc = UtcNow;
     }
 
-    public void UpdateVideoUrl(Uri videoUrl)
+    public void UpdateVideoUrl(Uri? videoUrl)
     {
-        VideoUrl = videoUrl;
+        VideoUrl = VideoUrl.Create(videoUrl?.AbsoluteUri);
         UpdatedOnUtc = UtcNow;
     }
 

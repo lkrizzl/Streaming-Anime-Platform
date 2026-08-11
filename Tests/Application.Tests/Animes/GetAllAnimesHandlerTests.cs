@@ -2,6 +2,7 @@ using Application.Abstractions;
 using Application.Animes;
 using Domain.Abstractions;
 using Domain.Entities;
+using Domain.ValueObjects;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 
@@ -90,6 +91,6 @@ public class GetAllAnimesHandlerTests
 
     private static Anime CreateAnime(string title = "Test Anime")
     {
-        return new Anime(title, "Original", "Description", 2024, AnimeStatus.Airing);
+        return new Anime(Description.Create(title, 500), Description.Create("Original", 500), "Description", ReleaseYear.Create(2024), AnimeStatus.Airing);
     }
 }

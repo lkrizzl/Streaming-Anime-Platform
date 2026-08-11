@@ -31,59 +31,59 @@ public class UsernameTests
     }
 
     [Fact]
-    public void Create_WithNull_ThrowsEntityValidationException()
+    public void Create_WithNull_ThrowsValidationException()
     {
         var act = () => Username.Create(null);
 
-        Assert.Throws<EntityValidationException>(act);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
-    public void Create_WithEmptyString_ThrowsEntityValidationException()
+    public void Create_WithEmptyString_ThrowsValidationException()
     {
         var act = () => Username.Create("");
 
-        Assert.Throws<EntityValidationException>(act);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
-    public void Create_WithTooShortUsername_ThrowsEntityValidationException()
+    public void Create_WithTooShortUsername_ThrowsValidationException()
     {
         var act = () => Username.Create("ab");
 
-        Assert.Throws<EntityValidationException>(act);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
-    public void Create_WithTooLongUsername_ThrowsEntityValidationException()
+    public void Create_WithTooLongUsername_ThrowsValidationException()
     {
         var act = () => Username.Create(new string('a', 31));
 
-        Assert.Throws<EntityValidationException>(act);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
-    public void Create_WithInvalidCharacters_ThrowsEntityValidationException()
+    public void Create_WithInvalidCharacters_ThrowsValidationException()
     {
         var act = () => Username.Create("user name!");
 
-        Assert.Throws<EntityValidationException>(act);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
-    public void Create_WithLeadingSpecialChar_ThrowsEntityValidationException()
+    public void Create_WithLeadingSpecialChar_ThrowsValidationException()
     {
         var act = () => Username.Create(".john");
 
-        Assert.Throws<EntityValidationException>(act);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
-    public void Create_WithTrailingSpecialChar_ThrowsEntityValidationException()
+    public void Create_WithTrailingSpecialChar_ThrowsValidationException()
     {
         var act = () => Username.Create("john.");
 
-        Assert.Throws<EntityValidationException>(act);
+        Assert.Throws<ValidationException>(act);
     }
 
     [Fact]
