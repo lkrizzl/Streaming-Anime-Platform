@@ -1,5 +1,4 @@
-﻿using Domain.Exceptions;
-using Domain.ValueObjects;
+﻿using Domain.ValueObjects;
 
 namespace Domain.Entities;
 
@@ -16,7 +15,7 @@ public class UserAnime : Entity
 {
     private UserAnime() : base(Guid.NewGuid()) { }
 
-    public UserAnime(Guid userId, Guid animeId, WatchStatus status)
+    internal UserAnime(Guid userId, Guid animeId, WatchStatus status)
         : base(Guid.NewGuid())
     {
         UserId = userId;

@@ -28,15 +28,4 @@ public class UserAnimeRepository(AppDbContext dbContext) : IUserAnimeRepository
             .Where(ua => ua.AnimeId == animeId && ua.UserRating != null)
             .ToListAsync(cancellationToken);
     }
-
-    public async Task AddAsync(UserAnime userAnime, CancellationToken cancellationToken = default)
-    {
-        await dbContext.UserAnimes.AddAsync(userAnime, cancellationToken);
-    }
-
-    public Task DeleteAsync(UserAnime userAnime, CancellationToken cancellationToken = default)
-    {
-        dbContext.UserAnimes.Remove(userAnime);
-        return Task.CompletedTask;
-    }
 }

@@ -12,6 +12,7 @@ public class RateAnimeHandlerTests
 {
     private readonly ICurrentUser _currentUser;
     private readonly IAnimeRepository _animeRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IUserAnimeRepository _userAnimeRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly RateAnimeHandler _handler;
@@ -20,9 +21,10 @@ public class RateAnimeHandlerTests
     {
         _currentUser = Substitute.For<ICurrentUser>();
         _animeRepository = Substitute.For<IAnimeRepository>();
+        _userRepository = Substitute.For<IUserRepository>();
         _userAnimeRepository = Substitute.For<IUserAnimeRepository>();
         _unitOfWork = Substitute.For<IUnitOfWork>();
-        _handler = new RateAnimeHandler(_currentUser, _animeRepository, _userAnimeRepository, _unitOfWork);
+        _handler = new RateAnimeHandler(_currentUser, _animeRepository, _userRepository, _userAnimeRepository, _unitOfWork); // <- порядок як у конструкторі хендлера
     }
 
     [Fact]
@@ -31,23 +33,27 @@ public class RateAnimeHandlerTests
         var userId = Guid.NewGuid();
         var animeId = Guid.NewGuid();
         var anime = new Anime(Description.Create("Test", 500), Description.Create("Original", 500), "Description", ReleaseYear.Create(2024), AnimeStatus.Airing);
+        var user = new User(Guid.NewGuid(), Username.Create("tester"), Email.Create("tester@test.com")); // підставте реальні фабрики VO, якщо інші
 
         _currentUser.IsAuthenticated.Returns(true);
         _currentUser.UserId.Returns(userId);
         _animeRepository.GetByIdAsync(animeId, Arg.Any<CancellationToken>()).Returns(anime);
         _userAnimeRepository.GetByUserAndAnimeAsync(userId, animeId, Arg.Any<CancellationToken>())
             .ReturnsNull();
-        var ratedUserAnime = new Domain.Entities.UserAnime(userId, animeId, WatchStatus.Planned);
+        _userRepository.GetUserWithWatchlistAsync(userId, Arg.Any<CancellationToken>())
+            .Returns(user);
+
+        var ratedUserAnime = user.AddToWatchlist(animeId, WatchStatus.Planned);
         ratedUserAnime.Rate(Rating.Create(8.0));
         _userAnimeRepository.GetByAnimeIdAsync(animeId, Arg.Any<CancellationToken>())
             .Returns(new List<Domain.Entities.UserAnime>
             {
-                ratedUserAnime
+            ratedUserAnime
             });
 
         await _handler.Handle(new RateAnimeCommand(animeId, 8.0), CancellationToken.None);
 
-        await _userAnimeRepository.Received(1).AddAsync(Arg.Any<Domain.Entities.UserAnime>(), Arg.Any<CancellationToken>());
+        await _userRepository.Received(1).GetUserWithWatchlistAsync(userId, Arg.Any<CancellationToken>()); // <- замість AddAsync-перевірки
         await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
         Assert.Equal(8.0, anime.AverageRating);
         Assert.Equal(1, anime.RatingCount);
@@ -98,7 +104,6 @@ public class RateAnimeHandlerTests
         await _handler.Handle(new RateAnimeCommand(animeId, 7.5), CancellationToken.None);
 
         Assert.Equal(7.5, existingUserAnime.UserRating?.Value);
-        await _userAnimeRepository.DidNotReceive().AddAsync(Arg.Any<Domain.Entities.UserAnime>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]

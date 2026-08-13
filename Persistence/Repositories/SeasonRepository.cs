@@ -18,15 +18,4 @@ public class SeasonRepository(AppDbContext dbContext) : ISeasonRepository
             .OrderBy(s => s.SeasonNumber.Value)
             .ToListAsync(cancellationToken);
     }
-
-    public async Task AddAsync(Season season, CancellationToken cancellationToken = default)
-    {
-        await dbContext.Seasons.AddAsync(season, cancellationToken);
-    }
-
-    public Task DeleteAsync(Season season, CancellationToken cancellationToken = default)
-    {
-        dbContext.Seasons.Remove(season);
-        return Task.CompletedTask;
-    }
 }

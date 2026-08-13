@@ -18,6 +18,17 @@ public partial class Season
         return episode;
     }
 
+    public void RemoveEpisode(Guid episodeId)
+    {
+        var episode = Episodes.FirstOrDefault(e => e.Id == episodeId);
+        if (episode is not null)
+        {
+            Episodes.Remove(episode);
+            EpisodesCount = Math.Max(0, EpisodesCount - 1);
+            UpdatedOnUtc = UtcNow;
+        }
+    }
+
     public void IncrementEpisodeCount()
     {
         EpisodesCount++;

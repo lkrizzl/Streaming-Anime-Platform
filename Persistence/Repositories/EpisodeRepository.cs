@@ -18,15 +18,4 @@ public class EpisodeRepository(AppDbContext dbContext) : IEpisodeRepository
             .OrderBy(e => e.EpisodeNumber.Value)
             .ToListAsync(cancellationToken);
     }
-
-    public async Task AddAsync(Episode episode, CancellationToken cancellationToken = default)
-    {
-        await dbContext.Episodes.AddAsync(episode, cancellationToken);
-    }
-
-    public Task DeleteAsync(Episode episode, CancellationToken cancellationToken = default)
-    {
-        dbContext.Episodes.Remove(episode);
-        return Task.CompletedTask;
-    }
 }

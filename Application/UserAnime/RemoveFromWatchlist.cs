@@ -17,7 +17,7 @@ public class RemoveFromWatchlistCommandValidator : AbstractValidator<RemoveFromW
 
 public class RemoveFromWatchlistHandler(
     ICurrentUser currentUser,
-    IUserAnimeRepository userAnimeRepository,
+    IUserRepository userRepository,
     IUnitOfWork unitOfWork)
     : IRequestHandler<RemoveFromWatchlistCommand>
 {
@@ -26,10 +26,12 @@ public class RemoveFromWatchlistHandler(
         if (!currentUser.IsAuthenticated || currentUser.UserId is not { } userId)
             throw new ForbiddenException("User is not authenticated.");
 
-        var userAnime = await userAnimeRepository.GetByUserAndAnimeAsync(userId, request.AnimeId, ct)
+        var user = await userRepository.GetUserWithWatchlistAsync(userId, ct)
+            ?? throw new NotFoundException("User not found.");
+
+        var removed = user.RemoveFromWatchlist(request.AnimeId)
             ?? throw new NotFoundException("Anime not found in your watchlist.");
 
-        await userAnimeRepository.DeleteAsync(userAnime, ct);
         await unitOfWork.SaveChangesAsync(ct);
     }
 }

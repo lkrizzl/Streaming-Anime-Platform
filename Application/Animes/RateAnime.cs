@@ -24,6 +24,7 @@ public class RateAnimeCommandValidator : AbstractValidator<RateAnimeCommand>
 public class RateAnimeHandler(
     ICurrentUser currentUser,
     IAnimeRepository animeRepository,
+    IUserRepository userRepository,
     IUserAnimeRepository userAnimeRepository,
     IUnitOfWork unitOfWork)
     : IRequestHandler<RateAnimeCommand>
@@ -39,8 +40,10 @@ public class RateAnimeHandler(
         var userAnime = await userAnimeRepository.GetByUserAndAnimeAsync(userId, request.AnimeId, ct);
         if (userAnime is null)
         {
-            userAnime = new Domain.Entities.UserAnime(userId, request.AnimeId, WatchStatus.Planned);
-            await userAnimeRepository.AddAsync(userAnime, ct);
+            var user = await userRepository.GetUserWithWatchlistAsync(userId, ct)
+                ?? throw new NotFoundException("User not found.");
+
+            userAnime = user.AddToWatchlist(request.AnimeId, WatchStatus.Planned);
         }
 
         userAnime.Rate(Rating.Create(request.Rating));

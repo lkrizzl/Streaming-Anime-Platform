@@ -18,6 +18,7 @@ public class DeleteSeasonCommandValidator : AbstractValidator<DeleteSeasonComman
 
 public class DeleteSeasonHandler(
     ISeasonRepository seasonRepository,
+    IAnimeRepository animeRepository,
     IUnitOfWork unitOfWork)
     : IRequestHandler<DeleteSeasonCommand>
 {
@@ -26,7 +27,11 @@ public class DeleteSeasonHandler(
         var season = await seasonRepository.GetByIdAsync(request.Id, ct)
             ?? throw new NotFoundException(SeasonErrors.SeasonNotFound(request.Id));
 
-        await seasonRepository.DeleteAsync(season, ct);
+        var anime = await animeRepository.GetByIdAsync(season.AnimeId, ct)
+            ?? throw new NotFoundException(AnimeErrors.AnimeNotFound(season.AnimeId));
+
+        anime.RemoveSeason(season.Id);
+
         await unitOfWork.SaveChangesAsync(ct);
     }
 }

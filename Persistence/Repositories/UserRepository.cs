@@ -21,4 +21,11 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
     {
         return await dbContext.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
     }
+
+    public async Task<User?> GetUserWithWatchlistAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await dbContext.Users
+            .Include(u => u.UserAnimes)
+            .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+    }
 }

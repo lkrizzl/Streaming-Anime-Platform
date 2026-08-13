@@ -9,7 +9,7 @@ public class Episode : Entity
 {
     private Episode() : base(Guid.NewGuid()) { }
 
-    public Episode(
+    internal Episode(
         Guid seasonId,
         EpisodeNumber episodeNumber,
         Description title,

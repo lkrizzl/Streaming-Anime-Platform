@@ -18,6 +18,8 @@ public class DeleteEpisodeCommandValidator : AbstractValidator<DeleteEpisodeComm
 
 public class DeleteEpisodeHandler(
     IEpisodeRepository episodeRepository,
+    ISeasonRepository seasonRepository,
+    IAnimeRepository animeRepository,
     IUnitOfWork unitOfWork)
     : IRequestHandler<DeleteEpisodeCommand>
 {
@@ -26,7 +28,15 @@ public class DeleteEpisodeHandler(
         var episode = await episodeRepository.GetByIdAsync(request.Id, ct)
             ?? throw new NotFoundException(EpisodeErrors.EpisodeNotFound(request.Id));
 
-        await episodeRepository.DeleteAsync(episode, ct);
+        var season = await seasonRepository.GetByIdAsync(episode.SeasonId, ct)
+            ?? throw new NotFoundException(SeasonErrors.SeasonNotFound(episode.SeasonId));
+
+        var anime = await animeRepository.GetByIdAsync(season.AnimeId, ct)
+            ?? throw new NotFoundException(AnimeErrors.AnimeNotFound(season.AnimeId));
+
+        var targetSeason = anime.Seasons.First(s => s.Id == season.Id);
+        targetSeason.RemoveEpisode(episode.Id);
+
         await unitOfWork.SaveChangesAsync(ct);
     }
 }

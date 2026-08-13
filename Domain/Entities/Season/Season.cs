@@ -7,7 +7,7 @@ public partial class Season : Entity
 {
     private Season() : base(Guid.NewGuid()) { }
 
-    public Season(
+    internal Season(
         Guid animeId,
         SeasonNumber seasonNumber,
         Description title,

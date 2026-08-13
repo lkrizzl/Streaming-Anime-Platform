@@ -21,7 +21,7 @@ public class AddToWatchlistCommandValidator : AbstractValidator<AddToWatchlistCo
 public class AddToWatchlistHandler(
     ICurrentUser currentUser,
     IAnimeRepository animeRepository,
-    IUserAnimeRepository userAnimeRepository,
+    IUserRepository userRepository,
     IUnitOfWork unitOfWork)
     : IRequestHandler<AddToWatchlistCommand>
 {
@@ -33,13 +33,14 @@ public class AddToWatchlistHandler(
         var anime = await animeRepository.GetByIdAsync(request.AnimeId, ct)
             ?? throw new NotFoundException(AnimeErrors.AnimeNotFound(request.AnimeId));
 
-        var existing = await userAnimeRepository.GetByUserAndAnimeAsync(userId, request.AnimeId, ct);
-        if (existing is not null)
+        var user = await userRepository.GetUserWithWatchlistAsync(userId, ct)
+            ?? throw new NotFoundException("User not found.");
+
+        if (user.UserAnimes.Any(ua => ua.AnimeId == request.AnimeId))
             throw new BadRequestException("Anime is already in your watchlist.");
 
-        var userAnime = new Domain.Entities.UserAnime(userId, request.AnimeId, request.Status);
+        user.AddToWatchlist(request.AnimeId, request.Status);
 
-        await userAnimeRepository.AddAsync(userAnime, ct);
         await unitOfWork.SaveChangesAsync(ct);
     }
 }

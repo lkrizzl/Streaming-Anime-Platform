@@ -18,7 +18,7 @@ public class ToggleFavoriteCommandValidator : AbstractValidator<ToggleFavoriteCo
 
 public class ToggleFavoriteHandler(
     ICurrentUser currentUser,
-    IUserAnimeRepository userAnimeRepository,
+    IUserRepository userRepository,
     IUnitOfWork unitOfWork)
     : IRequestHandler<ToggleFavoriteCommand>
 {
@@ -27,16 +27,14 @@ public class ToggleFavoriteHandler(
         if (!currentUser.IsAuthenticated || currentUser.UserId is not { } userId)
             throw new ForbiddenException("User is not authenticated.");
 
-        var userAnime = await userAnimeRepository.GetByUserAndAnimeAsync(userId, request.AnimeId, ct);
+        var user = await userRepository.GetUserWithWatchlistAsync(userId, ct)
+            ?? throw new NotFoundException("User not found.");
 
-        if (userAnime is null) 
-        {
-            userAnime = new Domain.Entities.UserAnime(
-                userId, request.AnimeId, WatchStatus.Planned);
-            await userAnimeRepository.AddAsync(userAnime, ct);
-        }
+        var userAnime = user.UserAnimes.FirstOrDefault(ua => ua.AnimeId == request.AnimeId)
+            ?? user.AddToWatchlist(request.AnimeId, WatchStatus.Planned);
 
         userAnime.ToggleFavorite();
+
         await unitOfWork.SaveChangesAsync(ct);
     }
 }

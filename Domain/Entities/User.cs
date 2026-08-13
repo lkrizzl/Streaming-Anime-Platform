@@ -61,6 +61,25 @@ public class User : Entity
         UpdatedOnUtc = UtcNow;
     }
 
+    public UserAnime AddToWatchlist(Guid animeId, WatchStatus status)
+    {
+        var userAnime = new UserAnime(Id, animeId, status);
+        UserAnimes.Add(userAnime);
+        UpdatedOnUtc = UtcNow;
+        return userAnime;
+    }
+
+    public UserAnime? RemoveFromWatchlist(Guid animeId)
+    {
+        var userAnime = UserAnimes.FirstOrDefault(ua => ua.AnimeId == animeId);
+        if (userAnime is not null)
+        {
+            UserAnimes.Remove(userAnime);
+            UpdatedOnUtc = UtcNow;
+        }
+        return userAnime;
+    }
+
     public void RecordLogin()
     {
         LastLoginOnUtc = UpdatedOnUtc = UtcNow;
