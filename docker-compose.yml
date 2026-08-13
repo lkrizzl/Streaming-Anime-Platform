@@ -13,13 +13,16 @@ services:
       - streaming.database
 
   streaming.database:
-    image: postgres:latest
+    image: postgres:18
     container_name: streaming.database
     volumes:
-      - ./.containers/database:/var/lib/postgresql/data
+      - streaming-db-data:/var/lib/postgresql
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
+
+volumes:
+  streaming-db-data:
