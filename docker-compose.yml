@@ -4,9 +4,13 @@ services:
     build:
       context: .
       dockerfile: WebApi/Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
     ports:
       - "8080:8080"
       - "8081:8081"
+    depends_on:
+      - streaming.database
 
   streaming.database:
     image: postgres:latest
@@ -14,8 +18,8 @@ services:
     volumes:
       - ./.containers/database:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=streaming
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
