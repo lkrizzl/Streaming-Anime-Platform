@@ -27,4 +27,10 @@ public static class PersistenceServiceExtensions
 
         return services;
     }
+    public static async Task ApplyMigrationsAsync(this IServiceProvider services)
+    {
+        using var scope = services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        await dbContext.Database.MigrateAsync();
+    }
 }

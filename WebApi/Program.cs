@@ -66,6 +66,11 @@ builder.Services.AddCors(opt =>
 
 var app = builder.Build();
 
+if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("AutoMigrate"))
+{
+    await app.Services.ApplyMigrationsAsync();
+}
+
 Domain.Entity.TimeProvider = app.Services.GetRequiredService<ITimeProvider>();
 
 if (!app.Environment.IsDevelopment())
