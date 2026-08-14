@@ -2,7 +2,9 @@ using Application.Abstractions;
 using Application.Animes;
 using Domain.Abstractions;
 using Domain.Entities;
+using Domain.Events;
 using Domain.ValueObjects;
+using MediatR;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 
@@ -14,6 +16,7 @@ public class RateAnimeHandlerTests
     private readonly IAnimeRepository _animeRepository;
     private readonly IUserRepository _userRepository;
     private readonly IUserAnimeRepository _userAnimeRepository;
+    private readonly IPublisher _publisher;
     private readonly IUnitOfWork _unitOfWork;
     private readonly RateAnimeHandler _handler;
 
@@ -23,17 +26,18 @@ public class RateAnimeHandlerTests
         _animeRepository = Substitute.For<IAnimeRepository>();
         _userRepository = Substitute.For<IUserRepository>();
         _userAnimeRepository = Substitute.For<IUserAnimeRepository>();
+        _publisher = Substitute.For<IPublisher>();
         _unitOfWork = Substitute.For<IUnitOfWork>();
-        _handler = new RateAnimeHandler(_currentUser, _animeRepository, _userRepository, _userAnimeRepository, _unitOfWork); // <- порядок як у конструкторі хендлера
+        _handler = new RateAnimeHandler(_currentUser, _animeRepository, _userRepository, _userAnimeRepository, _publisher, _unitOfWork);
     }
 
     [Fact]
-    public async Task Handle_WithValidData_RatesAnime()
+    public async Task Handle_WithValidData_CreatesWatchlistEntryAndRatesIt()
     {
         var userId = Guid.NewGuid();
         var animeId = Guid.NewGuid();
         var anime = new Anime(Description.Create("Test", 500), Description.Create("Original", 500), "Description", ReleaseYear.Create(2024), AnimeStatus.Airing);
-        var user = new User(Guid.NewGuid(), Username.Create("tester"), Email.Create("tester@test.com")); // підставте реальні фабрики VO, якщо інші
+        var user = new User(Guid.NewGuid(), Username.Create("tester"), Email.Create("tester@test.com"));
 
         _currentUser.IsAuthenticated.Returns(true);
         _currentUser.UserId.Returns(userId);
@@ -43,20 +47,16 @@ public class RateAnimeHandlerTests
         _userRepository.GetUserWithWatchlistAsync(userId, Arg.Any<CancellationToken>())
             .Returns(user);
 
-        var ratedUserAnime = user.AddToWatchlist(animeId, WatchStatus.Planned);
-        ratedUserAnime.Rate(Rating.Create(8.0));
-        _userAnimeRepository.GetByAnimeIdAsync(animeId, Arg.Any<CancellationToken>())
-            .Returns(new List<Domain.Entities.UserAnime>
-            {
-            ratedUserAnime
-            });
-
         await _handler.Handle(new RateAnimeCommand(animeId, 8.0), CancellationToken.None);
 
-        await _userRepository.Received(1).GetUserWithWatchlistAsync(userId, Arg.Any<CancellationToken>()); // <- замість AddAsync-перевірки
+        var createdUserAnime = user.UserAnimes.Single(ua => ua.AnimeId == animeId);
+        Assert.Equal(8.0, createdUserAnime.UserRating?.Value);
+
+        await _userRepository.Received(1).GetUserWithWatchlistAsync(userId, Arg.Any<CancellationToken>());
         await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
-        Assert.Equal(8.0, anime.AverageRating);
-        Assert.Equal(1, anime.RatingCount);
+        await _publisher.Received(1).Publish(
+            Arg.Is<AnimeRatedNotification>(n => n.Event.AnimeId == animeId),
+            Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -67,6 +67,7 @@ public class RateAnimeHandlerTests
         var act = async () => await _handler.Handle(new RateAnimeCommand(Guid.NewGuid(), 5.0), CancellationToken.None);
 
         await Assert.ThrowsAsync<Domain.Exceptions.ForbiddenException>(act);
+        await _publisher.DidNotReceive().Publish(Arg.Any<AnimeRatedNotification>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -80,6 +81,7 @@ public class RateAnimeHandlerTests
         var act = async () => await _handler.Handle(new RateAnimeCommand(Guid.NewGuid(), 5.0), CancellationToken.None);
 
         await Assert.ThrowsAsync<Domain.Exceptions.NotFoundException>(act);
+        await _publisher.DidNotReceive().Publish(Arg.Any<AnimeRatedNotification>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -95,53 +97,12 @@ public class RateAnimeHandlerTests
         _animeRepository.GetByIdAsync(animeId, Arg.Any<CancellationToken>()).Returns(anime);
         _userAnimeRepository.GetByUserAndAnimeAsync(userId, animeId, Arg.Any<CancellationToken>())
             .Returns(existingUserAnime);
-        _userAnimeRepository.GetByAnimeIdAsync(animeId, Arg.Any<CancellationToken>())
-            .Returns(new List<Domain.Entities.UserAnime>
-            {
-                existingUserAnime
-            });
 
         await _handler.Handle(new RateAnimeCommand(animeId, 7.5), CancellationToken.None);
 
         Assert.Equal(7.5, existingUserAnime.UserRating?.Value);
-    }
-
-    [Fact]
-    public async Task Handle_WithMixedRatedAndUnrated_CountsOnlyRated()
-    {
-        var userId = Guid.NewGuid();
-        var animeId = Guid.NewGuid();
-        var anime = new Anime(Description.Create("Test", 500), Description.Create("Original", 500), "Description", ReleaseYear.Create(2024), AnimeStatus.Airing);
-
-        var unratedUserAnime = new Domain.Entities.UserAnime(userId, animeId, WatchStatus.Planned);
-
-        var anotherUserId = Guid.NewGuid();
-        var ratedUserAnime = new Domain.Entities.UserAnime(anotherUserId, animeId, WatchStatus.Completed);
-        ratedUserAnime.Rate(Rating.Create(7.0));
-
-        var yetAnotherUserId = Guid.NewGuid();
-        var ratedUserAnime2 = new Domain.Entities.UserAnime(yetAnotherUserId, animeId, WatchStatus.Watching);
-        ratedUserAnime2.Rate(Rating.Create(9.0));
-
-        var currentUserAnime = new Domain.Entities.UserAnime(userId, animeId, WatchStatus.Planned);
-
-        _currentUser.IsAuthenticated.Returns(true);
-        _currentUser.UserId.Returns(userId);
-        _animeRepository.GetByIdAsync(animeId, Arg.Any<CancellationToken>()).Returns(anime);
-        _userAnimeRepository.GetByUserAndAnimeAsync(userId, animeId, Arg.Any<CancellationToken>())
-            .Returns(currentUserAnime);
-        _userAnimeRepository.GetByAnimeIdAsync(animeId, Arg.Any<CancellationToken>())
-            .Returns(new List<Domain.Entities.UserAnime>
-            {
-                currentUserAnime,    
-                unratedUserAnime,   
-                ratedUserAnime,      
-                ratedUserAnime2,      
-            });
-
-        await _handler.Handle(new RateAnimeCommand(animeId, 8.0), CancellationToken.None);
-
-        Assert.Equal(3, anime.RatingCount);
-        Assert.Equal(8.0, anime.AverageRating);
+        await _publisher.Received(1).Publish(
+            Arg.Is<AnimeRatedNotification>(n => n.Event.AnimeId == animeId),
+            Arg.Any<CancellationToken>());
     }
 }

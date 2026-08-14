@@ -1,6 +1,7 @@
 using Application.Abstractions;
 using Domain.Entities;
 using Domain.Errors;
+using Domain.Events;
 using Domain.Exceptions;
 using Domain.ValueObjects;
 using FluentValidation;
@@ -26,6 +27,7 @@ public class RateAnimeHandler(
     IAnimeRepository animeRepository,
     IUserRepository userRepository,
     IUserAnimeRepository userAnimeRepository,
+    IPublisher publisher,
     IUnitOfWork unitOfWork)
     : IRequestHandler<RateAnimeCommand>
 {
@@ -34,7 +36,7 @@ public class RateAnimeHandler(
         if (!currentUser.IsAuthenticated || currentUser.UserId is not { } userId)
             throw new ForbiddenException("User is not authenticated.");
 
-        var anime = await animeRepository.GetByIdAsync(request.AnimeId, ct)
+        var animeExists = await animeRepository.GetByIdAsync(request.AnimeId, ct)
             ?? throw new NotFoundException(AnimeErrors.AnimeNotFound(request.AnimeId));
 
         var userAnime = await userAnimeRepository.GetByUserAndAnimeAsync(userId, request.AnimeId, ct);
@@ -48,14 +50,8 @@ public class RateAnimeHandler(
 
         userAnime.Rate(Rating.Create(request.Rating));
 
-        var allRatings = await userAnimeRepository.GetByAnimeIdAsync(request.AnimeId, ct);
-        var newCount = allRatings.Count(r => r.UserRating is not null);
-        var newAverage = newCount > 0
-            ? allRatings.Where(r => r.UserRating is not null).Average(r => r.UserRating!.Value)
-            : 0.0;
-
-        anime.UpdateRating(Rating.Create(newAverage), newCount);
-
         await unitOfWork.SaveChangesAsync(ct);
+
+        await publisher.Publish(new AnimeRatedNotification(new AnimeRatedEvent(request.AnimeId)), ct);
     }
 }
