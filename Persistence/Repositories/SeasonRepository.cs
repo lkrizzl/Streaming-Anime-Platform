@@ -14,6 +14,7 @@ public class SeasonRepository(AppDbContext dbContext) : ISeasonRepository
     public async Task<IReadOnlyList<Season>> GetByAnimeIdAsync(Guid animeId, CancellationToken cancellationToken = default)
     {
         return await dbContext.Seasons
+            .AsNoTracking()
             .Where(s => s.AnimeId == animeId && s.IsActive)
             .OrderBy(s => s.SeasonNumber.Value)
             .ToListAsync(cancellationToken);

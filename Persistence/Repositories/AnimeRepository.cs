@@ -23,6 +23,7 @@ public class AnimeRepository(AppDbContext dbContext) : IAnimeRepository
     public async Task<PaginatedList<Anime>> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken = default)
     {
         var query = BaseQuery()
+            .AsNoTracking()
             .Where(a => a.IsActive)
             .OrderByDescending(a => a.CreatedOnUtc);
 
@@ -39,6 +40,7 @@ public class AnimeRepository(AppDbContext dbContext) : IAnimeRepository
     public async Task<PaginatedList<Anime>> GetAllAsync(int page, int pageSize, AnimeFilter filter, CancellationToken cancellationToken = default)
     {
         var query = BaseQuery()
+            .AsNoTracking()
             .Where(a => a.IsActive);
 
         if (!string.IsNullOrWhiteSpace(filter.Search))

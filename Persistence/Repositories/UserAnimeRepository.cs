@@ -16,6 +16,7 @@ public class UserAnimeRepository(AppDbContext dbContext) : IUserAnimeRepository
     public async Task<List<UserAnime>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         return await dbContext.UserAnimes
+            .AsNoTracking()
             .Include(ua => ua.Anime)
             .Where(ua => ua.UserId == userId)
             .OrderByDescending(ua => ua.LastUpdatedOnUtc)
@@ -25,6 +26,7 @@ public class UserAnimeRepository(AppDbContext dbContext) : IUserAnimeRepository
     public async Task<List<UserAnime>> GetByAnimeIdAsync(Guid animeId, CancellationToken cancellationToken = default)
     {
         return await dbContext.UserAnimes
+            .AsNoTracking()
             .Where(ua => ua.AnimeId == animeId && ua.UserRating != null)
             .ToListAsync(cancellationToken);
     }

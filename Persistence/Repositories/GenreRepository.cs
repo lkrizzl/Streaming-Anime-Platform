@@ -13,13 +13,15 @@ public class GenreRepository(AppDbContext dbContext) : IGenreRepository
 
     public async Task<Genre?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
     {
-        return await dbContext.Genres.FirstOrDefaultAsync(
-            g => EF.Functions.ILike(g.Name.Value, name), cancellationToken);
+        return await dbContext.Genres
+            .AsNoTracking()
+            .FirstOrDefaultAsync(g => EF.Functions.ILike(g.Name.Value, name), cancellationToken);
     }
 
     public async Task<PaginatedList<Genre>> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken = default)
     {
         var query = dbContext.Genres
+            .AsNoTracking()
             .Where(g => g.IsActive)
             .OrderBy(g => g.Name.Value);
 
