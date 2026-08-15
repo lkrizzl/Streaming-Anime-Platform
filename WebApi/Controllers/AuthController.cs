@@ -28,6 +28,7 @@ public class AuthController(
     }
 
     [Authorize]
+    [EnableRateLimiting("AuthPolicy")]
     [HttpPost("change-password")]
     public async Task<IActionResult> ChangePasswordAsync(
         ChangePasswordCommand command,
