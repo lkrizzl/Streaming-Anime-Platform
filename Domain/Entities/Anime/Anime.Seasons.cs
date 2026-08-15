@@ -13,7 +13,7 @@ public partial class Anime
             throw new ValidationException(SeasonErrors.DuplicateSeasonNumber(seasonNumber));
 
         var season = new Season(Id, seasonNumber, title, Synopsis.Create(description));
-        Seasons.Add(season);
+        _seasons.Add(season);
         UpdatedOnUtc = UtcNow;
         return season;
     }
@@ -23,7 +23,7 @@ public partial class Anime
         var season = Seasons.FirstOrDefault(s => s.Id == seasonId);
         if (season is not null)
         {
-            Seasons.Remove(season);
+            _seasons.Remove(season);
             UpdatedOnUtc = UtcNow;
         }
     }

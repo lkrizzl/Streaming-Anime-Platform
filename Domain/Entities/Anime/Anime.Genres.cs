@@ -12,7 +12,7 @@ public partial class Anime
         if (AnimeGenres.Any(ag => ag.GenreId == genre.Id))
             return;
 
-        AnimeGenres.Add(new AnimeGenre(Id, genre.Id));
+        _animeGenres.Add(new AnimeGenre(Id, genre.Id));
         UpdatedOnUtc = UtcNow;
     }
 
@@ -21,7 +21,7 @@ public partial class Anime
         var ag = AnimeGenres.FirstOrDefault(x => x.GenreId == genreId);
         if (ag is not null)
         {
-            AnimeGenres.Remove(ag);
+            _animeGenres.Remove(ag);
             UpdatedOnUtc = UtcNow;
         }
     }

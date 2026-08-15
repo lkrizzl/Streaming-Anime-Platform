@@ -12,7 +12,7 @@ public partial class Anime
         if (AnimeStudios.Any(ast => ast.StudioId == studio.Id))
             return;
 
-        AnimeStudios.Add(new AnimeStudio(Id, studio.Id));
+        _animeStudios.Add(new AnimeStudio(Id, studio.Id));
         UpdatedOnUtc = UtcNow;
     }
 
@@ -21,7 +21,7 @@ public partial class Anime
         var ast = AnimeStudios.FirstOrDefault(x => x.StudioId == studioId);
         if (ast is not null)
         {
-            AnimeStudios.Remove(ast);
+            _animeStudios.Remove(ast);
             UpdatedOnUtc = UtcNow;
         }
     }

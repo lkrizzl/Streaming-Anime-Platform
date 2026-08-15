@@ -12,7 +12,7 @@ public partial class Season
             throw new ValidationException(SeasonErrors.EpisodeNumberAlreadyExists(episodeNumber, Id));
 
         var episode = new Episode(Id, episodeNumber, title, duration);
-        Episodes.Add(episode);
+        _episodes.Add(episode);
         EpisodesCount++;
         UpdatedOnUtc = UtcNow;
         return episode;
@@ -23,7 +23,7 @@ public partial class Season
         var episode = Episodes.FirstOrDefault(e => e.Id == episodeId);
         if (episode is not null)
         {
-            Episodes.Remove(episode);
+            _episodes.Remove(episode);
             EpisodesCount = Math.Max(0, EpisodesCount - 1);
             UpdatedOnUtc = UtcNow;
         }

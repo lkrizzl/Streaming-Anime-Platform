@@ -26,7 +26,8 @@ public class Studio : Entity
     public DateTime? UpdatedOnUtc { get; private set; }
     public bool IsActive { get; private set; } = true;
 
-    public ICollection<AnimeStudio> AnimeStudios { get; private set; } = new List<AnimeStudio>();
+    private readonly List<AnimeStudio> _animeStudios = new();
+    public IReadOnlyCollection<AnimeStudio> AnimeStudios => _animeStudios.AsReadOnly();
 
     public void UpdateName(StudioName newName)
     {

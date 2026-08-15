@@ -57,10 +57,15 @@ public partial class Anime : Entity
     public DateTime CreatedOnUtc { get; private init; }
     public DateTime? UpdatedOnUtc { get; private set; }
 
-    public ICollection<AnimeGenre> AnimeGenres { get; private set; } = new List<AnimeGenre>();
-    public ICollection<AnimeStudio> AnimeStudios { get; private set; } = new List<AnimeStudio>();
-    public ICollection<Season> Seasons { get; private set; } = new List<Season>();
-    public ICollection<UserAnime> UserAnimes { get; private set; } = new List<UserAnime>();
+    private readonly List<AnimeGenre> _animeGenres = new();
+    private readonly List<AnimeStudio> _animeStudios = new();
+    private readonly List<Season> _seasons = new();
+    private readonly List<UserAnime> _userAnimes = new();
+
+    public IReadOnlyCollection<AnimeGenre> AnimeGenres => _animeGenres.AsReadOnly();
+    public IReadOnlyCollection<AnimeStudio> AnimeStudios => _animeStudios.AsReadOnly();
+    public IReadOnlyCollection<Season> Seasons => _seasons.AsReadOnly();
+    public IReadOnlyCollection<UserAnime> UserAnimes => _userAnimes.AsReadOnly();
 
     public IReadOnlyCollection<Genre> Genres
         => AnimeGenres.Select(ag => ag.Genre).ToList();

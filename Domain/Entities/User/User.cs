@@ -35,7 +35,8 @@ public class User : Entity
     public bool IsBanned { get; private set; } = false;
     public DateTime? BannedUntilUtc { get; private set; }
     public UserRole Role { get; private set; } = UserRole.User;
-    public ICollection<UserAnime> UserAnimes { get; private set; } = new List<UserAnime>();
+    private readonly List<UserAnime> _userAnimes = new();
+    public IReadOnlyCollection<UserAnime> UserAnimes => _userAnimes.AsReadOnly();
 
     public void UpdateUsername(Username newUsername)
     {
@@ -64,7 +65,7 @@ public class User : Entity
     public UserAnime AddToWatchlist(Guid animeId, WatchStatus status)
     {
         var userAnime = new UserAnime(Id, animeId, status);
-        UserAnimes.Add(userAnime);
+        _userAnimes.Add(userAnime);
         UpdatedOnUtc = UtcNow;
         return userAnime;
     }
@@ -74,7 +75,7 @@ public class User : Entity
         var userAnime = UserAnimes.FirstOrDefault(ua => ua.AnimeId == animeId);
         if (userAnime is not null)
         {
-            UserAnimes.Remove(userAnime);
+            _userAnimes.Remove(userAnime);
             UpdatedOnUtc = UtcNow;
         }
         return userAnime;

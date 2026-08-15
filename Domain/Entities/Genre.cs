@@ -25,7 +25,8 @@ public class Genre : Entity
     public bool IsActive { get; private set; } = true;
 
 
-    public ICollection<AnimeGenre> AnimeGenres { get; private set; } = new List<AnimeGenre>();
+    private readonly List<AnimeGenre> _animeGenres = new();
+    public IReadOnlyCollection<AnimeGenre> AnimeGenres => _animeGenres.AsReadOnly();
 
     public void UpdateName(GenreName newName)
     {

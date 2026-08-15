@@ -39,5 +39,7 @@ public partial class Season : Entity
     public bool IsActive { get; private set; } = true;
 
     public Anime Anime { get; private set; } = null!;
-    public ICollection<Episode> Episodes { get; private set; } = new List<Episode>();
+
+    private readonly List<Episode> _episodes = new();
+    public IReadOnlyCollection<Episode> Episodes => _episodes.AsReadOnly();
 }
