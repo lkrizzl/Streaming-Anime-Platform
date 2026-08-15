@@ -30,7 +30,7 @@ public class Episode : Entity
 
     public EpisodeNumber EpisodeNumber { get; private set; } = null!;
     public Description Title { get; private set; } = null!;
-    public string? Description { get; private set; }
+    public Synopsis? Description { get; private set; }
 
     public TimeSpan Duration { get; private set; }
     public VideoUrl? VideoUrl { get; private set; }
@@ -53,7 +53,7 @@ public class Episode : Entity
 
     public void UpdateDescription(string? description)
     {
-        Description = string.IsNullOrWhiteSpace(description) ? null : description.Trim();
+        Description = Synopsis.CreateOptional(description);
         UpdatedOnUtc = UtcNow;
     }
 

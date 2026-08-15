@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -34,9 +35,15 @@ public class SeasonConfiguration : IEntityTypeConfiguration<Season>
                     .IsRequired();
             });
 
-        builder.Property(x => x.Description)
-            .HasMaxLength(2000)
-            .IsRequired();
+        builder.ComplexProperty(
+            x => x.Description,
+            cb =>
+            {
+                cb.Property(x => x.Value)
+                    .HasColumnName("Description")
+                    .HasMaxLength(Synopsis.MaxLength)
+                    .IsRequired();
+            });
 
         builder.Property(x => x.EpisodesCount);
 

@@ -35,6 +35,6 @@ public class SignIn(
         var user = await userRepository.GetUserByIdAsync(userIdentity.UserId, cancellationToken)
             ?? throw new BadRequestException(UserErrors.UserNotFound(userIdentity.UserId));
 
-        return new SignInResponse(userIdentity.UserId, userIdentity.Email, userIdentity.Username, userIdentity.SecurityStamp, user.Role);
+        return new SignInResponse(userIdentity.UserId, userIdentity.Email, userIdentity.Username, userIdentity.SecurityStamp, user.Role.ToString());
     }
 }

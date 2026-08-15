@@ -42,7 +42,7 @@ public class SignUpHandlerTests
         Assert.NotNull(result);
         Assert.Equal("test@example.com", result.Email);
         Assert.Equal("testuser", result.Username);
-        Assert.Equal(UserRoles.User, result.Role);
+        Assert.Equal(UserRole.User.ToString(), result.Role);
         Assert.NotEmpty(result.SecurityStamp);
 
         await _userRepository.Received(1).AddAsync(Arg.Any<User>(), Arg.Any<CancellationToken>());

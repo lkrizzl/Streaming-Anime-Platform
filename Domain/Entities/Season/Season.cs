@@ -11,7 +11,7 @@ public partial class Season : Entity
         Guid animeId,
         SeasonNumber seasonNumber,
         Description title,
-        string description)
+        Synopsis description)
         : base(Guid.NewGuid())
     {
         AnimeId = animeId;
@@ -27,7 +27,7 @@ public partial class Season : Entity
 
     public SeasonNumber SeasonNumber { get; private set; } = null!;
     public Description Title { get; private set; } = null!;
-    public string Description { get; private set; } = null!;
+    public Synopsis Description { get; private set; } = null!;
 
     public DateOnly? StartDate { get; private set; }
     public DateOnly? EndDate { get; private set; }

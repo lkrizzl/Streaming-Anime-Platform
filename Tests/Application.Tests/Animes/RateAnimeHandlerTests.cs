@@ -36,7 +36,7 @@ public class RateAnimeHandlerTests
     {
         var userId = Guid.NewGuid();
         var animeId = Guid.NewGuid();
-        var anime = new Anime(Description.Create("Test", 500), Description.Create("Original", 500), "Description", ReleaseYear.Create(2024), AnimeStatus.Airing);
+        var anime = new Anime(Description.Create("Test", 500), Description.Create("Original", 500), Synopsis.Create("Description"), ReleaseYear.Create(2024), AnimeStatus.Airing);
         var user = new User(Guid.NewGuid(), Username.Create("tester"), Email.Create("tester@test.com"));
 
         _currentUser.IsAuthenticated.Returns(true);
@@ -89,7 +89,7 @@ public class RateAnimeHandlerTests
     {
         var userId = Guid.NewGuid();
         var animeId = Guid.NewGuid();
-        var anime = new Anime(Description.Create("Test", 500), Description.Create("Original", 500), "Description", ReleaseYear.Create(2024), AnimeStatus.Airing);
+        var anime = new Anime(Description.Create("Test", 500), Description.Create("Original", 500), Synopsis.Create("Description"), ReleaseYear.Create(2024), AnimeStatus.Airing);
         var existingUserAnime = new Domain.Entities.UserAnime(userId, animeId, WatchStatus.Watching);
 
         _currentUser.IsAuthenticated.Returns(true);

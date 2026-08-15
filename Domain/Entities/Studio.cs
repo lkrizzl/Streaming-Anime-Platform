@@ -7,7 +7,7 @@ public class Studio : Entity
 {
     private Studio() : base(Guid.NewGuid()) { }
 
-    public Studio(StudioName name, string? description = null)
+    public Studio(StudioName name, Synopsis? description = null)
         : base(Guid.NewGuid())
     {
         Name = name;
@@ -18,7 +18,7 @@ public class Studio : Entity
     }
 
     public StudioName Name { get; private set; } = null!;
-    public string? Description { get; private set; }
+    public Synopsis? Description { get; private set; }
     public ImageUrl? LogoUrl { get; private set; }
     public Uri? WebsiteUrl { get; private set; }
 
@@ -36,7 +36,7 @@ public class Studio : Entity
 
     public void UpdateDescription(string? description)
     {
-        Description = string.IsNullOrWhiteSpace(description) ? null : description.Trim();
+        Description = Synopsis.CreateOptional(description);
         UpdatedOnUtc = UtcNow;
     }
 

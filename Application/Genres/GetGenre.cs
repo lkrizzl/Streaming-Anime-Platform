@@ -13,6 +13,6 @@ public class GetGenreHandler(IGenreRepository genreRepository)
         var genre = await genreRepository.GetByIdAsync(request.Id, cancellationToken)
             ?? throw new NotFoundException(GenreErrors.GenreNotFound(request.Id));
 
-        return new GenreResponse(genre.Id, genre.Name.Value, genre.Description);
+        return new GenreResponse(genre.Id, genre.Name.Value, genre.Description?.Value);
     }
 }

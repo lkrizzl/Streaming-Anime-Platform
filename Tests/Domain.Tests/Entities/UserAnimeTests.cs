@@ -133,7 +133,7 @@ public class UserAnimeTests
 
         userAnime.AddNote("Great anime!");
 
-        Assert.Equal("Great anime!", userAnime.Notes);
+        Assert.Equal("Great anime!", userAnime.Notes?.Value);
     }
 
     [Fact]

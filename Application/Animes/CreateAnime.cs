@@ -109,7 +109,7 @@ public class CreateAnimeHandler(
         var anime = new Domain.Entities.Anime(
             Description.Create(request.Title, 500),
             Description.Create(request.OriginalTitle, 500),
-            request.Description,
+            Synopsis.Create(request.Description),
             ReleaseYear.Create(request.ReleaseYear),
             request.Status);
 

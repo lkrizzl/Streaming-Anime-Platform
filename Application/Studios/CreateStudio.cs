@@ -41,11 +41,11 @@ public class CreateStudioHandler(IStudioRepository studioRepository, IUnitOfWork
 {
     public async Task<StudioResponse> Handle(CreateStudioCommand request, CancellationToken ct)
     {
-        var studio = new Studio(StudioName.Create(request.Name), request.Description);
+        var studio = new Studio(StudioName.Create(request.Name), Synopsis.CreateOptional(request.Description));
 
         await studioRepository.AddAsync(studio, ct);
         await unitOfWork.SaveChangesAsync(ct);
 
-        return new StudioResponse(studio.Id, studio.Name.Value, studio.Description);
+        return new StudioResponse(studio.Id, studio.Name.Value, studio.Description?.Value);
     }
 }

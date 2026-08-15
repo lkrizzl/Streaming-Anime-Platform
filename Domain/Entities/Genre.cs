@@ -7,7 +7,7 @@ public class Genre : Entity
 {
     private Genre() : base(Guid.NewGuid()) { }
 
-    public Genre(GenreName name, string? description = null)
+    public Genre(GenreName name, Synopsis? description = null)
         : base(Guid.NewGuid())
     {
         Name = name;
@@ -18,7 +18,7 @@ public class Genre : Entity
     }
 
     public GenreName Name { get; private set; } = null!;
-    public string? Description { get; private set; }
+    public Synopsis? Description { get; private set; }
 
     public DateTime CreatedOnUtc { get; private init; }
     public DateTime? UpdatedOnUtc { get; private set; }
@@ -35,7 +35,7 @@ public class Genre : Entity
 
     public void UpdateDescription(string? description)
     {
-        Description = string.IsNullOrWhiteSpace(description) ? null : description.Trim();
+        Description = Synopsis.CreateOptional(description);
         UpdatedOnUtc = UtcNow;
     }
 }

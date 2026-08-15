@@ -25,7 +25,7 @@ public class GetEpisodesBySeasonHandler(
                 e.SeasonId,
                 e.EpisodeNumber,
                 e.Title,
-                e.Description,
+                e.Description?.Value,
                 e.Duration,
                 e.VideoUrl?.Value,
                 e.ThumbnailUrl?.Value,

@@ -13,7 +13,7 @@ public class GetAllGenresHandler(IGenreRepository genreRepository)
         var paginated = await genreRepository.GetAllAsync(request.Page, request.PageSize, cancellationToken);
 
         var items = paginated.Items
-            .Select(g => new GenreResponse(g.Id, g.Name.Value, g.Description))
+            .Select(g => new GenreResponse(g.Id, g.Name.Value, g.Description?.Value))
             .ToList();
 
         return new PaginatedList<GenreResponse>(items, paginated.Page, paginated.PageSize, paginated.TotalCount);

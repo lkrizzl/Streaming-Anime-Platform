@@ -24,7 +24,7 @@ public partial class Anime
 
     public void UpdateDescription(string description)
     {
-        Description = description;
+        Description = Synopsis.Create(description); ;
         UpdatedOnUtc = UtcNow;
     }
 }

@@ -9,11 +9,11 @@ public class GenreTests
     [Fact]
     public void Constructor_WithValidData_SetsProperties()
     {
-        var genre = new Genre(GenreName.Create("Action"), "Action genre");
+        var genre = new Genre(GenreName.Create("Action"), Synopsis.CreateOptional("Action genre"));
 
         Assert.NotEqual(Guid.Empty, genre.Id);
         Assert.Equal("Action", genre.Name);
-        Assert.Equal("Action genre", genre.Description);
+        Assert.Equal("Action genre", genre.Description?.Value);
         Assert.True(genre.IsActive);
     }
 
@@ -43,13 +43,13 @@ public class GenreTests
 
         genre.UpdateDescription("New description");
 
-        Assert.Equal("New description", genre.Description);
+        Assert.Equal("New description", genre.Description?.Value);
     }
 
     [Fact]
     public void UpdateDescription_WithNull_ClearsDescription()
     {
-        var genre = new Genre(GenreName.Create("Action"), "Old desc");
+        var genre = new Genre(GenreName.Create("Action"), Synopsis.CreateOptional("Old desc"));
 
         genre.UpdateDescription(null);
 
@@ -59,7 +59,7 @@ public class GenreTests
     [Fact]
     public void UpdateDescription_WithWhitespace_ClearsDescription()
     {
-        var genre = new Genre(GenreName.Create("Action"), "Old desc");
+        var genre = new Genre(GenreName.Create("Action"), Synopsis.CreateOptional("Old desc"));
 
         genre.UpdateDescription("   ");
 

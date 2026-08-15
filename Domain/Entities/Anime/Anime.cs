@@ -18,7 +18,7 @@ public partial class Anime : Entity
     public Anime(
         Description title,
         Description originalTitle,
-        string description,
+        Synopsis description,
         ReleaseYear releaseYear,
         AnimeStatus status)
         : base(Guid.NewGuid())
@@ -26,10 +26,8 @@ public partial class Anime : Entity
         Title = title;
         OriginalTitle = originalTitle;
         Description = description;
-
         ReleaseYear = releaseYear;
         Status = status;
-
         CreatedOnUtc = UtcNow;
         IsActive = true;
     }
@@ -38,7 +36,7 @@ public partial class Anime : Entity
     public Description OriginalTitle { get; private set; } = null!;
     public Description? EnglishTitle { get; private set; }
 
-    public string Description { get; private set; } = null!;
+    public Synopsis Description { get; private set; } = null!;
 
     public ReleaseYear ReleaseYear { get; private set; } = null!;
     public DateOnly? StartDate { get; private set; }
@@ -53,7 +51,7 @@ public partial class Anime : Entity
     public int EpisodesCount { get; private set; }
     public int CurrentEpisode { get; private set; } = 0;
 
-    public string? AgeRating { get; private set; } = "16+";
+    public AgeRating AgeRating { get; private set; } = AgeRating.Default;
 
     public bool IsActive { get; private set; } = true;
     public DateTime CreatedOnUtc { get; private init; }

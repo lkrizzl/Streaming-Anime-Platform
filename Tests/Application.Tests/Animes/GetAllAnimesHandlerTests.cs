@@ -91,6 +91,6 @@ public class GetAllAnimesHandlerTests
 
     private static Anime CreateAnime(string title = "Test Anime")
     {
-        return new Anime(Description.Create(title, 500), Description.Create("Original", 500), "Description", ReleaseYear.Create(2024), AnimeStatus.Airing);
+        return new Anime(Description.Create(title, 500), Description.Create("Original", 500), Synopsis.Create("Description"), ReleaseYear.Create(2024), AnimeStatus.Airing);
     }
 }

@@ -9,8 +9,8 @@ public class AnimeTests
     [Fact]
     public void Constructor_WithValidData_SetsProperties()
     {
-        var anime = new Anime(Description.Create("Title", 500), Description.Create("Original", 500), "Description", ReleaseYear.Create(2024), AnimeStatus.Airing);
-
+        var anime = new Anime(Description.Create("Title", 500), Description.Create("Original", 500), Synopsis.Create("Description"), ReleaseYear.Create(2024), AnimeStatus.Airing);
+        
         Assert.NotEqual(Guid.Empty, anime.Id);
         Assert.Equal("Title", anime.Title);
         Assert.Equal("Original", anime.OriginalTitle);
@@ -155,5 +155,5 @@ public class AnimeTests
     }
 
     private static Anime CreateDefaultAnime()
-        => new(Description.Create("Title", 500), Description.Create("Original", 500), "Description", ReleaseYear.Create(2024), AnimeStatus.Announced);
+        => new(Description.Create("Title", 500), Description.Create("Original", 500), Synopsis.Create("Description"), ReleaseYear.Create(2024), AnimeStatus.Announced);
 }

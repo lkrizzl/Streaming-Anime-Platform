@@ -45,9 +45,15 @@ public class AnimeConfiguration : IEntityTypeConfiguration<Anime>
                     .HasMaxLength(500);
             });
 
-        builder.Property(x => x.Description)
-            .HasMaxLength(5000)
-            .IsRequired();
+        builder.ComplexProperty(
+            x => x.Description,
+            cb =>
+            {
+                cb.Property(x => x.Value)
+                    .HasColumnName("Description")
+                    .HasMaxLength(Synopsis.MaxLength)
+                    .IsRequired();
+            });
 
         builder.ComplexProperty(
             x => x.ReleaseYear,
@@ -103,8 +109,14 @@ public class AnimeConfiguration : IEntityTypeConfiguration<Anime>
         builder.Property(x => x.EpisodesCount);
         builder.Property(x => x.CurrentEpisode);
 
-        builder.Property(x => x.AgeRating)
-            .HasMaxLength(20);
+        builder.ComplexProperty(
+            x => x.AgeRating,
+            cb =>
+            {
+                cb.Property(x => x.Value)
+                    .HasColumnName("AgeRating")
+                    .HasMaxLength(20);
+            });
 
         builder.Property(x => x.IsActive)
             .IsRequired();

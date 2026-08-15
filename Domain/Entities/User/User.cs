@@ -27,14 +27,14 @@ public class User : Entity
     public Username Username { get; private set; } = null!;
     public Email Email { get; private set; } = null!;
     public ImageUrl? AvatarUrl { get; private set; }
-    public string? Bio { get; private set; }
+    public Bio? Bio { get; private set; }
     public DateTime CreatedOnUtc { get; private init; }
     public DateTime? UpdatedOnUtc { get; private set; }
     public DateTime? LastLoginOnUtc { get; private set; }
     public bool IsActive { get; private set; } = true;
     public bool IsBanned { get; private set; } = false;
     public DateTime? BannedUntilUtc { get; private set; }
-    public string Role { get; private set; } = UserRoles.User;
+    public UserRole Role { get; private set; } = UserRole.User;
     public ICollection<UserAnime> UserAnimes { get; private set; } = new List<UserAnime>();
 
     public void UpdateUsername(Username newUsername)
@@ -57,7 +57,7 @@ public class User : Entity
 
     public void UpdateBio(string? bio)
     {
-        Bio = string.IsNullOrWhiteSpace(bio) ? null : bio.Trim();
+        Bio = Bio.Create(bio);
         UpdatedOnUtc = UtcNow;
     }
 

@@ -41,7 +41,7 @@ public class EpisodeTests
 
         episode.UpdateDescription("Some description");
 
-        Assert.Equal("Some description", episode.Description);
+        Assert.Equal("Some description", episode.Description?.Value);
     }
 
     [Fact]

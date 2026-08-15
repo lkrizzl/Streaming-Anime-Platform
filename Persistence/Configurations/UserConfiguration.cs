@@ -51,8 +51,19 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                     .HasMaxLength(ImageUrl.MaxLength);
             });
 
-        builder.Property(x => x.Bio)
-            .HasMaxLength(1000);
+        builder.ComplexProperty(
+            x => x.Bio,
+            cb =>
+            {
+                cb.Property(x => x.Value)
+                    .HasColumnName("Bio")
+                    .HasMaxLength(Bio.MaxLength);
+            });
+
+        builder.Property(x => x.Role)
+            .HasConversion<string>()
+            .HasMaxLength(20)
+            .IsRequired();
 
         builder.Property(x => x.CreatedOnUtc)
             .IsRequired();
@@ -61,10 +72,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired();
 
         builder.Property(x => x.IsBanned)
-            .IsRequired();
-
-        builder.Property(x => x.Role)
-            .HasMaxLength(20)
             .IsRequired();
 
         builder.HasMany(u => u.UserAnimes)

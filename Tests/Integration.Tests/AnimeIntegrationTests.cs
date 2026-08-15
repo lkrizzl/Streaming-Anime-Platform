@@ -143,7 +143,7 @@ public class AnimeIntegrationTests : IntegrationTestBase
             }
 
             var user = context.Users.First(u => u.Email.Value == email);
-            typeof(User).GetProperty("Role")!.SetValue(user, UserRoles.Admin);
+            typeof(User).GetProperty("Role")!.SetValue(user, UserRole.Admin);
 
             await context.SaveChangesAsync();
         }

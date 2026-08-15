@@ -70,7 +70,7 @@ public class GetAnimeHandlerTests
 
     private static Anime CreateAnime(Guid? id = null)
     {
-        var anime = new Anime(Description.Create("Test Anime", 500), Description.Create("Test Original", 500), "Test Description", ReleaseYear.Create(2024), AnimeStatus.Airing);
+        var anime = new Anime(Description.Create("Test Anime", 500), Description.Create("Test Original", 500), Synopsis.Create("Test Description"), ReleaseYear.Create(2024), AnimeStatus.Airing);
 
         if (id.HasValue)
         {

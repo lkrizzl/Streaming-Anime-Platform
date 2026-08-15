@@ -26,8 +26,14 @@ public class StudioConfiguration : IEntityTypeConfiguration<Studio>
                     .IsRequired();
             });
 
-        builder.Property(x => x.Description)
-            .HasMaxLength(2000);
+        builder.ComplexProperty(
+            x => x.Description,
+            cb =>
+            {
+                cb.Property(x => x.Value)
+                    .HasColumnName("Description")
+                    .HasMaxLength(Synopsis.MaxLength);
+            });
 
         builder.ComplexProperty(
             x => x.LogoUrl,

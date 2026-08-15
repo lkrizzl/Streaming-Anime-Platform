@@ -31,7 +31,7 @@ public class Me(
             user.Username,
             user.Email,
             user.AvatarUrl?.Value,
-            user.Bio,
-            user.Role);
+            user.Bio?.Value,
+            user.Role.ToString());
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.ValueObjects.UserObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -20,8 +21,14 @@ public class UserAnimeConfiguration : IEntityTypeConfiguration<UserAnime>
             .HasMaxLength(20)
             .IsRequired();
 
-        builder.Property(x => x.Notes)
-            .HasMaxLength(2000);
+        builder.ComplexProperty(
+            x => x.Notes,
+            cb =>
+            {
+                cb.Property(x => x.Value)
+                    .HasColumnName("Notes")
+                    .HasMaxLength(Notes.MaxLength);
+            });
 
         builder.ComplexProperty(
             x => x.LastWatchedEpisodeNumber,

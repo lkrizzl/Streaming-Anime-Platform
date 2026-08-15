@@ -11,7 +11,7 @@ public class SeasonTests
     [Fact]
     public void Constructor_WithValidData_SetsProperties()
     {
-        var season = new Season(AnimeId, SeasonNumber.Create(1), Description.Create("Season 1", 500), "First season");
+        var season = new Season(AnimeId, SeasonNumber.Create(1), Description.Create("Season 1", 500), Synopsis.Create("First season"));
 
         Assert.NotEqual(Guid.Empty, season.Id);
         Assert.Equal(AnimeId, season.AnimeId);
@@ -111,5 +111,5 @@ public class SeasonTests
     }
 
     private static Season CreateDefaultSeason()
-        => new(AnimeId, SeasonNumber.Create(1), Description.Create("Season 1", 500), "First season");
+        => new(AnimeId, SeasonNumber.Create(1), Description.Create("Season 1", 500), Synopsis.Create("First season"));
 }

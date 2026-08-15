@@ -18,7 +18,7 @@ public class UserTests
         Assert.Equal(IdentityId, user.IdentityId);
         Assert.Equal(username, user.Username);
         Assert.Equal(email, user.Email);
-        Assert.Equal(UserRoles.User, user.Role);
+        Assert.Equal(UserRole.User, user.Role);
         Assert.True(user.IsActive);
         Assert.False(user.IsBanned);
         Assert.Null(user.AvatarUrl);
@@ -30,7 +30,7 @@ public class UserTests
     {
         var user = new User(IdentityId, Username.Create("admin"), Email.Create("admin@example.com"));
 
-        Assert.Equal(UserRoles.User, user.Role);
+        Assert.Equal(UserRole.User, user.Role);
     }
 
     [Fact]
@@ -83,7 +83,7 @@ public class UserTests
 
         user.UpdateBio("Hello, I'm John!");
 
-        Assert.Equal("Hello, I'm John!", user.Bio);
+        Assert.Equal("Hello, I'm John!", user.Bio?.Value);
     }
 
     [Fact]

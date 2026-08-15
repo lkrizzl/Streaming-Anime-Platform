@@ -9,11 +9,11 @@ public class StudioTests
     [Fact]
     public void Constructor_WithValidData_SetsProperties()
     {
-        var studio = new Studio(StudioName.Create("MAPPA"), "Famous studio");
+        var studio = new Studio(StudioName.Create("MAPPA"), Synopsis.CreateOptional("Famous studio"));
 
         Assert.NotEqual(Guid.Empty, studio.Id);
         Assert.Equal("MAPPA", studio.Name);
-        Assert.Equal("Famous studio", studio.Description);
+        Assert.Equal("Famous studio", studio.Description?.Value);
         Assert.True(studio.IsActive);
         Assert.Null(studio.LogoUrl);
         Assert.Null(studio.WebsiteUrl);
@@ -45,13 +45,13 @@ public class StudioTests
 
         studio.UpdateDescription("New description");
 
-        Assert.Equal("New description", studio.Description);
+        Assert.Equal("New description", studio.Description?.Value);
     }
 
     [Fact]
     public void UpdateDescription_WithNull_ClearsDescription()
     {
-        var studio = new Studio(StudioName.Create("MAPPA"), "Old desc");
+        var studio = new Studio(StudioName.Create("MAPPA"), Synopsis.CreateOptional("Old desc"));
 
         studio.UpdateDescription(null);
 

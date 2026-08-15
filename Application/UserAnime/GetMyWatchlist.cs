@@ -42,7 +42,7 @@ public class GetMyWatchlistHandler(
                 ua.ProgressPercentage?.Value,
                 ua.UserRating?.Value,
                 ua.IsFavorite,
-                ua.Notes,
+                ua.Notes?.Value,
                 ua.CreatedOnUtc,
                 ua.LastUpdatedOnUtc))
             .ToList();

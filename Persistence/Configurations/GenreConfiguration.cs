@@ -26,8 +26,14 @@ public class GenreConfiguration : IEntityTypeConfiguration<Genre>
                     .IsRequired();
             });
 
-        builder.Property(x => x.Description)
-            .HasMaxLength(500);
+        builder.ComplexProperty(
+            x => x.Description,
+            cb =>
+            {
+                cb.Property(x => x.Value)
+                    .HasColumnName("Description")
+                    .HasMaxLength(Synopsis.MaxLength);
+            });
 
         builder.Property(x => x.IsActive)
             .IsRequired();

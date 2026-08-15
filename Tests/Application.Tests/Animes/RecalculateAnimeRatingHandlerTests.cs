@@ -28,7 +28,7 @@ public class RecalculateAnimeRatingHandlerTests
     public async Task Handle_WithMixedRatedAndUnrated_CountsOnlyRated()
     {
         var animeId = Guid.NewGuid();
-        var anime = new Anime(Description.Create("Test", 500), Description.Create("Original", 500), "Description", ReleaseYear.Create(2024), AnimeStatus.Airing);
+        var anime = new Anime(Description.Create("Test", 500), Description.Create("Original", 500), Synopsis.Create("Description"), ReleaseYear.Create(2024), AnimeStatus.Airing);
 
         var unratedUserAnime = new Domain.Entities.UserAnime(Guid.NewGuid(), animeId, WatchStatus.Planned);
 
@@ -58,7 +58,7 @@ public class RecalculateAnimeRatingHandlerTests
     public async Task Handle_WithSingleRating_SetsAverageToThatRating()
     {
         var animeId = Guid.NewGuid();
-        var anime = new Anime(Description.Create("Test", 500), Description.Create("Original", 500), "Description", ReleaseYear.Create(2024), AnimeStatus.Airing);
+        var anime = new Anime(Description.Create("Test", 500), Description.Create("Original", 500), Synopsis.Create("Test Description"), ReleaseYear.Create(2024), AnimeStatus.Airing);
 
         var ratedUserAnime = new Domain.Entities.UserAnime(Guid.NewGuid(), animeId, WatchStatus.Planned);
         ratedUserAnime.Rate(Rating.Create(8.0));
@@ -77,7 +77,7 @@ public class RecalculateAnimeRatingHandlerTests
     public async Task Handle_WithNoRatings_SetsZeroAverageAndZeroCount()
     {
         var animeId = Guid.NewGuid();
-        var anime = new Anime(Description.Create("Test", 500), Description.Create("Original", 500), "Description", ReleaseYear.Create(2024), AnimeStatus.Airing);
+        var anime = new Anime(Description.Create("Test", 500), Description.Create("Original", 500), Synopsis.Create("Test Description"), ReleaseYear.Create(2024), AnimeStatus.Airing);
 
         var unratedUserAnime = new Domain.Entities.UserAnime(Guid.NewGuid(), animeId, WatchStatus.Planned);
 

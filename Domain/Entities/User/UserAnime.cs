@@ -1,4 +1,5 @@
 ﻿using Domain.ValueObjects;
+using Domain.ValueObjects.UserObjects;
 
 namespace Domain.Entities;
 
@@ -35,7 +36,7 @@ public class UserAnime : Entity
     public ProgressPercent? ProgressPercentage { get; private set; }
 
     public Rating? UserRating { get; private set; }
-    public string? Notes { get; private set; }
+    public Notes? Notes { get; private set; }
 
     public bool IsFavorite { get; private set; } = false;
 
@@ -71,7 +72,7 @@ public class UserAnime : Entity
 
     public void AddNote(string? note)
     {
-        Notes = string.IsNullOrWhiteSpace(note) ? null : note.Trim();
+        Notes = Notes.Create(note);
         LastUpdatedOnUtc = UtcNow;
     }
 }

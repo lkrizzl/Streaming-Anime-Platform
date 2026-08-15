@@ -52,6 +52,6 @@ public class SignUp(
         await userIdentityService.AddAsync(userIdentity, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new SignUpResponse(user.Id, userIdentity.Email, userIdentity.Username, userIdentity.SecurityStamp, user.Role);
+        return new SignUpResponse(user.Id, userIdentity.Email, userIdentity.Username, userIdentity.SecurityStamp, user.Role.ToString());
     }
 }

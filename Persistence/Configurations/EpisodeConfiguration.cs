@@ -35,8 +35,14 @@ public class EpisodeConfiguration : IEntityTypeConfiguration<Episode>
                     .IsRequired();
             });
 
-        builder.Property(x => x.Description)
-            .HasMaxLength(2000);
+        builder.ComplexProperty(
+            x => x.Description,
+            cb =>
+            {
+                cb.Property(x => x.Value)
+                    .HasColumnName("Description")
+                    .HasMaxLength(Synopsis.MaxLength);
+            });
 
         builder.Property(x => x.Duration)
             .IsRequired();

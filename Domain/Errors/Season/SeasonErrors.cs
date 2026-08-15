@@ -1,4 +1,5 @@
 using Domain.Exceptions;
+using Domain.ValueObjects;
 
 namespace Domain.Errors;
 
@@ -19,4 +20,7 @@ public static class SeasonErrors
     public static Error EpisodeNumberAlreadyExists(int episodeNumber, Guid seasonId) => new(
         "EpisodeNumberAlreadyExists",
         $"Episode number {episodeNumber} already exists in season '{seasonId}'.");
+
+    public static Error DuplicateSeasonNumber(SeasonNumber seasonNumber) =>
+    new("Season.DuplicateNumber", $"Season number {seasonNumber.Value} already exists for this anime.");
 }

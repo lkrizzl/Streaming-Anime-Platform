@@ -12,7 +12,7 @@ public partial class Season
 
     public void UpdateDescription(string description)
     {
-        Description = description;
+        Description = Synopsis.Create(description);
         UpdatedOnUtc = UtcNow;
     }
 }

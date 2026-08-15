@@ -24,7 +24,7 @@ public partial class Anime
 
     public void SetAgeRating(string? ageRating)
     {
-        AgeRating = string.IsNullOrWhiteSpace(ageRating) ? null : ageRating.Trim();
+        AgeRating = string.IsNullOrWhiteSpace(ageRating) ? AgeRating.Default : Domain.ValueObjects.AgeRating.Create(ageRating);
         UpdatedOnUtc = UtcNow;
     }
 }

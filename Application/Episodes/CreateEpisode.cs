@@ -65,7 +65,7 @@ public class CreateEpisodeHandler(
             episode.SeasonId,
             episode.EpisodeNumber,
             episode.Title,
-            episode.Description,
+            episode.Description?.Value,
             episode.Duration,
             episode.VideoUrl?.Value,
             episode.ThumbnailUrl?.Value,
