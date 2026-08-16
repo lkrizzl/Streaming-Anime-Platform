@@ -14,7 +14,6 @@ public class GenreRepository(AppDbContext dbContext) : IGenreRepository
     public async Task<Genre?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
     {
         return await dbContext.Genres
-            .AsNoTracking()
             .FirstOrDefaultAsync(g => EF.Functions.ILike(g.Name.Value, name), cancellationToken);
     }
 

@@ -20,6 +20,7 @@ public class StudioRepository(AppDbContext dbContext) : IStudioRepository
     public async Task<PaginatedList<Studio>> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken = default)
     {
         var query = dbContext.Studios
+            .AsNoTracking()
             .Where(s => s.IsActive)
             .OrderBy(s => s.Name.Value);
 
