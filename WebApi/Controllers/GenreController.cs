@@ -17,10 +17,10 @@ public class GenreController(IMediator mediator) : ControllerBase
         CancellationToken cancellationToken)
     {
         var response = await mediator.Send(command, cancellationToken);
-        return CreatedAtAction(nameof(GetByIdAsync), new { id = response.Id }, response);
+        return CreatedAtRoute("GetGenreById", new { id = response.Id }, response);
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:guid}", Name = "GetGenreById")]
     public async Task<ActionResult<GenreResponse>> GetByIdAsync(
         Guid id,
         CancellationToken cancellationToken)

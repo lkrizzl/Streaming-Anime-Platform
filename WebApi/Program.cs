@@ -64,6 +64,11 @@ builder.Services.AddCors(opt =>
     });
 });
 
+builder.Services.AddControllers(options =>
+{
+    options.SuppressAsyncSuffixInActionNames = false;
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("AutoMigrate"))

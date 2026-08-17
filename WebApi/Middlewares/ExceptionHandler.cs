@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Middlewares;
 
-public class ExceptionHandler : IExceptionHandler
+public class ExceptionHandler(ILogger<ExceptionHandler> logger) : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
@@ -71,6 +71,17 @@ public class ExceptionHandler : IExceptionHandler
                 Status = StatusCodes.Status500InternalServerError,
             }
         };
+
+        if (problemDetails.Status == StatusCodes.Status500InternalServerError)
+        {
+            logger.LogError(exception, "Unhandled exception occurred while processing {Method} {Path}",
+                httpContext.Request.Method, httpContext.Request.Path);
+        }
+        else
+        {
+            logger.LogWarning(exception, "Handled exception ({StatusCode}) while processing {Method} {Path}: {Message}",
+                problemDetails.Status, httpContext.Request.Method, httpContext.Request.Path, exception.Message);
+        }
 
         httpContext.Response.StatusCode = problemDetails.Status!.Value;
         await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);

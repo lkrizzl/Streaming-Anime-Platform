@@ -19,10 +19,10 @@ public class EpisodeController(IMediator mediator) : ControllerBase
             return BadRequest("Route SeasonId does not match command SeasonId.");
 
         var response = await mediator.Send(command, cancellationToken);
-        return CreatedAtAction(nameof(GetByIdAsync), new { id = response.Id }, response);
+        return CreatedAtRoute("GetEpisodeById", new { id = response.Id }, response);
     }
 
-    [HttpGet("api/episodes/{id:guid}")]
+    [HttpGet("{id:guid}", Name = "GetEpisodeById")]
     public async Task<ActionResult<EpisodeResponse>> GetByIdAsync(
         Guid id,
         CancellationToken cancellationToken)

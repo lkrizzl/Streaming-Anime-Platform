@@ -91,6 +91,11 @@ public class AnimeIntegrationTests : IntegrationTestBase
             Studios = new List<string> { "MAPPA" }
         });
 
+        if (createResponse.StatusCode != HttpStatusCode.Created)
+        {
+            var errorBody = await createResponse.Content.ReadAsStringAsync();
+            throw new Exception($"Create anime failed with {createResponse.StatusCode}: {errorBody}");
+        }
 
         Assert.Equal(HttpStatusCode.Created, createResponse.StatusCode);
 

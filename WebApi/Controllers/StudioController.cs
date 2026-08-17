@@ -17,10 +17,10 @@ public class StudioController(IMediator mediator) : ControllerBase
         CancellationToken cancellationToken)
     {
         var response = await mediator.Send(command, cancellationToken);
-        return CreatedAtAction(nameof(GetByIdAsync), new { id = response.Id }, response);
+        return CreatedAtRoute("GetStudioById", new { id = response.Id }, response);
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:guid}", Name = "GetStudioById")]
     public async Task<ActionResult<StudioResponse>> GetByIdAsync(
         Guid id,
         CancellationToken cancellationToken)
