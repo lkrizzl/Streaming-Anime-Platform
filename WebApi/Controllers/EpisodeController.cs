@@ -22,7 +22,7 @@ public class EpisodeController(IMediator mediator) : ControllerBase
         return CreatedAtRoute("GetEpisodeById", new { id = response.Id }, response);
     }
 
-    [HttpGet("{id:guid}", Name = "GetEpisodeById")]
+    [HttpGet("api/episodes/{id:guid}", Name = "GetEpisodeById")]
     public async Task<ActionResult<EpisodeResponse>> GetByIdAsync(
         Guid id,
         CancellationToken cancellationToken)

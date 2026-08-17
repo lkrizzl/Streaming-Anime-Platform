@@ -22,7 +22,7 @@ public class SeasonController(IMediator mediator) : ControllerBase
         return CreatedAtRoute("GetSeasonById", new { id = response.Id }, response);
     }
 
-    [HttpGet("{id:guid}", Name = "GetSeasonById")]
+    [HttpGet("api/seasons/{id:guid}", Name = "GetSeasonById")]
     public async Task<ActionResult<SeasonResponse>> GetByIdAsync(
         Guid id,
         CancellationToken cancellationToken)

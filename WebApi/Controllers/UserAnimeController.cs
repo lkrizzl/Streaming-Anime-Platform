@@ -68,4 +68,13 @@ public class UserAnimeController(IMediator mediator) : ControllerBase
         var response = await mediator.Send(new GetMyFavoritesQuery(), cancellationToken);
         return Ok(response);
     }
+
+    [HttpDelete("anime/{animeId:guid}/favorite")]
+    public async Task<IActionResult> RemoveFromFavoritesAsync(
+    Guid animeId,
+    CancellationToken cancellationToken)
+    {
+        await mediator.Send(new RemoveFromFavoritesCommand(animeId), cancellationToken);
+        return NoContent();
+    }
 }

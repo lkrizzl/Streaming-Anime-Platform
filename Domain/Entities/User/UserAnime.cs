@@ -75,4 +75,10 @@ public class UserAnime : Entity
         Notes = Notes.Create(note);
         LastUpdatedOnUtc = UtcNow;
     }
+
+    public void RemoveFavorite()
+    {
+        IsFavorite = false;
+        LastUpdatedOnUtc = UtcNow;
+    }
 }
