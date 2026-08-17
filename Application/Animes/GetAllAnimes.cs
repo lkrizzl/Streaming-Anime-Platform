@@ -10,6 +10,10 @@ public record GetAllAnimesQuery(
     string? Search = null,
     string? Genre = null,
     AnimeStatus? Status = null,
+    int? ReleaseYear = null,
+    string? Studio = null,
+    DateTime? FromDate = null,
+    DateTime? ToDate = null,
     string? SortBy = "created",
     string? SortOrder = "desc") : IRequest<PaginatedList<AnimeResponse>>;
 
@@ -20,11 +24,15 @@ public class GetAllAnimesHandler(IAnimeRepository animeRepository)
     {
         var pageSize = Math.Clamp(request.PageSize, 1, 100);
         var filter = new AnimeFilter(
-            request.Search,
-            request.Genre,
-            request.Status,
-            request.SortBy,
-            request.SortOrder);
+            Search: request.Search,
+            Genre: request.Genre,
+            Status: request.Status,
+            ReleaseYear: request.ReleaseYear,
+            Studio: request.Studio,
+            FromDate: request.FromDate,
+            ToDate: request.ToDate,
+            SortBy: request.SortBy,
+            SortOrder: request.SortOrder);
 
         var paginated = await animeRepository.GetAllAsync(request.Page, pageSize, filter, ct);
 

@@ -32,17 +32,24 @@ public class AnimeController(IMediator mediator) : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<PaginatedList<AnimeResponse>>> GetAllAsync(
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20,
-        [FromQuery] string? search = null,
-        [FromQuery] string? genre = null,
-        [FromQuery] AnimeStatus? status = null,
-        [FromQuery] string? sortBy = "created",
-        [FromQuery] string? sortOrder = "desc",
-        CancellationToken cancellationToken = default)
+    [FromQuery] int page = 1,
+    [FromQuery] int pageSize = 20,
+    [FromQuery] string? search = null,
+    [FromQuery] string? genre = null,
+    [FromQuery] AnimeStatus? status = null,
+    [FromQuery] int? releaseYear = null,
+    [FromQuery] string? studio = null,
+    [FromQuery] DateTime? fromDate = null,
+    [FromQuery] DateTime? toDate = null,
+    [FromQuery] string? sortBy = "created",
+    [FromQuery] string? sortOrder = "desc",
+    CancellationToken cancellationToken = default)
     {
         var response = await mediator.Send(
-            new GetAllAnimesQuery(page, pageSize, search, genre, status, sortBy, sortOrder),
+            new GetAllAnimesQuery(
+                page, pageSize, search, genre, status,
+                releaseYear, studio, fromDate, toDate,
+                sortBy, sortOrder),
             cancellationToken);
         return Ok(response);
     }
