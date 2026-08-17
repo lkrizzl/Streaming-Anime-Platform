@@ -62,6 +62,27 @@ public class AnimeRepository(AppDbContext dbContext) : IAnimeRepository
             query = query.Where(a => a.Status == filter.Status.Value);
         }
 
+        if (filter.ReleaseYear.HasValue)
+        {
+            query = query.Where(a => a.ReleaseYear.Value == filter.ReleaseYear.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.Studio))
+        {
+            var studio = filter.Studio;
+            query = query.Where(a => a.AnimeStudios.Any(ast => EF.Functions.ILike(ast.Studio.Name.Value, studio)));
+        }
+
+        if (filter.FromDate.HasValue)
+        {
+            query = query.Where(a => a.CreatedOnUtc >= filter.FromDate.Value);
+        }
+
+        if (filter.ToDate.HasValue)
+        {
+            query = query.Where(a => a.CreatedOnUtc <= filter.ToDate.Value);
+        }
+
         var sortBy = (filter.SortBy ?? "created").ToLowerInvariant();
         var sortOrder = (filter.SortOrder ?? "desc").ToLowerInvariant();
         var isDescending = sortOrder == "desc";
