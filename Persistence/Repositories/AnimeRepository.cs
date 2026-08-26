@@ -12,34 +12,9 @@ public class AnimeRepository(AppDbContext dbContext) : IAnimeRepository
         .Include(a => a.AnimeStudios)
             .ThenInclude(ast => ast.Studio);
 
-    public async Task<Anime?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    private IQueryable<Anime> FilteredQuery(AnimeFilter filter)
     {
-        return await BaseQuery()
-            .Include(a => a.Seasons.OrderBy(s => s.SeasonNumber.Value))
-                .ThenInclude(s => s.Episodes.OrderBy(e => e.EpisodeNumber.Value))
-            .FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
-    }
-
-    public async Task<PaginatedList<Anime>> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken = default)
-    {
-        var query = BaseQuery()
-            .AsNoTracking()
-            .Where(a => a.IsActive)
-            .OrderByDescending(a => a.CreatedOnUtc);
-
-        var totalCount = await query.CountAsync(cancellationToken);
-
-        var items = await query
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync(cancellationToken);
-
-        return new PaginatedList<Anime>(items, page, pageSize, totalCount);
-    }
-
-    public async Task<PaginatedList<Anime>> GetAllAsync(int page, int pageSize, AnimeFilter filter, CancellationToken cancellationToken = default)
-    {
-        var query = BaseQuery()
+        var query = dbContext.Anime
             .AsNoTracking()
             .Where(a => a.IsActive);
 
@@ -99,6 +74,50 @@ public class AnimeRepository(AppDbContext dbContext) : IAnimeRepository
             _ => query.OrderBy(a => a.CreatedOnUtc),
         };
 
+        return query;
+    }
+
+    private IQueryable<AnimeListItem> ProjectQuery(IQueryable<Anime> query)
+    {
+        return query
+            .Select(a => new AnimeListItem(
+                a.Id,
+                a.Title,
+                a.OriginalTitle,
+                a.EnglishTitle,
+                a.Description,
+                a.ReleaseYear,
+                a.Status,
+                a.CoverImageUrl,
+                a.BannerImageUrl,
+                a.TrailerUrl,
+                a.AgeRating,
+                a.AverageRating,
+                a.RatingCount,
+                a.EpisodesCount,
+                a.IsActive,
+                a.CreatedOnUtc,
+                a.UpdatedOnUtc,
+                a.AnimeGenres.Select(ag => ag.Genre.Name.Value).ToList(),
+                a.AnimeStudios.Select(ast => ast.Studio.Name.Value).ToList()
+            ));
+    }
+
+    public async Task<Anime?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await BaseQuery()
+            .Include(a => a.Seasons.OrderBy(s => s.SeasonNumber.Value))
+                .ThenInclude(s => s.Episodes.OrderBy(e => e.EpisodeNumber.Value))
+            .FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
+    }
+
+    public async Task<PaginatedList<Anime>> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+    {
+        var query = BaseQuery()
+            .AsNoTracking()
+            .Where(a => a.IsActive)
+            .OrderByDescending(a => a.CreatedOnUtc);
+
         var totalCount = await query.CountAsync(cancellationToken);
 
         var items = await query
@@ -107,6 +126,20 @@ public class AnimeRepository(AppDbContext dbContext) : IAnimeRepository
             .ToListAsync(cancellationToken);
 
         return new PaginatedList<Anime>(items, page, pageSize, totalCount);
+    }
+
+    public async Task<PaginatedList<AnimeListItem>> GetAllAsync(int page, int pageSize, AnimeFilter filter, CancellationToken cancellationToken = default)
+    {
+        var filteredQuery = FilteredQuery(filter);
+
+        var totalCount = await filteredQuery.CountAsync(cancellationToken);
+
+        var items = await ProjectQuery(filteredQuery)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return new PaginatedList<AnimeListItem>(items, page, pageSize, totalCount);
     }
 
     public async Task AddAsync(Anime anime, CancellationToken cancellationToken = default)

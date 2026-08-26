@@ -21,13 +21,21 @@ public class UserIdentityService(AppDbContext dbContext) : IUserIdentityService
 
     public async Task<UserIdentity?> FindByEmailOrUsernameAsync(string emailOrUsername, CancellationToken cancellationToken = default)
     {
-        var normalizedEmail = emailOrUsername.Trim().ToLowerInvariant();
-        var normalizedUsername = emailOrUsername.Trim();
+        var input = emailOrUsername.Trim();
+        var isEmail = input.Contains('@', StringComparison.Ordinal);
 
-        return await dbContext.UserIdentities
-            .FirstOrDefaultAsync(
-                ui => ui.Email.Value == normalizedEmail || ui.Username.Value == normalizedUsername,
-                cancellationToken);
+        if (isEmail)
+        {
+            var normalizedEmail = input.ToLowerInvariant();
+            return await dbContext.UserIdentities
+                .FirstOrDefaultAsync(ui => ui.Email.Value == normalizedEmail, cancellationToken);
+        }
+        else
+        {
+            // Username lookup - case-insensitive for better UX
+            return await dbContext.UserIdentities
+                .FirstOrDefaultAsync(ui => EF.Functions.ILike(ui.Username.Value, input), cancellationToken);
+        }
     }
 
     public async Task<UserIdentity?> FindByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)

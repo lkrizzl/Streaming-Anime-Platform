@@ -3,10 +3,14 @@ using Authorization;
 using Domain.Abstractions;
 using Infrastructure;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Persistence;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
+using WebApi.HealthChecks;
 using WebApi.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +19,10 @@ builder.Services.AddInfrastructure();
 builder.Services.AddPersistence(builder.Configuration.GetConnectionString("DefaultConnection")!);
 builder.Services.AddApplication();
 builder.Services.AddAuthorizationServices();
+
+// Health check options
+builder.Services.Configure<PersistenceOptions>(options =>
+    options.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection")!);
 
 builder.Services.AddHttpContextAccessor();
 
@@ -35,6 +43,14 @@ builder.Services.AddRateLimiter(options =>
         opt.QueueLimit = 0;
     });
 
+    options.AddFixedWindowLimiter("ApiPolicy", opt =>
+    {
+        opt.PermitLimit = 100;
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        opt.QueueLimit = 10;
+    });
+
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 });
 
@@ -44,8 +60,12 @@ builder.Services
     {
         options.Cookie.Name = "streaming-auth";
         options.Cookie.HttpOnly = true;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-        options.Cookie.SameSite = SameSiteMode.None;
+        options.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
+            ? CookieSecurePolicy.None
+            : CookieSecurePolicy.Always;
+        options.Cookie.SameSite = builder.Environment.IsDevelopment()
+            ? SameSiteMode.Lax
+            : SameSiteMode.None;
         options.SlidingExpiration = true;
         options.ExpireTimeSpan = TimeSpan.FromHours(8);
         options.EventsType = typeof(AppCookieEvents);
@@ -63,6 +83,11 @@ builder.Services.AddCors(opt =>
               .AllowCredentials();
     });
 });
+
+// Health Checks - custom DB check
+builder.Services.AddHealthChecks()
+    .AddCheck<NpgsqlHealthCheck>("postgresql", tags: ["ready"])
+    .AddCheck("self", () => HealthCheckResult.Healthy(), tags: ["live"]);
 
 builder.Services.AddControllers(options =>
 {
@@ -89,6 +114,44 @@ app.UseCors(frontendOrigin);
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseExceptionHandler(_ => { });
+
+// Health check endpoints
+app.MapHealthChecks("/health/live", new HealthCheckOptions
+{
+    Predicate = check => check.Tags.Contains("live"),
+    ResponseWriter = WriteHealthCheckResponse
+});
+
+app.MapHealthChecks("/health/ready", new HealthCheckOptions
+{
+    Predicate = check => check.Tags.Contains("ready") || check.Name == "postgresql",
+    ResponseWriter = WriteHealthCheckResponse
+});
+
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = WriteHealthCheckResponse
+});
+
 app.MapControllers();
 
 app.Run();
+
+// Health check response writer
+static async Task WriteHealthCheckResponse(HttpContext context, HealthReport report)
+{
+    context.Response.ContentType = "application/json; charset=utf-8";
+    var response = new
+    {
+        status = report.Status.ToString(),
+        checks = report.Entries.Select(e => new
+        {
+            name = e.Key,
+            status = e.Value.Status.ToString(),
+            description = e.Value.Description,
+            duration = e.Value.Duration.TotalMilliseconds
+        }),
+        totalDuration = report.TotalDuration.TotalMilliseconds
+    };
+    await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+}

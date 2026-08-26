@@ -13,7 +13,17 @@ public static class PersistenceServiceExtensions
         string connectionString)
     {
         services.AddDbContextPool<AppDbContext>(options =>
-            options.UseNpgsql(connectionString));
+        {
+            options.UseNpgsql(connectionString, npgsqlOptions =>
+            {
+                npgsqlOptions.EnableRetryOnFailure(
+                    maxRetryCount: 5,
+                    maxRetryDelay: TimeSpan.FromSeconds(30),
+                    errorCodesToAdd: null);
+                npgsqlOptions.CommandTimeout(30);
+            });
+            options.EnableSensitiveDataLogging(false);
+        });
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IUserRepository, UserRepository>();
@@ -27,6 +37,7 @@ public static class PersistenceServiceExtensions
 
         return services;
     }
+
     public static async Task ApplyMigrationsAsync(this IServiceProvider services)
     {
         using var scope = services.CreateScope();

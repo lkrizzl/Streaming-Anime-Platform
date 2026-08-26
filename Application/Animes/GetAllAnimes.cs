@@ -37,26 +37,26 @@ public class GetAllAnimesHandler(IAnimeRepository animeRepository)
         var paginated = await animeRepository.GetAllAsync(request.Page, pageSize, filter, ct);
 
         var items = paginated.Items
-            .Select(anime => new AnimeResponse(
-                anime.Id,
-                anime.Title,
-                anime.OriginalTitle,
-                anime.EnglishTitle?.Value,
-                anime.Description,
-                anime.ReleaseYear,
-                anime.Status,
-                anime.CoverImageUrl?.Value,
-                anime.BannerImageUrl?.Value,
-                anime.TrailerUrl?.Value,
-                anime.AgeRating,
-                anime.AverageRating,
-                anime.RatingCount,
-                anime.EpisodesCount,
-                anime.IsActive,
-                anime.CreatedOnUtc,
-                anime.UpdatedOnUtc,
-                anime.Genres.Select(g => g.Name.Value).ToList(),
-                anime.Studios.Select(s => s.Name.Value).ToList()
+            .Select(a => new AnimeResponse(
+                a.Id,
+                a.Title,
+                a.OriginalTitle,
+                a.EnglishTitle?.Value,
+                a.Description,
+                a.ReleaseYear,
+                a.Status,
+                a.CoverImageUrl?.Value,
+                a.BannerImageUrl?.Value,
+                a.TrailerUrl?.Value,
+                a.AgeRating,
+                a.AverageRating,
+                a.RatingCount,
+                a.EpisodesCount,
+                a.IsActive,
+                a.CreatedOnUtc,
+                a.UpdatedOnUtc,
+                a.GenreNames.ToList(),
+                a.StudioNames.ToList()
             ))
             .ToList();
 

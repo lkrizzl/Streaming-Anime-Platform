@@ -1,4 +1,5 @@
 using Application.Abstractions;
+using Domain.Abstractions;
 using Domain.Entities;
 using Domain.Errors;
 using Domain.Exceptions;
@@ -47,7 +48,7 @@ public record AnimeResponse(
 
 public class CreateAnimeCommandValidator : AbstractValidator<CreateAnimeCommand>
 {
-    public CreateAnimeCommandValidator()
+    public CreateAnimeCommandValidator(ITimeProvider timeProvider)
     {
         RuleFor(x => x.Title)
             .NotEmpty().WithMessage("Title cannot be empty.")
@@ -65,8 +66,8 @@ public class CreateAnimeCommandValidator : AbstractValidator<CreateAnimeCommand>
             .MaximumLength(5000).WithMessage("Description must be at most 5000 characters.");
 
         RuleFor(x => x.ReleaseYear)
-            .InclusiveBetween(1900, DateTime.UtcNow.Year + 5)
-            .WithMessage($"Release year must be between 1900 and {DateTime.UtcNow.Year + 5}.");
+            .InclusiveBetween(1900, timeProvider.UtcNow.Year + 5)
+            .WithMessage($"Release year must be between 1900 and {timeProvider.UtcNow.Year + 5}.");
 
         RuleFor(x => x.Status)
             .IsInEnum().WithMessage("Invalid anime status.");

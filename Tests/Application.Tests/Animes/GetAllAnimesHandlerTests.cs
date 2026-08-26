@@ -22,8 +22,8 @@ public class GetAllAnimesHandlerTests
     [Fact]
     public async Task Handle_ReturnsPaginatedList()
     {
-        var anime = CreateAnime();
-        var paginated = new PaginatedList<Anime>(new[] { anime }, 1, 20, 1);
+        var anime = CreateAnimeListItem();
+        var paginated = new PaginatedList<AnimeListItem>(new[] { anime }, 1, 20, 1);
         _animeRepository.GetAllAsync(1, 20, Arg.Any<AnimeFilter>(), Arg.Any<CancellationToken>())
             .Returns(paginated);
 
@@ -39,9 +39,9 @@ public class GetAllAnimesHandlerTests
     public async Task Handle_WithPagination_ReturnsCorrectPage()
     {
         var allAnimes = Enumerable.Range(1, 5)
-            .Select(i => CreateAnime(title: $"Anime {i}"))
+            .Select(i => CreateAnimeListItem(title: $"Anime {i}"))
             .ToList();
-        var paginated = new PaginatedList<Anime>(allAnimes, 1, 5, 5);
+        var paginated = new PaginatedList<AnimeListItem>(allAnimes, 1, 5, 5);
         _animeRepository.GetAllAsync(1, 5, Arg.Any<AnimeFilter>(), Arg.Any<CancellationToken>())
             .Returns(paginated);
 
@@ -54,7 +54,7 @@ public class GetAllAnimesHandlerTests
     [Fact]
     public async Task Handle_EmptyResult_ReturnsEmptyList()
     {
-        var paginated = new PaginatedList<Anime>(new List<Anime>(), 1, 20, 0);
+        var paginated = new PaginatedList<AnimeListItem>(new List<AnimeListItem>(), 1, 20, 0);
         _animeRepository.GetAllAsync(1, 20, Arg.Any<AnimeFilter>(), Arg.Any<CancellationToken>())
             .Returns(paginated);
 
@@ -68,7 +68,7 @@ public class GetAllAnimesHandlerTests
     public async Task Handle_PassesFilterToRepository()
     {
         AnimeFilter? capturedFilter = null;
-        var paginated = new PaginatedList<Anime>(new List<Anime>(), 1, 20, 0);
+        var paginated = new PaginatedList<AnimeListItem>(new List<AnimeListItem>(), 1, 20, 0);
         _animeRepository.GetAllAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<AnimeFilter>(), Arg.Any<CancellationToken>())
             .ReturnsForAnyArgs(paginated)
             .AndDoes(callInfo => capturedFilter = callInfo.Arg<AnimeFilter>());
@@ -89,8 +89,27 @@ public class GetAllAnimesHandlerTests
         Assert.Equal("asc", capturedFilter.SortOrder);
     }
 
-    private static Anime CreateAnime(string title = "Test Anime")
+    private static AnimeListItem CreateAnimeListItem(string title = "Test Anime")
     {
-        return new Anime(Description.Create(title, 500), Description.Create("Original", 500), Synopsis.Create("Description"), ReleaseYear.Create(2024), AnimeStatus.Airing);
+        return new AnimeListItem(
+            Guid.NewGuid(),
+            Description.Create(title, 500),
+            Description.Create("Original", 500),
+            null,
+            Synopsis.Create("Description"),
+            ReleaseYear.Create(2024),
+            AnimeStatus.Airing,
+            null,
+            null,
+            null,
+            AgeRating.Default,
+            Rating.Create(0.0),
+            0,
+            0,
+            true,
+            DateTime.UtcNow,
+            null,
+            new[] { "Action" },
+            new[] { "Studio" });
     }
 }
