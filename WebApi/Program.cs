@@ -16,7 +16,8 @@ using WebApi.Middlewares;
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-if (string.IsNullOrWhiteSpace(connectionString))
+
+if (!builder.Environment.IsDevelopment() && string.IsNullOrWhiteSpace(connectionString))
 {
     throw new InvalidOperationException(
         "Connection string 'DefaultConnection' is missing or empty. Set it via appsettings.json, the " +
@@ -24,12 +25,13 @@ if (string.IsNullOrWhiteSpace(connectionString))
 }
 
 builder.Services.AddInfrastructure();
-builder.Services.AddPersistence(connectionString);
+builder.Services.AddPersistence(connectionString ?? string.Empty);
 builder.Services.AddApplication();
 builder.Services.AddAuthorizationServices();
 
+// Health check options
 builder.Services.Configure<PersistenceOptions>(options =>
-    options.ConnectionString = connectionString);
+    options.ConnectionString = connectionString ?? string.Empty);
 
 builder.Services.AddHttpContextAccessor();
 
