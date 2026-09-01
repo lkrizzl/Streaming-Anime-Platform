@@ -11,6 +11,10 @@ public class SeasonConfiguration : IEntityTypeConfiguration<Season>
     {
         builder.ToTable("Seasons");
 
+        builder.Property<uint>("xmin")
+        .HasColumnType("xid")
+        .IsRowVersion();
+
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Id)

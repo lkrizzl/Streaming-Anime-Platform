@@ -2,10 +2,12 @@ using Application.Seasons;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace WebApi.Controllers;
 
 [ApiController]
+[EnableRateLimiting("ApiPolicy")]
 public class SeasonController(IMediator mediator) : ControllerBase
 {
     [Authorize(Roles = "Admin")]

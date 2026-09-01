@@ -15,14 +15,21 @@ using WebApi.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException(
+        "Connection string 'DefaultConnection' is missing or empty. Set it via appsettings.json, the " +
+        "ConnectionStrings__DefaultConnection environment variable, or user-secrets.");
+}
+
 builder.Services.AddInfrastructure();
-builder.Services.AddPersistence(builder.Configuration.GetConnectionString("DefaultConnection")!);
+builder.Services.AddPersistence(connectionString);
 builder.Services.AddApplication();
 builder.Services.AddAuthorizationServices();
 
-// Health check options
 builder.Services.Configure<PersistenceOptions>(options =>
-    options.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection")!);
+    options.ConnectionString = connectionString);
 
 builder.Services.AddHttpContextAccessor();
 
@@ -84,7 +91,6 @@ builder.Services.AddCors(opt =>
     });
 });
 
-// Health Checks - custom DB check
 builder.Services.AddHealthChecks()
     .AddCheck<NpgsqlHealthCheck>("postgresql", tags: ["ready"])
     .AddCheck("self", () => HealthCheckResult.Healthy(), tags: ["live"]);
@@ -115,7 +121,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseExceptionHandler(_ => { });
 
-// Health check endpoints
 app.MapHealthChecks("/health/live", new HealthCheckOptions
 {
     Predicate = check => check.Tags.Contains("live"),
@@ -137,7 +142,6 @@ app.MapControllers();
 
 app.Run();
 
-// Health check response writer
 static async Task WriteHealthCheckResponse(HttpContext context, HealthReport report)
 {
     context.Response.ContentType = "application/json; charset=utf-8";

@@ -11,6 +11,10 @@ public class EpisodeConfiguration : IEntityTypeConfiguration<Episode>
     {
         builder.ToTable("Episodes");
 
+        builder.Property<uint>("xmin")
+        .HasColumnType("xid")
+        .IsRowVersion();
+
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Id)

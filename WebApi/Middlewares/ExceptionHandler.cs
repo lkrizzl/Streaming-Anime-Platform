@@ -1,6 +1,7 @@
 using Domain.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApi.Middlewares;
 
@@ -30,6 +31,13 @@ public class ExceptionHandler(ILogger<ExceptionHandler> logger) : IExceptionHand
                 {
                     { "errors", badRequest.Error }
                 }
+            },
+            DbUpdateConcurrencyException => new ProblemDetails
+            {
+                Title = "Conflict",
+                Detail = "The resource was modified by another request in the meantime. Reload it and try again.",
+                Type = "https://datatracker.ietf.org/doc/html/rfc9110#section-15.5.10",
+                Status = StatusCodes.Status409Conflict,
             },
             ForbiddenException forbidden => new ProblemDetails
             {

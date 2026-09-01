@@ -1,12 +1,14 @@
-using Application.Genres;
 using Application.Abstractions;
+using Application.Genres;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace WebApi.Controllers;
 
 [ApiController]
+[EnableRateLimiting("ApiPolicy")]
 [Route("api/genres")]
 public class GenreController(IMediator mediator) : ControllerBase
 {

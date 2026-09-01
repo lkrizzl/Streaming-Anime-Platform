@@ -2,10 +2,12 @@ using Application.Episodes;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace WebApi.Controllers;
 
 [ApiController]
+[EnableRateLimiting("ApiPolicy")]
 public class EpisodeController(IMediator mediator) : ControllerBase
 {
     [Authorize(Roles = "Admin")]

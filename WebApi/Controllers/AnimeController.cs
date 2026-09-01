@@ -4,11 +4,13 @@ using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace WebApi.Controllers;
 
 [ApiController]
 [Route("api/anime")]
+[EnableRateLimiting("ApiPolicy")]
 public class AnimeController(IMediator mediator) : ControllerBase
 {
     [Authorize(Roles = "Admin")]

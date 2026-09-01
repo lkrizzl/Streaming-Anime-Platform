@@ -1,12 +1,14 @@
-using Application.Studios;
 using Application.Abstractions;
+using Application.Studios;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace WebApi.Controllers;
 
 [ApiController]
+[EnableRateLimiting("ApiPolicy")]
 [Route("api/studios")]
 public class StudioController(IMediator mediator) : ControllerBase
 {

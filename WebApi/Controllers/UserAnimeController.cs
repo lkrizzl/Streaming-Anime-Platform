@@ -2,11 +2,13 @@ using Application.UserAnime;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace WebApi.Controllers;
 
 [ApiController]
 [Authorize]
+[EnableRateLimiting("ApiPolicy")]
 public class UserAnimeController(IMediator mediator) : ControllerBase
 {
     [HttpPost("anime/{animeId:guid}/watchlist")]

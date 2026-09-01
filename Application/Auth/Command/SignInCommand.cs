@@ -20,7 +20,8 @@ public record SignInResponse(
 public class SignIn(
     IUserIdentityService userIdentityService,
     IUserRepository userRepository,
-    IPasswordHasher passwordHasher) : IRequestHandler<SignInCommand, SignInResponse>
+    IPasswordHasher passwordHasher,
+    IUnitOfWork unitOfWork) : IRequestHandler<SignInCommand, SignInResponse>
 {
     public async Task<SignInResponse> Handle(SignInCommand request, CancellationToken cancellationToken)
     {
@@ -30,6 +31,12 @@ public class SignIn(
         if (!passwordHasher.VerifyPassword(request.Password, userIdentity.PasswordHash))
         {
             throw new BadRequestException(UserErrors.InvalidCredentials);
+        }
+
+        if (passwordHasher.NeedsRehash(userIdentity.PasswordHash))
+        {
+            userIdentity.RehashPassword(request.Password, passwordHasher);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         var user = await userRepository.GetUserByIdAsync(userIdentity.UserId, cancellationToken)

@@ -11,6 +11,10 @@ public class UserAnimeConfiguration : IEntityTypeConfiguration<UserAnime>
     {
         builder.ToTable("UserAnimes");
 
+        builder.Property<uint>("xmin")
+        .HasColumnType("xid")
+        .IsRowVersion();
+
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Id)

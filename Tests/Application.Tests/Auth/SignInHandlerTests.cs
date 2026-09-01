@@ -14,6 +14,7 @@ public class SignInHandlerTests
     private readonly IUserIdentityService _userIdentityService;
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly SignIn _handler;
 
     public SignInHandlerTests()
@@ -21,7 +22,8 @@ public class SignInHandlerTests
         _userIdentityService = Substitute.For<IUserIdentityService>();
         _userRepository = Substitute.For<IUserRepository>();
         _passwordHasher = Substitute.For<IPasswordHasher>();
-        _handler = new SignIn(_userIdentityService, _userRepository, _passwordHasher);
+        _unitOfWork = Substitute.For<IUnitOfWork>();
+        _handler = new SignIn(_userIdentityService, _userRepository, _passwordHasher, _unitOfWork);
     }
 
     [Fact]
@@ -89,5 +91,35 @@ public class SignInHandlerTests
             CancellationToken.None);
 
         await Assert.ThrowsAsync<BadRequestException>(act);
+    }
+
+    [Fact]
+    public async Task Handle_WithLegacyPasswordHash_RehashesAndSavesOnSuccess()
+    {
+        var userId = Guid.NewGuid();
+        _passwordHasher.HashPassword(Arg.Any<string>()).Returns("hashedPassword");
+        var userIdentity = new UserIdentity(
+            Guid.NewGuid(),
+            userId,
+            Username.Create("testuser"),
+            Email.Create("test@example.com"),
+            Password.Create("StrongPass1"),
+            _passwordHasher
+        );
+        var user = new User(userId, Username.Create("testuser"), Email.Create("test@example.com"));
+
+        _userIdentityService.FindByEmailOrUsernameAsync("test@example.com", Arg.Any<CancellationToken>())
+            .Returns(userIdentity);
+        _passwordHasher.VerifyPassword("StrongPass1", userIdentity.PasswordHash).Returns(true);
+        _passwordHasher.NeedsRehash(userIdentity.PasswordHash).Returns(true);
+        _passwordHasher.HashPassword("StrongPass1").Returns("newArgon2idHash");
+        _userRepository.GetUserByIdAsync(userId, Arg.Any<CancellationToken>()).Returns(user);
+
+        await _handler.Handle(
+            new SignInCommand("test@example.com", "StrongPass1"),
+            CancellationToken.None);
+
+        Assert.Equal("newArgon2idHash", userIdentity.PasswordHash);
+        await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 }

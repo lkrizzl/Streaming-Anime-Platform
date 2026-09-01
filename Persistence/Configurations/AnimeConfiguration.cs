@@ -11,6 +11,10 @@ public class AnimeConfiguration : IEntityTypeConfiguration<Anime>
     {
         builder.ToTable("Anime");
 
+        builder.Property<uint>("xmin")
+        .HasColumnType("xid")
+        .IsRowVersion();
+
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Id)

@@ -3,12 +3,14 @@ using Application.Users;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace WebApi.Controllers;
 
 [ApiController]
 [Authorize]
 [Route("users/me")]
+[EnableRateLimiting("ApiPolicy")]
 public class UserController(IMediator mediator) : ControllerBase
 {
     [HttpGet]

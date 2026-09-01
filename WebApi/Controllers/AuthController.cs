@@ -15,6 +15,7 @@ public record SignInRequest(string UsernameOrEmail, string Password, bool Rememb
 
 [ApiController]
 [Route("auth")]
+[EnableRateLimiting("ApiPolicy")]
 public class AuthController(
     IMediator mediator,
     IClaimsPrincipalProvider claimsPrincipalProvider) : ControllerBase

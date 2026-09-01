@@ -34,6 +34,11 @@ public class UserIdentity : Entity
         PasswordHash = passwordHasher.HashPassword(password.Value);
     }
 
+    public void RehashPassword(string verifiedPlainTextPassword, IPasswordHasher passwordHasher)
+    {
+        PasswordHash = passwordHasher.HashPassword(verifiedPlainTextPassword);
+    }
+
     public void UpdateSecurityStamp()
     {
         SecurityStamp = Guid.NewGuid().ToString();
