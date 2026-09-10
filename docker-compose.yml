@@ -6,12 +6,17 @@ services:
       dockerfile: WebApi/Dockerfile
     environment:
       - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - MediaService__InternalApiKey=${MEDIA_SERVICE_INTERNAL_API_KEY}
+      - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "8080:8080"
       - "8081:8081"
     depends_on:
       streaming.database:
         condition: service_healthy
+    networks:
+      - default
+      - shared_network
 
   streaming.database:
     image: postgres:18
@@ -32,3 +37,8 @@ services:
 
 volumes:
   streaming-db-data:
+
+networks:
+  shared_network:
+    name: streaming_shared
+    external: true

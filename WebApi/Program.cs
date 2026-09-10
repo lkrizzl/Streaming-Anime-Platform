@@ -28,6 +28,7 @@ builder.Services.AddInfrastructure();
 builder.Services.AddPersistence(connectionString ?? string.Empty);
 builder.Services.AddApplication();
 builder.Services.AddAuthorizationServices();
+builder.Services.AddOpenApi();
 
 // Health check options
 builder.Services.Configure<PersistenceOptions>(options =>
@@ -116,6 +117,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+}
+
 app.UseRateLimiter();
 app.UseRouting();
 app.UseCors(frontendOrigin);
@@ -160,4 +166,5 @@ static async Task WriteHealthCheckResponse(HttpContext context, HealthReport rep
         totalDuration = report.TotalDuration.TotalMilliseconds
     };
     await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+
 }
