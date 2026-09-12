@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence;
 using Testcontainers.PostgreSql;
@@ -56,6 +57,14 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
     {
         builder.UseEnvironment("Development");
 
+        builder.ConfigureAppConfiguration((context, config) =>
+        {
+            config.AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["MediaService:InternalApiKey"] = "test-internal-api-key"
+            });
+        });
+
         builder.ConfigureServices(services =>
         {
             var descriptor = services.SingleOrDefault(
@@ -68,6 +77,8 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
             services.AddDbContextPool<AppDbContext>(options =>
                 options.UseNpgsql(_dbContainer.GetConnectionString()));
+
+            services.PostConfigure<Microsoft.Extensions.Configuration.IConfiguration>(config => { });
 
             services.PostConfigure<CookieAuthenticationOptions>(
                 CookieAuthenticationDefaults.AuthenticationScheme,

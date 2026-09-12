@@ -14,6 +14,13 @@ public class ExceptionHandler(ILogger<ExceptionHandler> logger) : IExceptionHand
     {
         var problemDetails = exception switch
         {
+            UriFormatException => new ProblemDetails
+            {
+                Title = "BadRequest",
+                Detail = "Invalid URL format.",
+                Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1",
+                Status = StatusCodes.Status400BadRequest,
+            },
             NotFoundException notFound => new ProblemDetails
             {
                 Title = "NotFound",
