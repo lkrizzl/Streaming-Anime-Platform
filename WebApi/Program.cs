@@ -10,6 +10,7 @@ using Persistence;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
+using WebApi.Controllers;
 using WebApi.HealthChecks;
 using WebApi.Middlewares;
 
@@ -29,6 +30,8 @@ builder.Services.AddPersistence(connectionString ?? string.Empty);
 builder.Services.AddApplication();
 builder.Services.AddAuthorizationServices();
 builder.Services.AddOpenApi();
+builder.Services.Configure<MediaServiceOptions>(builder.Configuration.GetSection("MediaService"));
+builder.Services.AddHttpClient<EpisodeVideoController>();
 
 // Health check options
 builder.Services.Configure<PersistenceOptions>(options =>
